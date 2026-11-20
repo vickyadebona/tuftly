@@ -130,10 +130,14 @@ function Round({ pressure }: { pressure: PressureLevel }) {
             phase === "checking" ? "max-w-6xl lg:grid-cols-[220px_minmax(0,1fr)_300px]" : "max-w-4xl lg:grid-cols-[220px_minmax(0,1fr)]"
           }`}
         >
-          <div className="pixel-box flex flex-col items-center gap-2 self-start bg-peach p-5 text-center">
-            <PixelArtBobbin mood={mood} outfit={season} size={140} />
-            <span className="pixel-chip bg-butter">{COMPANION.name}</span>
-            <p className="text-sm text-ink-soft">{bobbinSays}</p>
+          <div className="pixel-box flex items-center gap-3 bg-peach p-3 text-left lg:flex-col lg:gap-2 lg:self-start lg:p-5 lg:text-center">
+            <span className="shrink-0 [&_img]:h-16 [&_img]:w-16 lg:[&_img]:h-[140px] lg:[&_img]:w-[140px]">
+              <PixelArtBobbin mood={mood} outfit={season} size={140} />
+            </span>
+            <span className="flex flex-col items-start gap-1 lg:items-center">
+              <span className="pixel-chip bg-butter">{COMPANION.name}</span>
+              <p className="text-sm text-ink-soft">{bobbinSays}</p>
+            </span>
           </div>
 
           <div className="flex min-w-0 flex-col gap-5">
@@ -172,7 +176,7 @@ function Round({ pressure }: { pressure: PressureLevel }) {
                       Need a nudge?
                     </button>
                   )}
-                  <button type="button" className="btn-primary" onClick={send}>
+                  <button type="button" className="btn-primary order-first w-full sm:order-last sm:w-auto" onClick={send}>
                     Send answer
                   </button>
                 </div>
@@ -260,13 +264,17 @@ export function InterviewRound() {
               role="radio"
               aria-checked={chosen}
               onClick={() => setPressure(p.id)}
-              className={`pixel-box flex flex-col items-center gap-2 p-6 ${LEVEL_BG[p.id]} ${
+              className={`pixel-box flex items-center gap-4 p-4 text-left md:flex-col md:gap-2 md:p-6 md:text-center ${LEVEL_BG[p.id]} ${
                 chosen ? "outline outline-4 outline-offset-2 outline-teal-deep" : ""
               }`}
             >
-              <PixelArtBobbin mood={LEVEL_MOOD[p.id]} outfit={season} size={110} />
-              <span className="font-pixel text-xl font-bold text-ink">{p.label}</span>
-              <span className="text-ink-soft">{p.note}</span>
+              <span className="shrink-0 [&_img]:h-16 [&_img]:w-16 md:[&_img]:h-[110px] md:[&_img]:w-[110px]">
+                <PixelArtBobbin mood={LEVEL_MOOD[p.id]} outfit={season} size={110} />
+              </span>
+              <span className="flex flex-col md:items-center">
+                <span className="font-pixel text-xl font-bold text-ink">{p.label}</span>
+                <span className="text-ink-soft">{p.note}</span>
+              </span>
             </button>
           );
         })}

@@ -139,12 +139,14 @@ export function Tour() {
   const w = Math.min(400, view.w - MARGIN * 2);
   const narrow = view.w < 768;
   // Short windows: shrink the card so it can sit beside or above the highlight instead of on it.
-  const compact = view.h < 760;
+  const compact = view.h < 760 || narrow;
   let pos: { left: number; top: number };
   if (!box) {
     pos = { left: (view.w - w) / 2, top: Math.max(MARGIN, (view.h - dlgH) / 2) };
   } else if (narrow) {
-    pos = { left: (view.w - w) / 2, top: view.h - dlgH - MARGIN };
+    // Phone: dock the card at the bottom, or at the top when the highlight sits low (the tab bar).
+    const lowTarget = box.top > view.h / 2;
+    pos = { left: (view.w - w) / 2, top: lowTarget ? MARGIN : view.h - dlgH - MARGIN };
   } else if (s.placement === "right") {
     pos = {
       left: clamp(box.left + box.width + PAD + 20, MARGIN, view.w - w - MARGIN),
@@ -202,7 +204,7 @@ export function Tour() {
           Step {step + 1} of {STEPS.length}
         </p>
         <div className="flex w-full flex-wrap items-center justify-between gap-3">
-          <button type="button" onClick={completeTour} className="font-semibold text-teal-deep underline">
+          <button type="button" onClick={completeTour} className="min-h-11 px-1 font-semibold text-teal-deep underline">
             Skip tour
           </button>
           <div className="flex gap-3">

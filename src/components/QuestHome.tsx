@@ -18,7 +18,7 @@ const COMING_SOON = ["Async basics", "Closures"];
 type NodeState = "done" | "current" | "locked";
 
 function PathNode({ state }: { state: NodeState }) {
-  const base = "flex h-[68px] w-[68px] shrink-0 items-center justify-center border-[3px] border-line";
+  const base = "flex h-14 w-14 shrink-0 items-center justify-center border-[3px] border-line sm:h-[68px] sm:w-[68px]";
   if (state === "done")
     return (
       <span className={`${base} bg-teal`}>
@@ -37,9 +37,6 @@ function PathNode({ state }: { state: NodeState }) {
     </span>
   );
 }
-
-// Zigzag the path a little so it reads as a trail, not a list.
-const INDENT = ["md:ml-0", "md:ml-16", "md:ml-32", "md:ml-16", "md:ml-0"];
 
 export function QuestHome() {
   const hydrated = useHydrated();
@@ -88,15 +85,15 @@ export function QuestHome() {
   ];
 
   const welcome = (
-      <section data-tour="welcome" className="pixel-box flex flex-col items-center gap-4 bg-peach p-4 sm:flex-row sm:gap-6 sm:px-6">
-        <PixelArtBobbin mood={restDay ? "sleepy" : "sparkle"} outfit={season} size={104} />
-        <p className="pixel-box w-full flex-1 px-4 py-3 text-center text-lg text-ink sm:text-left">{say}</p>
+      <section data-tour="welcome" className="pixel-box flex flex-col items-center gap-3 bg-peach p-4 sm:flex-row sm:gap-6 sm:px-6">
+        <PixelArtBobbin mood={restDay ? "sleepy" : "sparkle"} outfit={season} size={88} />
+        <p className="pixel-box w-full flex-1 px-4 py-3 text-center text-base text-ink sm:text-left sm:text-lg">{say}</p>
         {doneCount === 0 ? (
-          <Link href={currentId ? `/lessons/${currentId}` : "/home"} className="btn-primary shrink-0">
+          <Link href={currentId ? `/lessons/${currentId}` : "/home"} className="btn-primary w-full shrink-0 sm:w-auto">
             Start lesson
           </Link>
         ) : (
-          <Link href="/review" className="btn-primary shrink-0">
+          <Link href="/review" className="btn-primary w-full shrink-0 sm:w-auto">
             Start practice
           </Link>
         )}
@@ -145,10 +142,10 @@ export function QuestHome() {
         </div>
 
         <ol className="flex flex-col gap-5 pl-1">
-          {lessons.map((l, i) => {
+          {lessons.map((l) => {
             const state: NodeState = done.has(l.id) ? "done" : l.id === currentId ? "current" : "locked";
             const card = (
-              <div className="pixel-box flex flex-col gap-2 px-4 py-3">
+              <div className="pixel-box flex min-w-0 flex-1 flex-col gap-2 px-4 py-3">
                 <span className="font-pixel text-lg font-bold text-ink">{l.title}</span>
                 <span className="text-sm text-ink-soft">
                   {state === "done"
@@ -164,7 +161,7 @@ export function QuestHome() {
               </div>
             );
             return (
-              <li key={l.id} className={INDENT[i % INDENT.length]}>
+              <li key={l.id}>
                 {state === "locked" ? (
                   <div className="flex items-center gap-3 opacity-90">
                     <PathNode state={state} />
@@ -179,11 +176,11 @@ export function QuestHome() {
               </li>
             );
           })}
-          {COMING_SOON.map((title, i) => (
-            <li key={title} className={INDENT[(lessons.length + i) % INDENT.length]}>
+          {COMING_SOON.map((title) => (
+            <li key={title}>
               <div className="flex items-center gap-3">
                 <PathNode state="locked" />
-                <div className="pixel-box flex flex-col gap-1 px-4 py-3">
+                <div className="pixel-box flex min-w-0 flex-1 flex-col gap-1 px-4 py-3">
                   <span className="font-pixel text-lg font-bold text-ink">{title}</span>
                   <span className="text-sm text-ink-soft">Coming soon</span>
                 </div>

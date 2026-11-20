@@ -45,18 +45,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen flex-col bg-cream">
       <SyncManager />
       {hydrated && account && !account.tourDone && <Tour />}
-      <header className="flex items-center justify-between gap-4 border-b-[3px] border-line bg-paper px-4 py-3 sm:px-7">
+      <header className="flex items-center justify-between gap-2 border-b-[3px] border-line bg-paper px-3 py-2.5 sm:gap-4 sm:px-7 sm:py-3">
         <Link href="/" className="flex items-center gap-2" aria-label="tuftly landing page">
-          <PixelArtBobbin mood="sparkle" outfit={season} size={40} />
-          <span className="font-pixel text-3xl font-bold text-ink">
+          <PixelArtBobbin mood="sparkle" outfit={season} size={36} />
+          <span className="font-pixel text-2xl font-bold text-ink sm:text-3xl">
             tuft<span className="text-teal">ly</span>
           </span>
         </Link>
         <div className="flex items-center gap-3">
           {hydrated && account && (
             <details className="relative">
-              <summary className="pixel-chip cursor-pointer list-none">
-                <span className="font-sans font-bold">{account.name}</span>
+              <summary className="pixel-chip max-w-[7rem] cursor-pointer list-none sm:max-w-none">
+                <span className="truncate font-sans font-bold">{account.name}</span>
               </summary>
               <div className="pixel-box absolute right-0 z-40 mt-2 flex w-44 flex-col gap-1 p-2">
                 <button type="button" onClick={restartTour} className="px-3 py-2 text-left font-semibold text-ink hover:bg-cream-deep">
@@ -77,12 +77,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </details>
           )}
           {hydrated ? (
-            <span data-tour="streak" className="pixel-chip bg-peach" aria-label={`${streak} day streak`}>
+            <span data-tour="streak" className="pixel-chip whitespace-nowrap bg-peach" aria-label={`${streak} day streak`}>
               <PixelIcon name="flame" size={18} color="#f08a24" />
-              <span className="font-sans font-bold">{streak} day streak</span>
+              <span className="font-sans font-bold">
+                {streak}
+                <span className="hidden sm:inline"> day streak</span>
+              </span>
             </span>
           ) : (
-            <Skeleton className="h-9 w-36" />
+            <Skeleton className="h-9 w-16 sm:w-36" />
           )}
         </div>
       </header>
@@ -90,7 +93,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex flex-1 flex-col md:flex-row">
         <nav
           aria-label="Main"
-          className="flex gap-2 border-b-[3px] border-line bg-paper p-3 md:w-60 md:flex-col md:border-b-0 md:border-r-[3px] md:p-4"
+          className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-3 border-t-[3px] border-line bg-paper pb-[env(safe-area-inset-bottom)] md:static md:flex md:w-60 md:flex-col md:gap-2 md:border-r-[3px] md:border-t-0 md:p-4 md:pb-4"
         >
           {NAV.map((item) => {
             const active = item.match.some((m) => pathname === m || pathname.startsWith(`${m}/`));
@@ -100,7 +103,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 href={item.href}
                 data-tour={item.tour}
                 aria-current={active ? "page" : undefined}
-                className={`font-pixel flex flex-1 items-center gap-3 border-[3px] px-4 py-3 text-lg font-bold md:flex-none ${
+                className={`font-pixel flex flex-col items-center justify-center gap-1 border-[3px] px-2 py-2.5 text-sm font-bold md:flex-row md:justify-start md:gap-3 md:px-4 md:py-3 md:text-lg ${
                   active ? "border-line bg-butter text-ink" : "border-transparent text-ink hover:bg-cream-deep"
                 }`}
               >
@@ -110,7 +113,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             );
           })}
         </nav>
-        <main className="flex min-w-0 flex-1 flex-col px-4 py-6 sm:px-8 sm:py-8">{children}</main>
+        <main className="flex min-w-0 flex-1 flex-col px-4 pb-28 pt-5 sm:px-8 sm:pt-8 md:pb-8">{children}</main>
       </div>
     </div>
   );

@@ -31,7 +31,8 @@ function Sprite({
       x = end;
     }
   });
-  const style: CSSProperties = { width: size, height: (size * h) / w, shapeRendering: "crispEdges" };
+  // display:block removes the inline baseline gap that made icons sit off-center beside text.
+  const style: CSSProperties = { width: size, height: (size * h) / w, shapeRendering: "crispEdges", display: "block", flexShrink: 0 };
   return (
     <svg
       viewBox={`0 0 ${w} ${h}`}
@@ -71,6 +72,21 @@ export function PixelIcon({
   label?: string;
 }) {
   return <Sprite rows={[...ICONS[name]]} palette={{ x: color }} size={size} label={label} />;
+}
+
+const CLOUD = [
+  "......xxxx........",
+  "....xxxxxxxx......",
+  "...xxxxxxxxxxx.xx.",
+  ".xxxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxxxx",
+  ".xxxxxxxxxxxxxxxx.",
+];
+
+/** A pixelated cloud. */
+export function PixelCloud({ size = 120, color = "#ffffff" }: { size?: number; color?: string }) {
+  return <Sprite rows={CLOUD} palette={{ x: color }} size={size} />;
 }
 
 /** The little teacup for tea breaks. */
