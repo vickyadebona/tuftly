@@ -2,16 +2,16 @@ import Link from "next/link";
 import { APP_NAME, DAILY_INTERVIEW_CAP } from "@/lib/config";
 import { SEASONS, type Season } from "@/lib/season";
 import { PixelArtBobbin } from "./PixelArtBobbin";
-import { PixelIcon, type PixelIconName } from "./PixelIcon";
+import { PixelCloud, PixelIcon, type PixelIconName } from "./PixelIcon";
 
-const SECTION = "px-6 py-20";
-const INNER = "mx-auto w-full max-w-6xl";
+export const SECTION = "px-5 py-14 sm:px-6 sm:py-20";
+export const INNER = "mx-auto w-full max-w-6xl";
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
+export function Eyebrow({ children }: { children: React.ReactNode }) {
   return <p className="font-pixel text-sm font-bold uppercase tracking-wide text-teal-deep">{children}</p>;
 }
 
-function Title({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+export function Title({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <h2 className={`font-pixel text-3xl font-bold text-ink sm:text-5xl ${className}`}>{children}</h2>
   );
@@ -27,26 +27,32 @@ function SectionHead({ eyebrow, title, sub }: { eyebrow: string; title: string; 
   );
 }
 
-function Nav() {
+export function Nav({ current }: { current?: "about" }) {
   return (
     <header className="bg-cream">
-      <div className={`${INNER} flex items-center justify-between gap-4 px-6 py-4`}>
+      <div className={`${INNER} flex items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:px-6 sm:py-4`}>
         <Link href="/" className="flex items-center gap-2" aria-label={`${APP_NAME} home`}>
-          <PixelArtBobbin mood="sparkle" outfit="winter" size={44} />
-          <span className="font-pixel text-3xl font-bold text-ink">
+          <PixelArtBobbin mood="sparkle" outfit="winter" size={36} />
+          <span className="font-pixel text-2xl font-bold text-ink sm:text-3xl">
             tuft<span className="text-teal">ly</span>
           </span>
         </Link>
         <nav className="hidden items-center gap-8 font-semibold text-ink md:flex" aria-label="Sections">
-          <a href="#how">How it works</a>
-          <a href="#bobbin">Meet Bobbin</a>
-          <a href="#free">Free to start</a>
+          <Link href="/#how">How it works</Link>
+          <Link href="/#bobbin">Meet Bobbin</Link>
+          <Link href="/about" aria-current={current === "about" ? "page" : undefined} className={current === "about" ? "underline decoration-[3px] underline-offset-8" : ""}>
+            About
+          </Link>
+          <Link href="/#free">Free to start</Link>
         </nav>
         <div className="flex items-center gap-3">
+          <Link href="/login" className="font-pixel whitespace-nowrap px-1 py-2 font-bold text-ink underline sm:hidden">
+            Log in
+          </Link>
           <Link href="/login" className="btn-secondary hidden sm:inline-flex">
             Log in
           </Link>
-          <Link href="/login" className="btn-primary">
+          <Link href="/login" className="btn-primary whitespace-nowrap !px-3 !py-2 !text-sm sm:!px-5 sm:!py-2.5 sm:!text-base">
             Start free
           </Link>
         </div>
@@ -55,39 +61,52 @@ function Nav() {
   );
 }
 
+/** The hero scene. Laid out from the ground up so Bobbin always stands on the grass. */
 function Island() {
   return (
-    <div className="relative mx-auto h-[420px] w-full max-w-[520px] sm:h-[540px]" aria-hidden="true">
-      <div className="absolute left-2 top-10 h-12 w-32 bg-white" />
-      <div className="absolute right-10 top-28 h-9 w-24 bg-white" />
-      <div className="absolute left-8 top-52 sm:left-10"><PixelIcon name="star" size={44} color="#f2b93b" /></div>
-      <div className="absolute right-6 top-8"><PixelIcon name="star" size={34} color="#f2b93b" /></div>
-      <div className="absolute right-4 top-[290px] hidden sm:block"><PixelIcon name="gem" size={34} color="#9fd5ea" /></div>
-      <div className="absolute left-1/2 top-[110px] -translate-x-1/2 sm:top-[122px]">
+    <div
+      className="relative mx-auto flex h-[360px] w-full max-w-[520px] flex-col items-center justify-end sm:h-[540px]"
+      aria-hidden="true"
+    >
+      <div className="absolute left-0 top-4 sm:top-8">
+        <PixelCloud size={120} />
+      </div>
+      <div className="absolute right-2 top-20 sm:top-28">
+        <PixelCloud size={84} />
+      </div>
+      <div className="absolute left-8 top-52 hidden sm:block"><PixelIcon name="star" size={36} color="#f2b93b" /></div>
+      <div className="absolute right-4 top-4 sm:right-6 sm:top-8"><PixelIcon name="star" size={30} color="#f2b93b" /></div>
+      <div className="absolute right-4 top-[190px] hidden sm:block"><PixelIcon name="gem" size={34} color="#9fd5ea" /></div>
+
+      {/* The image has a little empty space under the feet, so pull it down onto the grass. */}
+      <div className="relative z-10 -mb-[9%] [&_img]:h-[230px] [&_img]:w-[230px] sm:[&_img]:h-[300px] sm:[&_img]:w-[300px]">
         <PixelArtBobbin mood="sparkle" outfit="winter" size={300} priority />
       </div>
-      <div className="absolute bottom-[80px] left-[40px] h-12 w-[calc(100%-80px)] border-[3px] border-line bg-grass sm:bottom-[94px]" />
-      <div className="absolute bottom-0 left-[80px] h-[88px] w-[calc(100%-160px)] border-[3px] border-t-0 border-line bg-[#c99a6b] sm:h-[94px]" />
-      <div className="absolute bottom-[128px] left-[84px] sm:bottom-[142px]">
-        <div className="flex h-10 w-14 items-center justify-center border-[3px] border-line bg-paper">
-          <PixelIcon name="arrow" size={26} color="#2f7f78" />
+
+      <div className="relative w-[calc(100%-32px)] sm:w-[calc(100%-64px)]">
+        <div className="absolute bottom-full left-5 sm:left-8">
+          <div className="flex h-9 w-12 items-center justify-center border-[3px] border-line bg-paper sm:h-10 sm:w-14">
+            <PixelIcon name="arrow" size={22} color="#2f7f78" />
+          </div>
+          <div className="mx-auto h-12 w-2.5 bg-[#c99a6b] sm:h-16" />
         </div>
-        <div className="mx-auto h-16 w-2.5 bg-[#c99a6b] sm:h-[64px]" />
+        <div className="h-10 border-[3px] border-line bg-grass sm:h-12" />
       </div>
+      <div className="h-16 w-[calc(100%-120px)] border-[3px] border-t-0 border-line bg-[#c99a6b] sm:h-24 sm:w-[calc(100%-160px)]" />
     </div>
   );
 }
 
 function Hero() {
   return (
-    <section className="bg-sky px-6 py-12 sm:py-16">
+    <section className="bg-sky px-5 py-10 sm:px-6 sm:py-16">
       <div className={`${INNER} grid items-center gap-10 lg:grid-cols-2`}>
         <div className="flex flex-col items-start gap-6">
           <span className="pixel-chip">
             <PixelIcon name="star" size={18} color="#f2b93b" />
             Free practice, and the tea on AI interviews
           </span>
-          <h1 className="font-pixel text-5xl font-bold leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
+          <h1 className="font-pixel text-4xl font-bold leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
             Warm up for your next coding interview
           </h1>
           <p className="max-w-xl text-lg text-ink-soft sm:text-xl">
@@ -95,7 +114,7 @@ function Hero() {
             drills and rehearse real interview questions with Bobbin, a pixel bird who gives
             feedback that points you forward.
           </p>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-4">
             <Link href="/login" className="btn-primary">
               Start your quest for free
             </Link>
@@ -311,7 +330,7 @@ function FinalCall() {
   );
 }
 
-function Footer() {
+export function Footer() {
   return (
     <footer className="bg-cream px-6 py-8">
       <div className={`${INNER} flex flex-wrap items-center justify-between gap-4 text-sm text-ink-soft`}>
@@ -319,6 +338,10 @@ function Footer() {
           tuft<span className="text-teal">ly</span>
         </span>
         <span>Made for people who get nervous before interviews.</span>
+        <nav aria-label="Footer" className="flex gap-5 font-semibold text-ink">
+          <Link href="/about">About</Link>
+          <Link href="/login">Log in</Link>
+        </nav>
       </div>
     </footer>
   );
