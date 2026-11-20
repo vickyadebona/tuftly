@@ -6,13 +6,77 @@ import { useState } from "react";
 import { continueAsGuest, createAccount, signOut, useAccount } from "@/lib/account";
 import { useHydrated } from "@/lib/store";
 import { useSeason } from "@/lib/useSeason";
+import { getSupabase } from "@/lib/supabase/client";
+import { useAuthUser } from "@/lib/useAuthUser";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { Skeleton } from "./Skeleton";
 
-export function LoginFlow() {
+/** Passwordless sign-in: we email a one-time link. Shown only when Supabase is set up. */
+function EmailLinkForm({ name, intro }: { name?: string; intro: string }) {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const supabase = getSupabase();
+  if (!supabase) return null;
+
+  async function send(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.includes("@")) {
+      setStatus("error");
+      return;
+    }
+    setStatus("sending");
+    const { error } = await supabase!.auth.signInWithOtp({
+      email: email.trim(),
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        data: name?.trim() ? { name: name.trim() } : undefined,
+      },
+    });
+    setStatus(error ? "error" : "sent");
+  }
+
+  if (status === "sent") {
+    return (
+      <p role="status" className="pixel-box bg-mint p-4 text-center text-ink">
+        Check your inbox! Open the link we sent to <strong>{email}</strong> to finish signing in.
+      </p>
+    );
+  }
+  return (
+    <form onSubmit={send} noValidate className="flex flex-col gap-3 border-t-[3px] border-line/25 pt-4">
+      <p className="text-center text-ink-soft">{intro}</p>
+      <label className="sr-only" htmlFor="link-email">
+        Email for the sign-in link
+      </label>
+      <input
+        id="link-email"
+        type="email"
+        autoComplete="email"
+        placeholder="you@example.com"
+        value={email}
+        onChange={(e) => {
+          setEmail(e.target.value);
+          if (status === "error") setStatus("idle");
+        }}
+        className="border-[3px] border-line bg-paper p-3 text-ink"
+      />
+      {status === "error" && (
+        <span role="alert" className="text-sm font-semibold text-orange">
+          That didn&apos;t work. Check the email address and try again.
+        </span>
+      )}
+      <button type="submit" disabled={status === "sending"} className="btn-accent">
+        {status === "sending" ? "Sending…" : "Email me a sign-in link"}
+      </button>
+    </form>
+  );
+}
+
+export function LoginFlow({ linkError = false }: { linkError?: boolean }) {
   const router = useRouter();
   const hydrated = useHydrated();
   const account = useAccount();
+  const auth = useAuthUser();
   const season = useSeason();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -53,7 +117,15 @@ export function LoginFlow() {
         <Link href="/home" className="btn-primary">
           Continue
         </Link>
-        <button type="button" onClick={signOut} className="font-semibold text-teal-deep underline">
+        {!auth.user && <EmailLinkForm intro="Want your progress on every device? Sign in with email." />}
+        <button
+          type="button"
+          onClick={() => {
+            signOut();
+            getSupabase()?.auth.signOut();
+          }}
+          className="font-semibold text-teal-deep underline"
+        >
           Not you? Log out
         </button>
       </section>,
@@ -120,6 +192,17 @@ export function LoginFlow() {
         </button>
       </form>
 
+      {linkError && (
+        <p role="alert" className="text-center font-semibold text-orange">
+          That sign-in link didn&apos;t work or has expired. Ask for a new one below.
+        </p>
+      )}
+
+      <EmailLinkForm
+        name={name}
+        intro="Already have an account, or want your progress on every device? We'll email you a link. No password needed."
+      />
+
       <button
         type="button"
         onClick={() => {
@@ -132,8 +215,8 @@ export function LoginFlow() {
       </button>
 
       <p className="text-center text-sm text-ink-soft">
-        For now your profile and progress are saved on this device. Signing in to pick up on another
-        device is coming.
+        Your profile and progress are saved on this device. Sign in with email to keep them safe and
+        pick up on any device.
       </p>
     </section>,
   );

@@ -43,5 +43,17 @@ nvm use
 npm run dev
 ```
 
+## Accounts and saved progress (Supabase, optional)
+Everything works on this device without it. With Supabase set up, people can sign in with an emailed link (no passwords) and their progress follows them across devices. The app stays local-first: it reads and writes this device, then merges with the saved copy and syncs a moment later (`src/lib/merge.ts` has the rules and tests).
+1. Create a project at supabase.com.
+2. SQL editor: run `supabase/migrations/0001_user_data.sql` (one table, row level security so people only see their own row).
+3. Authentication > URL Configuration: set the Site URL to your live address and add redirect URLs `http://localhost:3000/auth/callback` and `https://YOUR-DOMAIN/auth/callback` (plus your Vercel preview pattern if you want previews to sign in).
+4. Copy `.env.local.example` to `.env.local` and fill in the project URL and publishable key (Project Settings > API). Add the same two variables in Vercel.
+5. Restart the dev server.
+Next: Google sign-in, and a server-side counter for the 2 interviews a day cap.
+
+## Deploy
+The GitHub repo is `vickyadebona/tuftly` (private) and Vercel builds it. Pushes to `main` go live; other branches get preview links. Node 22 is pinned in `package.json`.
+
 ## Milestones
 1. Foundation (this scaffold) 2. Content pipeline 3. Lessons + drills + streaks 4. Skill map + optional placement quiz 5. Text AI interview 6. Voice mode 7. Later: backend, system design, human-interview prep

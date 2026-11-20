@@ -49,6 +49,20 @@ function update(fn: (p: Progress) => Progress) {
   listeners.forEach((l) => l());
 }
 
+/** Current progress, outside React. Used by sync. */
+export function getProgress(): Progress {
+  return read();
+}
+
+/** Overwrite local progress (after merging with what's saved online). */
+export function replaceProgress(next: Progress) {
+  update(() => next);
+}
+
+export function subscribeProgress(cb: () => void) {
+  return subscribe(cb);
+}
+
 export function useProgress(): Progress {
   return useSyncExternalStore(subscribe, read, () => EMPTY);
 }

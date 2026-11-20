@@ -53,6 +53,21 @@ export function useAccount(): Account | null {
   return useSyncExternalStore(subscribe, read, () => null);
 }
 
+export function getAccount(): Account | null {
+  return read();
+}
+
+export function subscribeAccount(cb: () => void) {
+  return subscribe(cb);
+}
+
+/** Set up the on-device profile from an online account (first time on a new device). */
+export function adoptAccount(name: string, email: string | null, tourDone: boolean) {
+  const a = read();
+  if (a && !a.guest) write({ ...a, tourDone: a.tourDone || tourDone });
+  else write({ name, email, guest: false, tourDone });
+}
+
 export function createAccount(name: string, email: string) {
   write({ name: name.trim(), email: email.trim() || null, guest: false, tourDone: false });
 }
