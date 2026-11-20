@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { restartTour, signOut, useAccount } from "@/lib/account";
+import { getSupabase } from "@/lib/supabase/client";
+import { useAuthUser } from "@/lib/useAuthUser";
 import { STREAK } from "@/lib/config";
 import { todayStr } from "@/lib/dates";
 import { useHydrated, useProgress } from "@/lib/store";
@@ -11,6 +13,7 @@ import { computeStreak } from "@/lib/streak";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelIcon, type PixelIconName } from "./PixelIcon";
 import { Skeleton } from "./Skeleton";
+import { SyncManager } from "./SyncManager";
 import { Tour } from "./Tour";
 import { useSeason } from "@/lib/useSeason";
 
@@ -25,19 +28,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const hydrated = useHydrated();
   const account = useAccount();
+  const auth = useAuthUser();
   const progress = useProgress();
   const season = useSeason();
   const streak = hydrated
     ? computeStreak(progress.activeDays, todayStr(), STREAK.graceDays, progress.restWeekdays)
     : 0;
 
-  // Nobody set up on this device yet: send them to the welcome screen.
+  // Nobody set up on this device yet: send them to the welcome screen. Wait for the online
+  // sign-in check first, since a signed-in person on a new device gets set up automatically.
   useEffect(() => {
-    if (hydrated && !account) router.replace("/login");
-  }, [hydrated, account, router]);
+    if (hydrated && auth.ready && !account && !auth.user) router.replace("/login");
+  }, [hydrated, auth.ready, auth.user, account, router]);
 
   return (
     <div className="flex min-h-screen flex-col bg-cream">
+      <SyncManager />
       {hydrated && account && !account.tourDone && <Tour />}
       <header className="flex items-center justify-between gap-4 border-b-[3px] border-line bg-paper px-4 py-3 sm:px-7">
         <Link href="/" className="flex items-center gap-2" aria-label="tuftly landing page">
@@ -60,6 +66,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   type="button"
                   onClick={() => {
                     signOut();
+                    getSupabase()?.auth.signOut();
                     router.push("/");
                   }}
                   className="px-3 py-2 text-left font-semibold text-ink hover:bg-cream-deep"
