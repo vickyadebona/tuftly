@@ -1,0 +1,95 @@
+import { useSyncExternalStore } from "react";
+import { todayStr } from "./dates";
+import { newCard, review, type CardState, type Grade } from "./scheduler";
+
+/**
+ * Local-only progress for now (browser localStorage). Swap for Supabase later:
+ * keep the same Progress shape and these action functions.
+ */
+export interface Progress {
+  cards: Record<string, CardState>;
+  activeDays: string[];
+  lessonsDone: string[];
+  restWeekdays: number[];
+}
+
+const KEY = "tuftly-progress-v1";
+const EMPTY: Progress = { cards: {}, activeDays: [], lessonsDone: [], restWeekdays: [] };
+
+let cache: { raw: string | null; value: Progress } = { raw: null, value: EMPTY };
+const listeners = new Set<() => void>();
+
+function read(): Progress {
+  try {
+    const raw = window.localStorage.getItem(KEY);
+    if (raw === cache.raw) return cache.value;
+    cache = { raw, value: raw ? { ...EMPTY, ...JSON.parse(raw) } : EMPTY };
+    return cache.value;
+  } catch {
+    return EMPTY;
+  }
+}
+
+function subscribe(cb: () => void) {
+  listeners.add(cb);
+  window.addEventListener("storage", cb);
+  return () => {
+    listeners.delete(cb);
+    window.removeEventListener("storage", cb);
+  };
+}
+
+function update(fn: (p: Progress) => Progress) {
+  const next = fn(read());
+  try {
+    window.localStorage.setItem(KEY, JSON.stringify(next));
+  } catch {
+    // Storage blocked (private mode, full). Progress just won't persist this session.
+  }
+  listeners.forEach((l) => l());
+}
+
+export function useProgress(): Progress {
+  return useSyncExternalStore(subscribe, read, () => EMPTY);
+}
+
+/** False during server render and hydration, true once the browser state is readable. */
+export function useHydrated(): boolean {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+}
+
+function withToday(days: string[], today: string): string[] {
+  return days.includes(today) ? days : [...days, today];
+}
+
+export function recordReview(drillId: string, grade: Grade) {
+  const today = todayStr();
+  update((p) => ({
+    ...p,
+    cards: { ...p.cards, [drillId]: review(p.cards[drillId] ?? newCard(today), grade, today) },
+    activeDays: withToday(p.activeDays, today),
+  }));
+}
+
+export function completeLesson(lessonId: string) {
+  const today = todayStr();
+  update((p) => ({
+    ...p,
+    lessonsDone: p.lessonsDone.includes(lessonId) ? p.lessonsDone : [...p.lessonsDone, lessonId],
+    activeDays: withToday(p.activeDays, today),
+  }));
+}
+
+export function toggleRestWeekday(day: number, max: number) {
+  update((p) => {
+    if (p.restWeekdays.includes(day)) {
+      return { ...p, restWeekdays: p.restWeekdays.filter((d) => d !== day) };
+    }
+    if (p.restWeekdays.length >= max) return p;
+    return { ...p, restWeekdays: [...p.restWeekdays, day] };
+  });
+}
