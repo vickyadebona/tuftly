@@ -81,6 +81,8 @@ export function LoginFlow({ linkError = false }: { linkError?: boolean }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
+  // Between submitting and arriving on the quest map. Without this the screen flashes "Welcome back".
+  const [leaving, setLeaving] = useState(false);
 
   const shell = (children: React.ReactNode) => (
     <div className="flex min-h-screen flex-col bg-sky">
@@ -100,6 +102,15 @@ export function LoginFlow({ linkError = false }: { linkError?: boolean }) {
     return shell(
       <div role="status" aria-busy="true" className="w-full max-w-md">
         <span className="sr-only">Loading</span>
+        <Skeleton className="h-[420px] w-full" />
+      </div>,
+    );
+  }
+
+  if (leaving) {
+    return shell(
+      <div role="status" aria-busy="true" className="w-full max-w-md">
+        <span className="sr-only">Opening your quest map</span>
         <Skeleton className="h-[420px] w-full" />
       </div>,
     );
@@ -138,6 +149,7 @@ export function LoginFlow({ linkError = false }: { linkError?: boolean }) {
       setError("What should Bobbin call you?");
       return;
     }
+    setLeaving(true);
     createAccount(name, email);
     router.push("/home");
   }
@@ -206,6 +218,7 @@ export function LoginFlow({ linkError = false }: { linkError?: boolean }) {
       <button
         type="button"
         onClick={() => {
+          setLeaving(true);
           continueAsGuest();
           router.push("/home");
         }}

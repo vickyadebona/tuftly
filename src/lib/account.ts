@@ -61,19 +61,55 @@ export function subscribeAccount(cb: () => void) {
   return subscribe(cb);
 }
 
+/**
+ * The tour is for people who are new. Logging out clears the profile (and its tour flag) but not
+ * progress, so a returning person would otherwise get the tour again. Two signs this device has
+ * already been through it: the tour was finished here before, or there is saved progress.
+ */
+const TOUR_SEEN_KEY = "tuftly-tour-seen-v1";
+
+/** True when saved progress shows someone has already used the app on this device. */
+export function looksReturning(rawProgress: string | null): boolean {
+  if (!rawProgress) return false;
+  try {
+    const p = JSON.parse(rawProgress) as { lessonsDone?: unknown[]; activeDays?: unknown[]; cards?: Record<string, unknown> };
+    return (p.lessonsDone?.length ?? 0) > 0 || (p.activeDays?.length ?? 0) > 0 || Object.keys(p.cards ?? {}).length > 0;
+  } catch {
+    return false;
+  }
+}
+
+function tourAlreadySeen(): boolean {
+  try {
+    return !!window.localStorage.getItem(TOUR_SEEN_KEY) || looksReturning(window.localStorage.getItem("tuftly-progress-v1"));
+  } catch {
+    return false;
+  }
+}
+
+function markTourSeen() {
+  try {
+    window.localStorage.setItem(TOUR_SEEN_KEY, "1");
+  } catch {
+    // Storage blocked: the flag on the profile still works for this session.
+  }
+}
+
 /** Set up the on-device profile from an online account (first time on a new device). */
 export function adoptAccount(name: string, email: string | null, tourDone: boolean) {
   const a = read();
-  if (a && !a.guest) write({ ...a, tourDone: a.tourDone || tourDone });
-  else write({ name, email, guest: false, tourDone });
+  // Keep a finished tour from either side, including a guest profile this replaces.
+  const done = !!a?.tourDone || tourDone || tourAlreadySeen();
+  if (a && !a.guest) write({ ...a, tourDone: done });
+  else write({ name, email, guest: false, tourDone: done });
 }
 
 export function createAccount(name: string, email: string) {
-  write({ name: name.trim(), email: email.trim() || null, guest: false, tourDone: false });
+  write({ name: name.trim(), email: email.trim() || null, guest: false, tourDone: tourAlreadySeen() });
 }
 
 export function continueAsGuest() {
-  write({ name: "Guest", email: null, guest: true, tourDone: false });
+  write({ name: "Guest", email: null, guest: true, tourDone: tourAlreadySeen() });
 }
 
 export function signOut() {
@@ -81,6 +117,7 @@ export function signOut() {
 }
 
 export function completeTour() {
+  markTourSeen();
   const a = read();
   if (a) write({ ...a, tourDone: true });
 }
