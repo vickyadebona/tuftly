@@ -65,26 +65,26 @@ export function Nav({ current }: { current?: "about" }) {
 function Island() {
   return (
     <div
-      className="relative mx-auto flex h-[360px] w-full max-w-[520px] flex-col items-center justify-end sm:h-[540px]"
+      className="relative mx-auto flex h-[330px] w-full max-w-[520px] flex-col items-center justify-end sm:h-[540px]"
       aria-hidden="true"
     >
-      <div className="absolute left-0 top-4 sm:top-8">
-        <PixelCloud size={120} />
+      <div className="absolute left-0 top-3 sm:top-8">
+        <PixelCloud size={96} />
       </div>
-      <div className="absolute right-2 top-20 sm:top-28">
-        <PixelCloud size={84} />
+      <div className="absolute right-0 top-14 sm:right-2 sm:top-28">
+        <PixelCloud size={64} />
       </div>
       <div className="absolute left-8 top-52 hidden sm:block"><PixelIcon name="star" size={36} color="#f2b93b" /></div>
       <div className="absolute right-4 top-4 sm:right-6 sm:top-8"><PixelIcon name="star" size={30} color="#f2b93b" /></div>
       <div className="absolute right-4 top-[190px] hidden sm:block"><PixelIcon name="gem" size={34} color="#9fd5ea" /></div>
 
       {/* The image has a little empty space under the feet, so pull it down onto the grass. */}
-      <div className="relative z-10 -mb-[9%] [&_img]:h-[230px] [&_img]:w-[230px] sm:[&_img]:h-[300px] sm:[&_img]:w-[300px]">
+      <div className="relative z-10 -mb-[9%] [&_img]:h-[200px] [&_img]:w-[200px] sm:[&_img]:h-[300px] sm:[&_img]:w-[300px]">
         <PixelArtBobbin mood="sparkle" outfit="winter" size={300} priority />
       </div>
 
       <div className="relative w-[calc(100%-32px)] sm:w-[calc(100%-64px)]">
-        <div className="absolute bottom-full left-5 sm:left-8">
+        <div className="absolute bottom-full left-1 sm:left-8">
           <div className="flex h-9 w-12 items-center justify-center border-[3px] border-line bg-paper sm:h-10 sm:w-14">
             <PixelIcon name="arrow" size={22} color="#2f7f78" />
           </div>

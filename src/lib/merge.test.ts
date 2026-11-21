@@ -4,7 +4,7 @@ import { mergeProgress } from "./merge.ts";
 import type { Progress } from "./store.ts";
 
 const card = (box: number, lastReviewed: string, reps: number) => ({ box, due: lastReviewed, reps, lapses: 0, lastReviewed });
-const empty: Progress = { cards: {}, activeDays: [], lessonsDone: [], restWeekdays: [] };
+const empty: Progress = { cards: {}, activeDays: [], lessonsDone: [], restWeekdays: [], lessonProgress: {}, struggled: [] };
 
 test("keeps everything from both sides", () => {
   const local: Progress = { ...empty, lessonsDone: ["a"], activeDays: ["2026-11-02"] };
@@ -37,4 +37,28 @@ test("rest days never exceed the weekly limit", () => {
 test("merging with an empty side changes nothing", () => {
   const local: Progress = { ...empty, lessonsDone: ["a"], cards: { d1: card(2, "2026-11-10", 3) } };
   assert.deepEqual(mergeProgress(local, empty), { ...local, activeDays: [] });
+});
+
+const pos = (idea: number, updatedAt: number) => ({ idea, stage: "guess" as const, attempt: 0, missed: [], updatedAt });
+
+test("a lesson in progress keeps the copy touched most recently", () => {
+  const m = mergeProgress(
+    { ...empty, lessonProgress: { l1: pos(1, 100) } },
+    { ...empty, lessonProgress: { l1: pos(2, 200), l2: pos(0, 50) } },
+  );
+  assert.equal(m.lessonProgress.l1.idea, 2);
+  assert.ok(m.lessonProgress.l2);
+});
+
+test("a lesson finished on either side is no longer in progress", () => {
+  const m = mergeProgress(
+    { ...empty, lessonsDone: ["l1"] },
+    { ...empty, lessonProgress: { l1: pos(1, 100) } },
+  );
+  assert.deepEqual(m.lessonProgress, {});
+});
+
+test("struggled ideas from both sides are kept", () => {
+  const m = mergeProgress({ ...empty, struggled: ["a"] }, { ...empty, struggled: ["b", "a"] });
+  assert.deepEqual(m.struggled.sort(), ["a", "b"]);
 });

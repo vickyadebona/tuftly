@@ -49,7 +49,7 @@ function DrillCard({ drill, onGrade }: { drill: Drill; onGrade: (g: Grade) => vo
       {!checked && (
         <>
           <label className="flex flex-col gap-1 text-ink">
-            Why? Say it in your own words (optional, but it helps it stick).
+            Why? Say it the way you would in an interview (optional).
             <textarea
               value={why}
               onChange={(e) => setWhy(e.target.value)}
@@ -77,9 +77,13 @@ function DrillCard({ drill, onGrade }: { drill: Drill; onGrade: (g: Grade) => vo
         <>
           <p className="text-ink">
             {correct
-              ? "Nice, that's right."
-              : "Not quite yet. That's how it sticks. Here's the idea:"}
+              ? "That's right."
+              : "Not quite. It's an easy one to mix up, so here's the idea:"}
           </p>
+          <div className="pixel-box bg-sky p-4 text-ink">
+            <p className="font-pixel mb-1 text-sm font-bold">One way to say it</p>
+            <p>{drill.sayIt}</p>
+          </div>
           <fieldset className="pixel-box bg-mint p-4">
             <legend className="font-pixel px-1 text-sm font-bold text-ink">Key points. Tick the ones you had.</legend>
             {drill.rubric.map((r, i) => (
@@ -148,7 +152,7 @@ export function ReviewSession() {
     }
     return (
       <div className="flex flex-col gap-4">
-        <Bobbin say="Short and sweet. Mixing topics like this helps it stay with you." />
+        <Bobbin say="A few questions, with topics mixed together." />
         <p className="text-ink">
           {due.length} to review · {fresh.length} new
         </p>
@@ -166,7 +170,7 @@ export function ReviewSession() {
   if (!drill) {
     return (
       <div className="flex flex-col gap-4">
-        <Bobbin mood="cheering" say="That's a wrap! Every review makes the next one easier." />
+        <Bobbin mood="cheering" say="Good session. Anything you missed will come back in a later one." />
         <Link href="/home" className="btn-primary self-start">
           Back to the quest map
         </Link>

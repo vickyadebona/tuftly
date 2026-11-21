@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { todayStr } from "./dates";
+import type { LessonPosition } from "./lessonFlow";
 import { newCard, review, type CardState, type Grade } from "./scheduler";
 
 /**
@@ -11,10 +12,16 @@ export interface Progress {
   activeDays: string[];
   lessonsDone: string[];
   restWeekdays: number[];
+  /** Lessons started but not finished: where to pick up. Cleared when the lesson is completed. */
+  lessonProgress: Record<string, SavedPosition>;
+  /** Lesson ideas that needed a second try. Their drills come up first in practice. */
+  struggled: string[];
 }
 
+export type SavedPosition = LessonPosition & { updatedAt: number };
+
 const KEY = "tuftly-progress-v1";
-const EMPTY: Progress = { cards: {}, activeDays: [], lessonsDone: [], restWeekdays: [] };
+const EMPTY: Progress = { cards: {}, activeDays: [], lessonsDone: [], restWeekdays: [], lessonProgress: {}, struggled: [] };
 
 let cache: { raw: string | null; value: Progress } = { raw: null, value: EMPTY };
 const listeners = new Set<() => void>();
@@ -89,13 +96,33 @@ export function recordReview(drillId: string, grade: Grade) {
   }));
 }
 
-export function completeLesson(lessonId: string) {
+function without<T>(obj: Record<string, T>, key: string): Record<string, T> {
+  return Object.fromEntries(Object.entries(obj).filter(([k]) => k !== key));
+}
+
+/** Remember where the learner is in a lesson, so they can leave and come back. */
+export function saveLessonPosition(lessonId: string, pos: LessonPosition) {
+  update((p) => ({ ...p, lessonProgress: { ...p.lessonProgress, [lessonId]: { ...pos, updatedAt: Date.now() } } }));
+}
+
+export function clearLessonPosition(lessonId: string) {
+  update((p) => {
+    return { ...p, lessonProgress: without(p.lessonProgress, lessonId) };
+  });
+}
+
+/** `missed` lists the ideas that needed a second try, so practice can bring them back first. */
+export function completeLesson(lessonId: string, missed: string[] = []) {
   const today = todayStr();
-  update((p) => ({
-    ...p,
-    lessonsDone: p.lessonsDone.includes(lessonId) ? p.lessonsDone : [...p.lessonsDone, lessonId],
-    activeDays: withToday(p.activeDays, today),
-  }));
+  update((p) => {
+    return {
+      ...p,
+      lessonsDone: p.lessonsDone.includes(lessonId) ? p.lessonsDone : [...p.lessonsDone, lessonId],
+      lessonProgress: without(p.lessonProgress, lessonId),
+      struggled: [...new Set([...p.struggled, ...missed])],
+      activeDays: withToday(p.activeDays, today),
+    };
+  });
 }
 
 export function toggleRestWeekday(day: number, max: number) {

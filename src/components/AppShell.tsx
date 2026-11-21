@@ -21,6 +21,7 @@ const NAV: { href: string; label: string; icon: PixelIconName; color: string; ma
   { href: "/home", label: "Quest map", icon: "star", color: "#f2b93b", match: ["/home", "/lessons"], tour: "nav-quest" },
   { href: "/review", label: "Practice", icon: "gem", color: "#9fd5ea", match: ["/review"], tour: "nav-review" },
   { href: "/interview", label: "Interviews", icon: "heart", color: "#ff9e80", match: ["/interview"], tour: "nav-interview" },
+  { href: "/pitch", label: "Pitch", icon: "speech", color: "#8f73d0", match: ["/pitch"], tour: "nav-pitch" },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -93,7 +94,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex flex-1 flex-col md:flex-row">
         <nav
           aria-label="Main"
-          className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-3 border-t-[3px] border-line bg-paper pb-[env(safe-area-inset-bottom)] md:static md:flex md:w-60 md:flex-col md:gap-2 md:border-r-[3px] md:border-t-0 md:p-4 md:pb-4"
+          className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t-[3px] border-line bg-paper pb-[env(safe-area-inset-bottom)] md:static md:flex md:w-60 md:flex-col md:gap-2 md:border-r-[3px] md:border-t-0 md:p-4 md:pb-4"
         >
           {NAV.map((item) => {
             const active = item.match.some((m) => pathname === m || pathname.startsWith(`${m}/`));

@@ -1,6 +1,6 @@
 import { STREAK } from "./config.ts";
 import type { CardState } from "./scheduler.ts";
-import type { Progress } from "./store.ts";
+import type { Progress, SavedPosition } from "./store.ts";
 
 /**
  * Combine progress from this device with progress saved online. Nothing is ever lost:
@@ -16,8 +16,21 @@ export function mergeProgress(a: Progress, b: Progress): Progress {
     }
   }
   const union = <T,>(x: T[], y: T[]) => [...new Set([...x, ...y])];
+  // A lesson in progress keeps the copy touched most recently, unless it's finished on either side.
+  const done = new Set(union(a.lessonsDone, b.lessonsDone));
+  const lessonProgress: Record<string, SavedPosition> = {};
+  const mine = a.lessonProgress ?? {};
+  const theirs = b.lessonProgress ?? {};
+  for (const id of new Set([...Object.keys(mine), ...Object.keys(theirs)])) {
+    if (done.has(id)) continue;
+    const x = mine[id];
+    const y = theirs[id];
+    lessonProgress[id] = !x ? y : !y ? x : x.updatedAt >= y.updatedAt ? x : y;
+  }
   return {
     cards,
+    lessonProgress,
+    struggled: union(a.struggled ?? [], b.struggled ?? []),
     activeDays: union(a.activeDays, b.activeDays).sort(),
     lessonsDone: union(a.lessonsDone, b.lessonsDone),
     // Keep to the weekly limit; this device's choices come first.
