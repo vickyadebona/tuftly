@@ -15,11 +15,14 @@ import {
   START,
   type LessonPosition,
 } from "@/lib/lessonFlow";
-import { clearLessonPosition, completeLesson, saveLessonPosition, useHydrated, useProgress } from "@/lib/store";
-import type { Lesson, LessonIdea } from "@/lib/types";
+import { getLessons } from "@/content";
+import { getUnit } from "@/content/units";
+import { clearLessonPosition, completeLesson, markUnitSeen, saveLessonPosition, useHydrated, useProgress } from "@/lib/store";
+import type { Lesson, LessonIdea, UnitInfo } from "@/lib/types";
 import { Bobbin } from "./Bobbin";
 import { ChoiceList } from "./ChoiceList";
 import { CodeBlock } from "./CodeBlock";
+import { LessonIntro, UnitIntro } from "./LessonIntro";
 import { LessonSkeleton } from "./Skeleton";
 
 const STAGE_LABEL = { guess: "Guess", example: "Example", check: "Your turn", reteach: "Another look", explain: "Say it" } as const;
@@ -35,16 +38,37 @@ export function LessonFlow({ lesson }: { lesson: Lesson }) {
   if (!hydrated) return <LessonSkeleton />;
   const finished = progress.lessonsDone.includes(lesson.id);
   const saved = finished ? undefined : progress.lessonProgress[lesson.id];
-  return <LessonRun key={lesson.id} lesson={lesson} saved={saved} />;
+  // A new unit gets one introduction before its first lesson. Anyone already part-way in skips it.
+  const unit = getUnit(lesson.track);
+  const trackLessons = getLessons().filter((l) => l.track === lesson.track);
+  const unitIntro =
+    unit &&
+    trackLessons[0]?.id === lesson.id &&
+    !saved &&
+    !progress.unitsSeen.includes(lesson.track) &&
+    !trackLessons.some((l) => progress.lessonsDone.includes(l.id))
+      ? { unit, lessons: trackLessons }
+      : undefined;
+  return <LessonRun key={lesson.id} lesson={lesson} saved={saved} unitIntro={unitIntro} />;
 }
 
-function LessonRun({ lesson, saved }: { lesson: Lesson; saved?: LessonPosition }) {
+function LessonRun({
+  lesson,
+  saved,
+  unitIntro,
+}: {
+  lesson: Lesson;
+  saved?: LessonPosition;
+  unitIntro?: { unit: UnitInfo; lessons: Lesson[] };
+}) {
   const [pos, setPos] = useState<LessonPosition>(
     saved ? { idea: saved.idea, stage: saved.stage, attempt: saved.attempt, missed: saved.missed } : START,
   );
   const [resumed, setResumed] = useState(!!saved && (saved.idea > 0 || saved.stage !== "guess"));
   const [picked, setPicked] = useState<number | null>(null);
   const [saveDone, setSaveDone] = useState(false);
+  // Someone resuming mid-lesson has already had the intro.
+  const [introDone, setIntroDone] = useState(!!saved && (saved.idea > 0 || saved.stage !== "guess"));
 
   const total = lesson.ideas.length;
   const recap = isRecap(pos, total);
@@ -68,8 +92,16 @@ function LessonRun({ lesson, saved }: { lesson: Lesson; saved?: LessonPosition }
     p.idea + 1 >= total ? "See the recap" : `Next idea: ${lesson.ideas[p.idea + 1].title}`;
   const nextLabelFrom = nextLabel;
 
+  if (unitIntro) {
+    return (
+      <UnitIntro unit={unitIntro.unit} lessons={unitIntro.lessons} onStart={() => markUnitSeen(lesson.track)} />
+    );
+  }
+  if (!introDone) return <LessonIntro lesson={lesson} onBegin={() => setIntroDone(true)} />;
+
   return (
     <div className="flex flex-col gap-6">
+      <h1 className="font-pixel text-3xl font-bold text-ink">{lesson.title}</h1>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-3">
           <div className="flex gap-1" role="img" aria-label={`Idea ${Math.min(pos.idea + 1, total)} of ${total}`}>

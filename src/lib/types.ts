@@ -71,8 +71,27 @@ export interface Lesson {
   topic: string; // e.g. "arrays", "objects"
   title: string;
   minutes: number;
+  /** Shown before the lesson starts, so the learner knows what they're getting into. */
+  intro: {
+    summary: string;
+    /** "By the end you'll be able to…" Each one starts with a verb. */
+    outcomes: string[];
+  };
   ideas: LessonIdea[];
   reviewed: boolean;
+}
+
+/** A unit is a group of lessons on one track, introduced once before its first lesson. */
+export interface UnitInfo {
+  track: Track;
+  label: string;
+  title: string;
+  blurb: string;
+  forWho: string;
+  learn: string[];
+  format: string;
+  /** Only the very first unit explains how tuftly as a whole works. */
+  showHowItWorks?: boolean;
 }
 
 export type DrillKind = "quick-fire" | "pick-a-or-b";

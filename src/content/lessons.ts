@@ -14,6 +14,10 @@ const codeLessons: Lesson[] = [
     title: "Sorting and transforming arrays",
     minutes: 6,
     reviewed: true,
+    intro: {
+      summary: "Three things that trip people up with arrays in interviews: sort() changing the array you call it on, sorting numbers, and when to use map or filter.",
+      outcomes: ["Explain why sort() changes the original array, and how to avoid that", "Sort numbers correctly with a compare function", "Choose between map and filter, and say why"],
+    },
     ideas: [
       {
         id: "sort-mutates",
@@ -210,6 +214,10 @@ const codeLessons: Lesson[] = [
     title: "Copying objects",
     minutes: 6,
     reviewed: true,
+    intro: {
+      summary: "Why changing a copy can change the original, and how to make a copy that doesn't.",
+      outcomes: ["Explain why assigning an object doesn't copy it", "Describe what a shallow copy is and where spread falls short", "Make a deep copy with structuredClone"],
+    },
     ideas: [
       {
         id: "shared-reference",
@@ -399,6 +407,10 @@ const codeLessons: Lesson[] = [
     title: "Using Map and Set",
     minutes: 6,
     reviewed: true,
+    intro: {
+      summary: "When to reach for a Map or a Set instead of a plain object or array.",
+      outcomes: ["Explain how Map keys differ from object keys", "Use the main Map methods", "Remove duplicates with a Set"],
+    },
     ideas: [
       {
         id: "map-keys",

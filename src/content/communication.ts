@@ -11,6 +11,10 @@ export const communicationLessons: Lesson[] = [
     title: "Tell me about yourself",
     minutes: 6,
     reviewed: true,
+    intro: {
+      summary: "How to answer “tell me about yourself” in about a minute, using your own experience.",
+      outcomes: ["Open with who you are, one recent highlight and what you want next", "Match your answer to what the role asks for", "Back up claims with what you did and what changed"],
+    },
     ideas: [
       {
         id: "pitch-shape",
@@ -261,6 +265,10 @@ export const communicationLessons: Lesson[] = [
     title: "When they dig into your experience",
     minutes: 6,
     reviewed: true,
+    intro: {
+      summary: "What to do when the interviewer starts digging into your experience.",
+      outcomes: ["Say clearly what you personally did", "Walk through a project from situation to result", "Answer honestly about gaps and mistakes"],
+    },
     ideas: [
       {
         id: "own-your-part",

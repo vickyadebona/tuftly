@@ -4,7 +4,7 @@ import { mergeProgress } from "./merge.ts";
 import type { Progress } from "./store.ts";
 
 const card = (box: number, lastReviewed: string, reps: number) => ({ box, due: lastReviewed, reps, lapses: 0, lastReviewed });
-const empty: Progress = { cards: {}, activeDays: [], lessonsDone: [], restWeekdays: [], lessonProgress: {}, struggled: [] };
+const empty: Progress = { cards: {}, activeDays: [], lessonsDone: [], restWeekdays: [], lessonProgress: {}, struggled: [], unitsSeen: [] };
 
 test("keeps everything from both sides", () => {
   const local: Progress = { ...empty, lessonsDone: ["a"], activeDays: ["2026-11-02"] };
@@ -61,4 +61,9 @@ test("a lesson finished on either side is no longer in progress", () => {
 test("struggled ideas from both sides are kept", () => {
   const m = mergeProgress({ ...empty, struggled: ["a"] }, { ...empty, struggled: ["b", "a"] });
   assert.deepEqual(m.struggled.sort(), ["a", "b"]);
+});
+
+test("units seen on either side stay seen", () => {
+  const m = mergeProgress({ ...empty, unitsSeen: ["javascript"] }, { ...empty, unitsSeen: ["communication", "javascript"] });
+  assert.deepEqual(m.unitsSeen.sort(), ["communication", "javascript"]);
 });

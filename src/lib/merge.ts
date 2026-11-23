@@ -31,6 +31,7 @@ export function mergeProgress(a: Progress, b: Progress): Progress {
     cards,
     lessonProgress,
     struggled: union(a.struggled ?? [], b.struggled ?? []),
+    unitsSeen: union(a.unitsSeen ?? [], b.unitsSeen ?? []),
     activeDays: union(a.activeDays, b.activeDays).sort(),
     lessonsDone: union(a.lessonsDone, b.lessonsDone),
     // Keep to the weekly limit; this device's choices come first.
