@@ -12,11 +12,21 @@ const HOW_LESSONS_WORK = [
 ];
 
 /** Shown once, before the first lesson of a unit: what it covers, who it's for, how long it takes. */
-export function UnitIntro({ unit, lessons, onStart }: { unit: UnitInfo; lessons: Lesson[]; onStart: () => void }) {
+export function UnitIntro({
+  unit,
+  number,
+  lessons,
+  onStart,
+}: {
+  unit: UnitInfo;
+  number: number;
+  lessons: Lesson[];
+  onStart: () => void;
+}) {
   const totalMinutes = lessons.reduce((n, l) => n + l.minutes, 0);
   return (
     <section className="flex flex-col gap-5" aria-labelledby="unit-intro-title">
-      <p className="font-pixel text-sm font-semibold uppercase tracking-wide text-teal-deep">{unit.label}</p>
+      <p className="font-pixel text-sm font-semibold uppercase tracking-wide text-teal-deep">Unit {number}</p>
       <h1 id="unit-intro-title" className="font-pixel text-3xl font-bold text-ink">
         {unit.title}
       </h1>
@@ -58,7 +68,7 @@ export function UnitIntro({ unit, lessons, onStart }: { unit: UnitInfo; lessons:
         </p>
       </div>
 
-      {unit.showHowItWorks && (
+      {number === 1 && (
         <div className="pixel-box flex flex-col gap-3 bg-sky p-5">
           <h2 className="font-pixel text-lg font-bold text-ink">How tuftly works</h2>
           <p className="text-ink">

@@ -590,4 +590,5 @@ const codeLessons: Lesson[] = [
   },
 ];
 
-export const lessons: Lesson[] = [...codeLessons, ...communicationLessons];
+// Telling your story comes first: "tell me about yourself" is how most interviews begin.
+export const lessons: Lesson[] = [...communicationLessons, ...codeLessons];

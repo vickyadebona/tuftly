@@ -16,7 +16,7 @@ import {
   type LessonPosition,
 } from "@/lib/lessonFlow";
 import { getLessons } from "@/content";
-import { getUnit } from "@/content/units";
+import { getUnit, getUnitNumber } from "@/content/units";
 import { clearLessonPosition, completeLesson, markUnitSeen, saveLessonPosition, useHydrated, useProgress } from "@/lib/store";
 import type { Lesson, LessonIdea, UnitInfo } from "@/lib/types";
 import { Bobbin } from "./Bobbin";
@@ -47,7 +47,7 @@ export function LessonFlow({ lesson }: { lesson: Lesson }) {
     !saved &&
     !progress.unitsSeen.includes(lesson.track) &&
     !trackLessons.some((l) => progress.lessonsDone.includes(l.id))
-      ? { unit, lessons: trackLessons }
+      ? { unit, number: getUnitNumber(lesson.track), lessons: trackLessons }
       : undefined;
   return <LessonRun key={lesson.id} lesson={lesson} saved={saved} unitIntro={unitIntro} />;
 }
@@ -59,7 +59,7 @@ function LessonRun({
 }: {
   lesson: Lesson;
   saved?: LessonPosition;
-  unitIntro?: { unit: UnitInfo; lessons: Lesson[] };
+  unitIntro?: { unit: UnitInfo; number: number; lessons: Lesson[] };
 }) {
   const [pos, setPos] = useState<LessonPosition>(
     saved ? { idea: saved.idea, stage: saved.stage, attempt: saved.attempt, missed: saved.missed } : START,
@@ -94,7 +94,12 @@ function LessonRun({
 
   if (unitIntro) {
     return (
-      <UnitIntro unit={unitIntro.unit} lessons={unitIntro.lessons} onStart={() => markUnitSeen(lesson.track)} />
+      <UnitIntro
+        unit={unitIntro.unit}
+        number={unitIntro.number}
+        lessons={unitIntro.lessons}
+        onStart={() => markUnitSeen(lesson.track)}
+      />
     );
   }
   if (!introDone) return <LessonIntro lesson={lesson} onBegin={() => setIntroDone(true)} />;

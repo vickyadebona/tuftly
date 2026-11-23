@@ -19,14 +19,13 @@ type NodeState = "done" | "current" | "locked";
 
 const UNITS: {
   track: "javascript" | "communication";
-  label: string;
   title: string;
   bg: string;
   comingSoon?: string[];
   pitchLink?: boolean;
 }[] = [
-  { track: "javascript", label: "Unit 1", title: "Arrays, objects and maps", bg: "bg-teal", comingSoon: COMING_SOON },
-  { track: "communication", label: "Unit 2", title: "Telling your story", bg: "bg-lilac-deep", pitchLink: true },
+  { track: "communication", title: "Telling your story", bg: "bg-lilac-deep", pitchLink: true },
+  { track: "javascript", title: "Arrays, objects and maps", bg: "bg-teal", comingSoon: COMING_SOON },
 ];
 
 function PathNode({ state }: { state: NodeState }) {
@@ -62,6 +61,8 @@ export function QuestHome() {
   const done = new Set(progress.lessonsDone);
   const currentId = lessons.find((l) => !done.has(l.id))?.id;
   const doneCount = lessons.filter((l) => done.has(l.id)).length;
+  // Units that have at least one lesson to show, numbered in order with no gaps.
+  const shownUnits = UNITS.filter((u) => lessons.some((l) => l.track === u.track));
   const place = currentId ? progress.lessonProgress[currentId] : undefined;
   const inProgress = !!place && (place.idea > 0 || place.stage !== "guess");
 
@@ -133,16 +134,15 @@ export function QuestHome() {
 
     <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_340px]">
       <div className="flex min-w-0 flex-col gap-10">
-        {UNITS.map((unit) => {
+        {shownUnits.map((unit, unitIndex) => {
           const unitLessons = lessons.filter((l) => l.track === unit.track);
-          if (unitLessons.length === 0) return null;
           const unitCurrent = unitLessons.find((l) => !done.has(l.id))?.id;
           const unitDone = unitLessons.filter((l) => done.has(l.id)).length;
           return (
             <section key={unit.track} aria-labelledby={`unit-${unit.track}`} className="flex min-w-0 flex-col gap-6">
               <div className={`flex flex-wrap items-end justify-between gap-4 border-[3px] border-line px-6 py-5 text-white shadow-[4px_4px_0_rgb(91_58_41/0.28)] ${unit.bg}`}>
                 <div>
-                  <p className="font-pixel text-sm font-semibold uppercase tracking-wide">{unit.label}</p>
+                  <p className="font-pixel text-sm font-semibold uppercase tracking-wide">Unit {unitIndex + 1}</p>
                   <h2 id={`unit-${unit.track}`} className="font-pixel text-2xl font-bold sm:text-3xl">
                     {unit.title}
                   </h2>
@@ -236,7 +236,7 @@ export function QuestHome() {
 
         <div className="flex flex-wrap items-end justify-between gap-2 border-[3px] border-line bg-cream-deep px-6 py-4 shadow-[4px_4px_0_rgb(91_58_41/0.28)]">
           <div>
-            <p className="font-pixel text-sm font-semibold uppercase tracking-wide text-ink-soft">Unit 3</p>
+            <p className="font-pixel text-sm font-semibold uppercase tracking-wide text-ink-soft">Unit {shownUnits.length + 1}</p>
             <p className="font-pixel text-xl font-bold text-ink">Intro to TypeScript</p>
           </div>
           <p className="text-sm text-ink-soft">Coming soon</p>

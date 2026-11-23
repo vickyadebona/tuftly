@@ -84,14 +84,11 @@ export interface Lesson {
 /** A unit is a group of lessons on one track, introduced once before its first lesson. */
 export interface UnitInfo {
   track: Track;
-  label: string;
   title: string;
   blurb: string;
   forWho: string;
   learn: string[];
   format: string;
-  /** Only the very first unit explains how tuftly as a whole works. */
-  showHowItWorks?: boolean;
 }
 
 export type DrillKind = "quick-fire" | "pick-a-or-b";
