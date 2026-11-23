@@ -5,12 +5,12 @@ import { Skeleton } from "@/components/Skeleton";
 
 export const metadata: Metadata = { title: "Join tuftly" };
 
-async function LoginContent({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
-  const { error } = await searchParams;
-  return <LoginFlow linkError={error === "link"} />;
+async function LoginContent({ searchParams }: { searchParams: Promise<{ error?: string; mode?: string }> }) {
+  const { error, mode } = await searchParams;
+  return <LoginFlow linkError={error === "link"} startNew={mode === "new"} />;
 }
 
-export default function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+export default function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string; mode?: string }> }) {
   return (
     <Suspense fallback={<Skeleton className="mx-auto mt-24 h-[420px] w-full max-w-md" />}>
       <LoginContent searchParams={searchParams} />

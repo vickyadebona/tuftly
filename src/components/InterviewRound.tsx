@@ -31,7 +31,10 @@ function fmt(total: number) {
 
 function Round({ pressure }: { pressure: PressureLevel }) {
   const season = useSeason();
-  const questions = useMemo(() => interleave(getDrills()).slice(0, ROUND_SIZE), []);
+  const learned = useProgress().lessonsDone;
+  // Only ask about lessons the learner has finished.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const questions = useMemo(() => interleave(getDrills().filter((d) => learned.includes(d.lessonId))).slice(0, ROUND_SIZE), []);
   const level = PRESSURE.find((p) => p.id === pressure)!;
 
   const [index, setIndex] = useState(0);
@@ -69,14 +72,30 @@ function Round({ pressure }: { pressure: PressureLevel }) {
     setLeft(level.seconds);
   }
 
+  // Nothing to ask yet (for example no finished lesson has drills available).
+  if (questions.length === 0) {
+    return (
+      <section className="pixel-box mx-auto flex max-w-xl flex-col items-center gap-4 bg-peach p-8 text-center">
+        <PixelArtBobbin mood="thinking" outfit={season} size={120} />
+        <h1 className="font-pixel text-2xl font-bold text-ink">No questions yet</h1>
+        <p className="text-lg text-ink">
+          Finish a lesson first. Once you have, I&apos;ll have questions from it ready for you here.
+        </p>
+        <Link href="/home" className="btn-primary">
+          Back to the quest map
+        </Link>
+      </section>
+    );
+  }
+
   if (finished) return <Summary results={results} season={season} />;
 
   const mood = onBreak ? "sleepy" : phase === "checking" ? "happy" : "thinking";
   const bobbinSays = onBreak
     ? "Breathe in, breathe out. I'll hold your place."
     : phase === "checking"
-      ? "Thanks! Tick the key points you covered, honestly. It's only for you."
-      : "Take your time. Say it your way.";
+      ? "Tick the key points your answer covered. This is only for you."
+      : "Answer in your own words. A rough answer is a fine start.";
   const timeUp = pressure === "zara-like" && left === 0;
 
   return (
@@ -144,10 +163,10 @@ function Round({ pressure }: { pressure: PressureLevel }) {
             <section className="pixel-box flex flex-col gap-4 p-5" aria-label="Question">
               <h2 className="font-pixel text-xl font-bold leading-snug text-ink">{q.prompt}</h2>
               {q.code && <CodeBlock code={q.code} />}
-              {q.options.length > 0 && phase === "checking" && (
+              {phase === "checking" && (
                 <p className="rounded bg-mint p-3 text-ink">
                   <span className="font-bold">A strong answer: </span>
-                  {q.options[q.answerIndex]}
+                  {q.sayIt}
                 </p>
               )}
             </section>

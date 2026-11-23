@@ -13,12 +13,7 @@ async function LessonContent({ params }: { params: Promise<{ id: string }> }) {
   const lesson = getLesson(id);
   if (!lesson) notFound();
 
-  return (
-    <>
-      <h1 className="font-pixel text-3xl font-bold text-ink">{lesson.title}</h1>
-      <LessonFlow lesson={lesson} />
-    </>
-  );
+  return <LessonFlow lesson={lesson} />;
 }
 
 export default function LessonPage({ params }: { params: Promise<{ id: string }> }) {

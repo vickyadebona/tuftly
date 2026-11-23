@@ -20,7 +20,7 @@ interface Step {
 const STEPS: Step[] = [
   {
     title: "Hi, I'm Bobbin!",
-    text: "I'll practice with you. We start small: short lessons that take a few minutes each. Take your time. There's no rush here.",
+    text: "We start with short lessons that take a few minutes each. There's no timer on them.",
     mood: "sparkle",
     target: "welcome",
     placement: "below",
@@ -34,7 +34,7 @@ const STEPS: Step[] = [
   },
   {
     title: "Practice",
-    text: "After a lesson, quick drills come back at just the right time so it sticks. One short practice unlocks your first interview.",
+    text: "After a lesson, short drills come back on a schedule so you remember it. One short practice unlocks your first interview.",
     mood: "happy",
     target: "nav-review",
     placement: "right",

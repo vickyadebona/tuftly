@@ -17,6 +17,17 @@ const COMING_SOON = ["Async basics", "Closures"];
 
 type NodeState = "done" | "current" | "locked";
 
+const UNITS: {
+  track: "javascript" | "communication";
+  title: string;
+  bg: string;
+  comingSoon?: string[];
+  pitchLink?: boolean;
+}[] = [
+  { track: "communication", title: "Telling your story", bg: "bg-lilac-deep", pitchLink: true },
+  { track: "javascript", title: "Arrays, objects and maps", bg: "bg-teal", comingSoon: COMING_SOON },
+];
+
 function PathNode({ state }: { state: NodeState }) {
   const base = "flex h-14 w-14 shrink-0 items-center justify-center border-[3px] border-line sm:h-[68px] sm:w-[68px]";
   if (state === "done")
@@ -50,6 +61,10 @@ export function QuestHome() {
   const done = new Set(progress.lessonsDone);
   const currentId = lessons.find((l) => !done.has(l.id))?.id;
   const doneCount = lessons.filter((l) => done.has(l.id)).length;
+  // Units that have at least one lesson to show, numbered in order with no gaps.
+  const shownUnits = UNITS.filter((u) => lessons.some((l) => l.track === u.track));
+  const place = currentId ? progress.lessonProgress[currentId] : undefined;
+  const inProgress = !!place && (place.idea > 0 || place.stage !== "guess");
 
   let waiting = 0;
   let restDay = false;
@@ -69,7 +84,7 @@ export function QuestHome() {
         ? `${hello} Want to start with a quick lesson?`
         : waiting > 0
           ? `${waiting} short practice${waiting === 1 ? "" : "s"} ready when you are.`
-          : "All caught up. Nice work!";
+          : "You're all caught up for today.";
 
   const weekStart = hydrated ? addDays(today, -weekday(today)) : "";
 
@@ -90,7 +105,7 @@ export function QuestHome() {
         <p className="pixel-box w-full flex-1 px-4 py-3 text-center text-base text-ink sm:text-left sm:text-lg">{say}</p>
         {doneCount === 0 ? (
           <Link href={currentId ? `/lessons/${currentId}` : "/home"} className="btn-primary w-full shrink-0 sm:w-auto">
-            Start lesson
+            {inProgress ? "Continue lesson" : "Start lesson"}
           </Link>
         ) : (
           <Link href="/review" className="btn-primary w-full shrink-0 sm:w-auto">
@@ -118,85 +133,115 @@ export function QuestHome() {
       {welcome}
 
     <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_340px]">
-      <section aria-labelledby="unit-1" className="flex min-w-0 flex-col gap-6">
-        <div className="flex flex-wrap items-end justify-between gap-4 border-[3px] border-line bg-teal px-6 py-5 text-white shadow-[4px_4px_0_rgb(91_58_41/0.28)]">
-          <div>
-            <p className="font-pixel text-sm font-semibold uppercase tracking-wide">Unit 1</p>
-            <h1 id="unit-1" className="font-pixel text-2xl font-bold sm:text-3xl">
-              Arrays, objects and maps
-            </h1>
-          </div>
-          <div className="flex flex-col items-end gap-1.5">
-            <div className="flex gap-1" aria-hidden="true">
-              {lessons.map((l) => (
-                <span
-                  key={l.id}
-                  className={`h-4 w-5 border-2 border-line ${done.has(l.id) ? "bg-butter" : "bg-paper"}`}
-                />
-              ))}
-            </div>
-            <p className="text-sm">
-              {doneCount} of {lessons.length} lessons done
-            </p>
-          </div>
-        </div>
-
-        <ol className="flex flex-col gap-5 pl-1">
-          {lessons.map((l) => {
-            const state: NodeState = done.has(l.id) ? "done" : l.id === currentId ? "current" : "locked";
-            const card = (
-              <div className="pixel-box flex min-w-0 flex-1 flex-col gap-2 px-4 py-3">
-                <span className="font-pixel text-lg font-bold text-ink">{l.title}</span>
-                <span className="text-sm text-ink-soft">
-                  {state === "done"
-                    ? "Complete. Tap to revisit"
-                    : state === "current"
-                      ? `${l.minutes} min · guess, example, your turn`
-                      : "Unlocks after the lesson above"}
-                  {!l.reviewed && " · draft"}
-                </span>
-                {state === "current" && (
-                  <span className="btn-primary self-start px-4 py-1.5 text-sm">Start lesson</span>
-                )}
-              </div>
-            );
-            return (
-              <li key={l.id}>
-                {state === "locked" ? (
-                  <div className="flex items-center gap-3 opacity-90">
-                    <PathNode state={state} />
-                    {card}
+      <div className="flex min-w-0 flex-col gap-10">
+        {shownUnits.map((unit, unitIndex) => {
+          const unitLessons = lessons.filter((l) => l.track === unit.track);
+          const unitCurrent = unitLessons.find((l) => !done.has(l.id))?.id;
+          const unitDone = unitLessons.filter((l) => done.has(l.id)).length;
+          return (
+            <section key={unit.track} aria-labelledby={`unit-${unit.track}`} className="flex min-w-0 flex-col gap-6">
+              <div className={`flex flex-wrap items-end justify-between gap-4 border-[3px] border-line px-6 py-5 text-white shadow-[4px_4px_0_rgb(91_58_41/0.28)] ${unit.bg}`}>
+                <div>
+                  <p className="font-pixel text-sm font-semibold uppercase tracking-wide">Unit {unitIndex + 1}</p>
+                  <h2 id={`unit-${unit.track}`} className="font-pixel text-2xl font-bold sm:text-3xl">
+                    {unit.title}
+                  </h2>
+                </div>
+                <div className="flex flex-col items-end gap-1.5">
+                  <div className="flex gap-1" aria-hidden="true">
+                    {unitLessons.map((l) => (
+                      <span
+                        key={l.id}
+                        className={`h-4 w-5 border-2 border-line ${done.has(l.id) ? "bg-butter" : "bg-paper"}`}
+                      />
+                    ))}
                   </div>
-                ) : (
-                  <Link href={`/lessons/${l.id}`} className="flex items-center gap-3">
-                    <PathNode state={state} />
-                    {card}
-                  </Link>
-                )}
-              </li>
-            );
-          })}
-          {COMING_SOON.map((title) => (
-            <li key={title}>
-              <div className="flex items-center gap-3">
-                <PathNode state="locked" />
-                <div className="pixel-box flex min-w-0 flex-1 flex-col gap-1 px-4 py-3">
-                  <span className="font-pixel text-lg font-bold text-ink">{title}</span>
-                  <span className="text-sm text-ink-soft">Coming soon</span>
+                  <p className="text-sm">
+                    {unitDone} of {unitLessons.length} lessons done
+                  </p>
                 </div>
               </div>
-            </li>
-          ))}
-        </ol>
+
+              <ol className="flex flex-col gap-5 pl-1">
+                {unitLessons.map((l) => {
+                  const state: NodeState = done.has(l.id) ? "done" : l.id === unitCurrent ? "current" : "locked";
+                  const lessonPlace = progress.lessonProgress[l.id];
+                  const started = !!lessonPlace && (lessonPlace.idea > 0 || lessonPlace.stage !== "guess");
+                  const card = (
+                    <div className="pixel-box flex min-w-0 flex-1 flex-col gap-2 px-4 py-3">
+                      <span className="font-pixel text-lg font-bold text-ink">{l.title}</span>
+                      <span className="text-sm text-ink-soft">
+                        {state === "done"
+                          ? "Complete. Tap to revisit"
+                          : state === "current"
+                            ? started
+                              ? `Idea ${Math.min(lessonPlace.idea + 1, l.ideas.length)} of ${l.ideas.length} · your place is saved`
+                              : `${l.minutes} min · ${l.ideas.length} short ideas`
+                            : "Unlocks after the lesson above"}
+                        {!l.reviewed && " · draft"}
+                      </span>
+                      {state === "current" && (
+                        <span className="btn-primary self-start px-4 py-1.5 text-sm">
+                          {started ? "Continue lesson" : "Start lesson"}
+                        </span>
+                      )}
+                    </div>
+                  );
+                  return (
+                    <li key={l.id}>
+                      {state === "locked" ? (
+                        <div className="flex items-center gap-3 opacity-90">
+                          <PathNode state={state} />
+                          {card}
+                        </div>
+                      ) : (
+                        <Link href={`/lessons/${l.id}`} className="flex items-center gap-3">
+                          <PathNode state={state} />
+                          {card}
+                        </Link>
+                      )}
+                    </li>
+                  );
+                })}
+                {unit.comingSoon?.map((title) => (
+                  <li key={title}>
+                    <div className="flex items-center gap-3">
+                      <PathNode state="locked" />
+                      <div className="pixel-box flex min-w-0 flex-1 flex-col gap-1 px-4 py-3">
+                        <span className="font-pixel text-lg font-bold text-ink">{title}</span>
+                        <span className="text-sm text-ink-soft">Coming soon</span>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+                {unit.pitchLink && (
+                  <li>
+                    <Link href="/pitch" className="flex items-center gap-3">
+                      <span className="flex h-14 w-14 shrink-0 items-center justify-center border-[3px] border-line bg-lilac-deep sm:h-[68px] sm:w-[68px]">
+                        <PixelIcon name="speech" size={30} color="#fffdf4" />
+                      </span>
+                      <div className="pixel-box flex min-w-0 flex-1 flex-col gap-1 bg-lilac px-4 py-3">
+                        <span className="font-pixel text-lg font-bold text-ink">Build your pitch</span>
+                        <span className="text-sm text-ink-soft">
+                          Paste a job description and match it to your own experience
+                        </span>
+                      </div>
+                    </Link>
+                  </li>
+                )}
+              </ol>
+            </section>
+          );
+        })}
 
         <div className="flex flex-wrap items-end justify-between gap-2 border-[3px] border-line bg-cream-deep px-6 py-4 shadow-[4px_4px_0_rgb(91_58_41/0.28)]">
           <div>
-            <p className="font-pixel text-sm font-semibold uppercase tracking-wide text-ink-soft">Unit 2</p>
+            <p className="font-pixel text-sm font-semibold uppercase tracking-wide text-ink-soft">Unit {shownUnits.length + 1}</p>
             <p className="font-pixel text-xl font-bold text-ink">Intro to TypeScript</p>
           </div>
           <p className="text-sm text-ink-soft">Coming soon</p>
         </div>
-      </section>
+      </div>
 
       <aside className="flex flex-col gap-6" aria-label="Today">
         <section className="pixel-box flex flex-col gap-3 p-5">

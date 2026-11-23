@@ -28,7 +28,12 @@ export function summarize(progress: Progress, drills: Drill[], today: string): Q
     const c = progress.cards[d.id];
     return c !== undefined && isDue(c, today);
   });
-  const fresh = eligible.filter((d) => !progress.cards[d.id]).slice(0, REVIEW.newDrillsPerSession);
+  // New drills for ideas the learner needed a second try on come first.
+  const struggled = (d: Drill) => (d.ideaId && progress.struggled.includes(d.ideaId) ? 0 : 1);
+  const fresh = eligible
+    .filter((d) => !progress.cards[d.id])
+    .sort((x, y) => struggled(x) - struggled(y))
+    .slice(0, REVIEW.newDrillsPerSession);
   const upcoming = eligible
     .map((d) => progress.cards[d.id]?.due)
     .filter((d): d is string => d !== undefined && d > today)

@@ -149,7 +149,7 @@ export function About() {
               Your first lesson takes about four minutes. No card, no pressure.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
-              <Link href="/login" className="btn-primary">
+              <Link href="/login?mode=new" className="btn-primary">
                 Start your quest for free
               </Link>
               <Link href="/" className="btn-secondary">
