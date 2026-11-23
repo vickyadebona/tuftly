@@ -43,7 +43,6 @@ export function Nav({ current }: { current?: "about" }) {
           <Link href="/about" aria-current={current === "about" ? "page" : undefined} className={current === "about" ? "underline decoration-[3px] underline-offset-8" : ""}>
             About
           </Link>
-          <Link href="/#free">Free to start</Link>
         </nav>
         <div className="flex items-center gap-3">
           <Link href="/login" className="font-pixel whitespace-nowrap px-1 py-2 font-bold text-ink underline sm:hidden">
