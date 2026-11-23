@@ -72,6 +72,22 @@ function Round({ pressure }: { pressure: PressureLevel }) {
     setLeft(level.seconds);
   }
 
+  // Nothing to ask yet (for example no finished lesson has drills available).
+  if (questions.length === 0) {
+    return (
+      <section className="pixel-box mx-auto flex max-w-xl flex-col items-center gap-4 bg-peach p-8 text-center">
+        <PixelArtBobbin mood="thinking" outfit={season} size={120} />
+        <h1 className="font-pixel text-2xl font-bold text-ink">No questions yet</h1>
+        <p className="text-lg text-ink">
+          Finish a lesson first. Once you have, I&apos;ll have questions from it ready for you here.
+        </p>
+        <Link href="/home" className="btn-primary">
+          Back to the quest map
+        </Link>
+      </section>
+    );
+  }
+
   if (finished) return <Summary results={results} season={season} />;
 
   const mood = onBreak ? "sleepy" : phase === "checking" ? "happy" : "thinking";

@@ -10,7 +10,7 @@ export const communicationLessons: Lesson[] = [
     topic: "pitch",
     title: "Tell me about yourself",
     minutes: 6,
-    reviewed: true,
+    reviewed: false,
     intro: {
       summary: "How to answer “tell me about yourself” in about a minute, using your own experience.",
       outcomes: ["Open with who you are, one recent highlight and what you want next", "Match your answer to what the role asks for", "Back up claims with what you did and what changed"],
@@ -23,7 +23,7 @@ export const communicationLessons: Lesson[] = [
           question: "An interviewer says, “Tell me about yourself.” Which opening works best?",
           options: [
             "I grew up in a small town, and then I went to college where I studied a few different things…",
-            "I'm a front-end developer with three years of experience building React apps. Most recently I rebuilt our checkout form, and I'm looking for a team that cares about accessibility.",
+            "I'm a front-end developer with three years of experience building React apps. Most recently I worked on our checkout rebuild, and I'm looking for a team that cares about accessibility.",
             "Honestly, I'm not sure where to start. I've done a bit of everything.",
             "I'm a hard worker and a fast learner.",
           ],
@@ -33,7 +33,7 @@ export const communicationLessons: Lesson[] = [
         },
         workedExample: {
           sample:
-            "“I'm a front-end developer with three years of experience building React apps. Most recently I led a rebuild of our checkout form, which cut abandoned checkouts by 18%. I'm looking for a team where I can work on accessibility at a bigger scale, which is why this role caught my eye.”",
+            "“I'm a front-end developer with three years of experience building React apps. Most recently I worked on a rebuild of our checkout form that cut abandoned checkouts by 18%, and I owned the payment fields. Before that, I helped move our component library to TypeScript, and the whole team still uses it. I'm looking for a team where I can work on accessibility at a bigger scale, which is why this role caught my eye.”",
           walkthrough: [
             "Present: who you are and what you do now, in one sentence.",
             "Past: one or two relevant things you've done, with a result.",
@@ -56,7 +56,7 @@ export const communicationLessons: Lesson[] = [
           question: "Tell me about yourself. (Use your own background.)",
           starter: "I'm a … with … of experience. Most recently I …",
           modelAnswer:
-            "I'm a front-end developer with three years of experience building React apps. Most recently I led a rebuild of our checkout form, which cut abandoned checkouts by 18%. I'm looking for a team where I can work on accessibility at a bigger scale, which is why this role caught my eye.",
+            "I'm a front-end developer with three years of experience building React apps. Most recently I worked on a rebuild of our checkout form that cut abandoned checkouts by 18%, and I owned the payment fields. Before that, I helped move our component library to TypeScript, and the whole team still uses it. I'm looking for a team where I can work on accessibility at a bigger scale, which is why this role caught my eye.",
           keyPoints: [
             "Starts with who you are now",
             "Gives one recent highlight with a result",
@@ -66,23 +66,23 @@ export const communicationLessons: Lesson[] = [
         },
         reteach: {
           steps: [
-            "Think of it as three short sentences: who you are now, one thing you've done, and what you want next.",
+            "Think of it as a few short sentences: who you are now, one or two things you've done, and what you want next.",
             "It's a headline, not a biography. They can ask for more detail afterwards.",
-            "Aim for about 60 to 90 seconds, which is roughly 150 to 200 words.",
+            "Aim for about 30 to 60 seconds, which is roughly 70 to 150 words.",
           ],
         },
         retries: [
           {
             prompt: "About how long should a “tell me about yourself” answer be?",
             options: [
-              "About 60 to 90 seconds",
+              "About 30 to 60 seconds",
               "Five minutes, so nothing is missed",
               "Ten seconds",
               "As long as it takes to cover your whole career",
             ],
             answerIndex: 0,
             explanation:
-              "A minute or so is enough for who you are, a highlight and what you want. They'll ask for more if they want it.",
+              "Under a minute is enough for who you are, a highlight and what you want. They'll ask for more if they want it.",
           },
           {
             prompt:
@@ -264,7 +264,7 @@ export const communicationLessons: Lesson[] = [
     topic: "experience",
     title: "When they dig into your experience",
     minutes: 6,
-    reviewed: true,
+    reviewed: false,
     intro: {
       summary: "What to do when the interviewer starts digging into your experience.",
       outcomes: ["Say clearly what you personally did", "Walk through a project from situation to result", "Answer honestly about gaps and mistakes"],
@@ -287,7 +287,7 @@ export const communicationLessons: Lesson[] = [
         },
         workedExample: {
           sample:
-            "“Four of us built the checkout rebuild. My part was the payment form: I wrote the validation, set up the error messages and tested it with a screen reader. Another developer owned the API, and a designer handled the layout.”",
+            "“Three of us rebuilt the checkout form. My part was the payment form: I wrote the validation, set up the error messages and tested it with a screen reader. Another developer owned the API, and a designer handled the layout.”",
           walkthrough: [
             "Name the team size, so the scale is clear.",
             "Say what you owned, using “I”.",
@@ -299,7 +299,7 @@ export const communicationLessons: Lesson[] = [
           options: [
             "We all worked on everything.",
             "I led the whole project.",
-            "I owned the payment form and worked with two other developers on the rest.",
+            "I owned the payment form, and worked with another developer and a designer on the rest.",
             "I helped out where I could.",
           ],
           answerIndex: 2,
@@ -310,7 +310,7 @@ export const communicationLessons: Lesson[] = [
           question: "What was your specific part in that project?",
           starter: "There were … of us. I owned …",
           modelAnswer:
-            "There were four of us. I owned the payment form: I wrote the validation, designed the error messages and tested it with a screen reader. Another developer owned the API and a designer handled the layout, so I worked closely with both.",
+            "There were three of us. I owned the payment form: I wrote the validation, designed the error messages and tested it with a screen reader. Another developer owned the API and a designer handled the layout, so I worked closely with both.",
           keyPoints: [
             "Gives the team size",
             "Says what you personally owned, using “I”",
@@ -370,7 +370,7 @@ export const communicationLessons: Lesson[] = [
         },
         workedExample: {
           sample:
-            "“Our checkout form had a high drop-off rate. My job was to find out why and fix it. I watched session recordings, saw people getting stuck on the address field, and rebuilt it with better validation and clearer errors. Drop-offs fell by 18% over the next month.”",
+            "“Our checkout form had a high drop-off rate, and I was one of three people asked to rebuild it. My job was the payment form. I watched session recordings, saw people getting stuck on the card fields, and rebuilt them with better validation and clearer errors. Drop-offs on the whole checkout fell by 18% over the next month.”",
           walkthrough: [
             "Situation: the context, in a sentence.",
             "Task: what you were responsible for.",
@@ -381,8 +381,8 @@ export const communicationLessons: Lesson[] = [
           prompt: "Which line is the result?",
           options: [
             "Checkout drop-offs were high.",
-            "I was asked to find out why.",
-            "I rebuilt the address field with clearer errors.",
+            "My job was the payment form.",
+            "I rebuilt the card fields with clearer errors.",
             "Drop-offs fell by 18% the following month.",
           ],
           answerIndex: 3,
@@ -393,7 +393,7 @@ export const communicationLessons: Lesson[] = [
           question: "Walk me through a project you're proud of.",
           starter: "The situation was … My job was … I …",
           modelAnswer:
-            "Our checkout form had a high drop-off rate, and my job was to find out why. I watched session recordings, saw people getting stuck on the address field, and rebuilt it with better validation and clearer errors. Drop-offs fell by 18% over the next month. If I did it again, I'd test with real users earlier.",
+            "Our checkout form had a high drop-off rate, and I was one of three people asked to rebuild it. My job was the payment form. I watched session recordings, saw people getting stuck on the card fields, and rebuilt them with better validation and clearer errors. Drop-offs on the whole checkout fell by 18% over the next month. If I did it again, I'd test with real users earlier.",
           keyPoints: [
             "Sets the scene in a sentence",
             "Says what you were responsible for",
@@ -416,7 +416,7 @@ export const communicationLessons: Lesson[] = [
             explanation: "The action is where the interviewer learns how you work, so give it the most detail.",
           },
           {
-            prompt: "Which part is missing? “The app was slow. I added caching and split the bundle.”",
+            prompt: "Which part is missing? “The app was slow, and my job was to speed it up. I added caching and split the bundle.”",
             options: ["The situation", "The task", "The action", "The result"],
             answerIndex: 3,
             explanation:
@@ -432,7 +432,7 @@ export const communicationLessons: Lesson[] = [
           question: "The interviewer asks, “Have you used GraphQL?” You haven't. What's the best answer?",
           options: [
             "Yes, a bit.",
-            "No, not yet. I've built REST APIs for two years, so I expect to pick it up quickly.",
+            "No, not yet. I've worked with REST APIs from React for three years, so I expect to pick it up quickly.",
             "I don't remember.",
             "No.",
           ],
@@ -442,7 +442,7 @@ export const communicationLessons: Lesson[] = [
         },
         workedExample: {
           sample:
-            "“I haven't used GraphQL in a job yet. I've built REST APIs for two years, so I know the ideas behind queries and schemas, and last year I picked up Redux on a deadline. I'd start with the official tutorial and build something small.”",
+            "“I haven't used GraphQL in a job yet. I've worked with REST APIs from React for three years, so I'm used to fetching and shaping data, and last year I picked up Redux on a deadline. I'd start with the official tutorial and build something small.”",
           walkthrough: [
             "Say plainly that you haven't done it.",
             "Mention the closest related thing you have done.",
@@ -453,7 +453,7 @@ export const communicationLessons: Lesson[] = [
           prompt: "Asked “What would you do differently on that project?”, which answer is best?",
           options: [
             "Nothing, it went perfectly.",
-            "I'd have tested with real users sooner, because we only found two usability issues after launch.",
+            "I'd have tested with real users sooner, because we didn't find two usability issues until after launch.",
             "I'd have had a better team.",
             "I'm not sure.",
           ],

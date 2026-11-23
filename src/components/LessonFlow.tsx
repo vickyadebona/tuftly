@@ -166,7 +166,7 @@ function LessonRun({
           <h2 className="font-pixel text-xl font-bold text-ink">Worked example</h2>
           {idea.workedExample.code && <CodeBlock code={idea.workedExample.code} />}
           {idea.workedExample.sample && (
-            <blockquote className="pixel-box bg-teal-wash p-4 text-ink">{idea.workedExample.sample}</blockquote>
+            <blockquote className="pixel-box whitespace-pre-line bg-teal-wash p-4 text-ink">{idea.workedExample.sample}</blockquote>
           )}
           <ol className="list-decimal space-y-2 pl-5 text-ink">
             {idea.workedExample.walkthrough.map((w) => (

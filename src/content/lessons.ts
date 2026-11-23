@@ -1,5 +1,5 @@
 import type { Lesson } from "@/lib/types";
-import { communicationLessons } from "./communication";
+import { communicationLessons } from "./communication.ts";
 
 // AI-drafted starter content. Set `reviewed: true` only after you've checked every claim.
 //
@@ -248,7 +248,7 @@ const codeLessons: Lesson[] = [
         explain: {
           question: "If I write const b = a with an object and then change b, what happens to a, and why?",
           starter: "Both names point to…",
-          modelAnswer: "a changes too. Objects are stored by reference, so const b = a doesn't copy the object, it just gives it a second name. Both variables point at the same object, so a change made through b is visible through a. If I want a separate object, I have to copy it, for example with { ...a }.",
+          modelAnswer: "a changes too. A variable holds a reference to the object, not the object itself, so const b = a doesn't copy the object, it just gives it a second name. Both variables point at the same object, so a change made through b is visible through a. If I want a separate object, I have to copy it, for example with { ...a }.",
           keyPoints: ["Assigning an object copies the reference, not the object", "Both names point to the same object, so changes show up in both", "To get a separate object you need to copy it, e.g. { ...a }"],
         },
         reteach: {
@@ -361,22 +361,23 @@ const codeLessons: Lesson[] = [
         check: {
           prompt: "Fill in the blank to make a fully independent copy, including nested data.",
           code: `const deep = ___(user);`,
-          options: ["Object.assign", "structuredClone", "Object.freeze", "JSON.parse"],
+          options: ["Object.assign", "structuredClone", "Object.freeze", "Object.create"],
           answerIndex: 1,
           explanation:
-            "structuredClone makes a deep copy. Spread and Object.assign copy only the top level. (JSON.parse(JSON.stringify(x)) also works for plain data, but it turns Dates into strings and drops undefined and functions.)",
+            "structuredClone makes a deep copy. Spread and Object.assign copy only the top level, Object.freeze only blocks edits, and Object.create doesn't copy anything: it makes a new object that points back at the original.",
         },
         explain: {
           question: "How would you make a fully independent copy of a nested object?",
           starter: "I'd use structuredClone, because…",
-          modelAnswer: "I'd use structuredClone(obj). It makes a deep copy, so nested objects and arrays are copied too and the copy shares nothing with the original. Spread and Object.assign only copy the top level, so nested data would still be shared. JSON.parse(JSON.stringify(obj)) also works for plain data, but it turns Dates into strings and drops undefined values and functions.",
-          keyPoints: ["structuredClone makes a deep copy, nested data included", "Spread and Object.assign are shallow", "The JSON round trip works for plain data but loses Dates, undefined and functions"],
+          modelAnswer: "I'd use structuredClone(obj). It makes a deep copy, so nested objects and arrays are copied too and the copy shares nothing with the original. Spread and Object.assign only copy the top level, so nested data would still be shared. It has limits: it throws an error on functions, and class instances come back as plain objects. JSON.parse(JSON.stringify(obj)) also works for plain data, but it turns Dates into strings, drops functions and undefined values in objects, and turns Maps and Sets into empty objects.",
+          keyPoints: ["structuredClone makes a deep copy, nested data included", "Spread and Object.assign are shallow", "Its limits: it throws on functions, and class instances come back as plain objects"],
         },
         reteach: {
           steps: [
             "A shallow copy makes the top level new, but nested objects are still shared. A deep copy copies the nested ones too.",
             "Object.assign works like spread: shallow. Object.freeze doesn't copy at all, it only blocks edits.",
             "structuredClone is built in and copies nested objects, arrays and Dates.",
+            "It has limits: it throws an error if the object contains a function, and class instances come back as plain objects.",
           ],
         },
         retries: [
@@ -441,12 +442,12 @@ const codeLessons: Lesson[] = [
         explain: {
           question: "When would you pick a Map over a plain object?",
           starter: "I'd pick a Map when my keys…",
-          modelAnswer: "I'd pick a Map when the keys aren't plain strings, or when I add and remove entries a lot. Object keys are always converted to strings, so 1 and \"1\" end up as the same key, but a Map keeps keys as they are, so numbers, booleans and even objects work as keys. A Map also has a built-in size.",
+          modelAnswer: "I'd pick a Map when the keys aren't plain strings, or when I add and remove entries a lot. Object keys can only be strings or symbols, so numbers and other types get converted to strings: 1 and \"1\" end up as the same key, but a Map keeps keys as they are, so numbers, booleans and even objects work as keys. A Map also has a built-in size.",
           keyPoints: ["Object keys are strings (or symbols), so other types get converted", "A Map keeps keys as they are, of any type", "A Map has .size and is built for frequent adds and removes"],
         },
         reteach: {
           steps: [
-            "Object keys are always strings (or symbols). Whatever you use as a key gets converted.",
+            "Object keys can only be strings or symbols. Any other key, like a number, is converted to a string.",
             "Map keys can be anything: numbers, booleans, even objects. They are compared as they are.",
             "That's the main reason to pick a Map when your keys aren't plain strings.",
           ],

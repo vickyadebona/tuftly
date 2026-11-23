@@ -126,7 +126,7 @@ export const drills: Drill[] = [
       "Map has a built-in .size and is designed for frequent adds and removes",
     ],
     hint: "Think about what types of keys an object can really hold.",
-    sayIt: "I'd use a Map. Its keys can be any type, while object keys get converted to strings, and a Map is designed for frequent adds and removes, with a built-in size.",
+    sayIt: "I'd use a Map. Its keys can be any type, while object keys are limited to strings and symbols, so other types get converted to strings. A Map is also designed for frequent adds and removes, with a built-in size.",
     reviewed: true,
   },
   {
@@ -178,7 +178,7 @@ export const drills: Drill[] = [
     ],
     hint: "Did alias = cfg make a new object, or a second name for the same one?",
     sayIt: "alias = cfg doesn't copy the object, it gives it a second name. Both point at the same object, so setting alias.debug to true also changes cfg.debug.",
-    reviewed: true,
+    reviewed: false,
   },
   {
     id: "d-map-4",
@@ -192,7 +192,7 @@ export const drills: Drill[] = [
     rubric: ["has(key) is the Map method for checking a key", "includes is for arrays and strings, not Maps"],
     hint: "Which method name is actually on Map?",
     sayIt: "I'd use has: m.has(\"x\"). includes is for arrays and strings, and a Map doesn't have it.",
-    reviewed: true,
+    reviewed: false,
   },
   {
     id: "d-pit-1",
@@ -205,8 +205,8 @@ export const drills: Drill[] = [
     answerIndex: 0,
     rubric: ["Starts with who you are now", "Adds one recent highlight with a result", "Ends with what you want next", "About a minute, not a life story"],
     hint: "Think headline, not biography.",
-    sayIt: "I'd say who I am now, give one recent highlight with a result, and finish with what I'm looking for and why this role. For example: I'm a front-end developer with three years of experience in React. Recently I rebuilt our checkout form and cut drop-offs by 18%. I'm looking for a team that cares about accessibility.",
-    reviewed: true,
+    sayIt: "I'd say who I am now, give one recent highlight with a result, and finish with what I'm looking for and why this role. For example: I'm a front-end developer with three years of experience in React. Recently I worked on our checkout rebuild, which cut drop-offs by 18%. I'm looking for a team that cares about accessibility.",
+    reviewed: false,
   },
   {
     id: "d-pit-2",
@@ -220,7 +220,7 @@ export const drills: Drill[] = [
     rubric: ["Picks two or three things the role asks for", "Matches each to something you actually did", "Gives a result"],
     hint: "Which one shows a fit instead of a history?",
     sayIt: "The role asks for accessible UIs in React, and that's what I've been doing. At my last job I made our form components keyboard-friendly and screen-reader tested, and I fixed 40 issues from an audit. I'd like to keep doing that work here.",
-    reviewed: true,
+    reviewed: false,
   },
   {
     id: "d-pit-3",
@@ -234,7 +234,7 @@ export const drills: Drill[] = [
     rubric: ["Says what you did and how", "Gives a result you can check", "A claim like “strong” isn't evidence"],
     hint: "Which one could an interviewer picture and check?",
     sayIt: "The second one, because it says what I did, how, and what changed. “Strong problem solver” is a claim anyone can make. If I don't have an exact number, I describe the change instead of making one up.",
-    reviewed: true,
+    reviewed: false,
   },
   {
     id: "d-exp-1",
@@ -248,7 +248,7 @@ export const drills: Drill[] = [
     rubric: ["Gives the team size", "Says what you personally owned, using “I”", "Credits others honestly"],
     hint: "Which answer tells them what you did?",
     sayIt: "I'd say how big the team was and what I personally owned, using “I” for my work and crediting the others for theirs. For example: there were three of us, and I owned the search feature, including the API and the screen.",
-    reviewed: true,
+    reviewed: false,
   },
   {
     id: "d-exp-2",
@@ -262,7 +262,7 @@ export const drills: Drill[] = [
     rubric: ["Starts with the situation", "Says what you were responsible for", "Spends the most time on what you did", "Ends with the result"],
     hint: "Think of it as four short beats, like a story.",
     sayIt: "I'd set the scene in a sentence, say what I was responsible for, spend most of the time on what I did, and finish with the result. That's the situation, task, action, result order, often called STAR.",
-    reviewed: true,
+    reviewed: false,
   },
   {
     id: "d-exp-3",
@@ -275,7 +275,7 @@ export const drills: Drill[] = [
     answerIndex: 0,
     rubric: ["Honest that you haven't used it", "Points to the closest related experience", "Says how you'd learn it"],
     hint: "Which answer still works if they ask a follow-up?",
-    sayIt: "I'd say honestly that I haven't used it yet, then point to the closest thing I have done and how I'd pick it up. For example: I haven't used GraphQL, but I've built REST APIs for two years, so I'd start with its tutorial and build something small.",
-    reviewed: true,
+    sayIt: "I'd say honestly that I haven't used it yet, then point to the closest thing I have done and how I'd pick it up. For example: I haven't used GraphQL, but I've worked with REST APIs from React for three years, so I'd start with its tutorial and build something small.",
+    reviewed: false,
   },
 ];
