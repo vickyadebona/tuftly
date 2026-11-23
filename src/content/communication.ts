@@ -44,7 +44,7 @@ export const communicationLessons: Lesson[] = [
           prompt: "Which sentence belongs in the “past” part of the pitch?",
           options: [
             "I'm a developer who loves learning new things.",
-            "Last year I rebuilt our signup flow, which cut drop-off by 18%.",
+            "Last year I rebuilt our signup flow, which cut drop-off by 12%.",
             "I'd like to grow into a tech lead role.",
             "I studied computer science from 2016 to 2020.",
           ],
@@ -465,7 +465,7 @@ export const communicationLessons: Lesson[] = [
           question: "Tell me about something that didn't go well.",
           starter: "We ran into … I learned …",
           modelAnswer:
-            "On the checkout rebuild we shipped a validation rule that rejected some valid addresses, and support tickets went up for a day. I rolled it back, wrote tests for the edge cases we'd missed and added a check to our release process. It taught me to test with messy real-world data, not just clean examples.",
+            "On the checkout rebuild we shipped a validation rule that rejected some valid billing postcodes, and support tickets went up for a day. I rolled it back, wrote tests for the edge cases we'd missed and added a check to our release process. It taught me to test with messy real-world data, not just clean examples.",
           keyPoints: [
             "Describes a real problem plainly",
             "Says what you did about it",

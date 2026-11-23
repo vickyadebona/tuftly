@@ -14,6 +14,7 @@ import {
   usePitch,
   wordCount,
 } from "@/lib/pitch";
+import { getLessons } from "@/content";
 import { useHydrated } from "@/lib/store";
 import { Bobbin } from "./Bobbin";
 import { CardSkeleton } from "./Skeleton";
@@ -298,6 +299,8 @@ function DraftStep({ d, onBack, onNext }: { d: D; onBack: () => void; onNext: ()
 }
 
 function FollowUpStep({ d, onBack }: { d: D; onBack: () => void }) {
+  // Only point at the lessons when they are actually shown (unreviewed ones are hidden in production).
+  const storyLessonsShown = getLessons().some((l) => l.track === "communication");
   const [checked, setChecked] = useState<boolean[]>(() => PITCH_CHECKS.map(() => false));
   const [owned, setOwned] = useState<Record<string, boolean>>({});
 
@@ -358,10 +361,12 @@ function FollowUpStep({ d, onBack }: { d: D; onBack: () => void }) {
             </div>
           );
         })}
-        <p className="text-sm text-ink-soft">
-          Want more practice with this? The &quot;Telling your story&quot; lessons cover it step by step, and your
-          interview rounds mix these questions in.
-        </p>
+        {storyLessonsShown && (
+          <p className="text-sm text-ink-soft">
+            Want more practice with this? The &quot;Telling your story&quot; lessons cover it step by step, and your
+            interview rounds mix these questions in.
+          </p>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-3">
