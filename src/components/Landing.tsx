@@ -51,7 +51,7 @@ export function Nav({ current }: { current?: "about" }) {
           <Link href="/login" className="btn-secondary hidden sm:inline-flex">
             Log in
           </Link>
-          <Link href="/login" className="btn-primary whitespace-nowrap !px-3 !py-2 !text-sm sm:!px-5 sm:!py-2.5 sm:!text-base">
+          <Link href="/login?mode=new" className="btn-primary whitespace-nowrap !px-3 !py-2 !text-sm sm:!px-5 sm:!py-2.5 sm:!text-base">
             Start free
           </Link>
         </div>
@@ -114,7 +114,7 @@ function Hero() {
             feedback that points you forward.
           </p>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-4">
-            <Link href="/login" className="btn-primary">
+            <Link href="/login?mode=new" className="btn-primary">
               Start your quest for free
             </Link>
             <a href="#how" className="btn-secondary">
@@ -316,7 +316,7 @@ function FinalCall() {
             practice interviews every day. Your first lesson takes about four minutes.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Link href="/login" className="btn-primary">
+            <Link href="/login?mode=new" className="btn-primary">
               Start your quest
             </Link>
             <a href="#how" className="btn-accent">

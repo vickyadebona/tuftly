@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { continueAsGuest, createAccount, signOut, useAccount } from "@/lib/account";
-import { useHydrated } from "@/lib/store";
+import { continueAsGuest, createAccount, forgetProfile, restoreProfile, signOut, useAccount, useRememberedProfile } from "@/lib/account";
+import { resetProgress, useHydrated } from "@/lib/store";
 import { useSeason } from "@/lib/useSeason";
 import { getSupabase } from "@/lib/supabase/client";
 import { useAuthUser } from "@/lib/useAuthUser";
@@ -72,10 +72,12 @@ function EmailLinkForm({ name, intro }: { name?: string; intro: string }) {
   );
 }
 
-export function LoginFlow({ linkError = false }: { linkError?: boolean }) {
+export function LoginFlow({ linkError = false, startNew = false }: { linkError?: boolean; startNew?: boolean }) {
   const router = useRouter();
   const hydrated = useHydrated();
   const account = useAccount();
+  const remembered = useRememberedProfile();
+  const [mode, setMode] = useState<"login" | "new">(startNew ? "new" : "login");
   const auth = useAuthUser();
   const season = useSeason();
   const [name, setName] = useState("");
@@ -138,6 +140,67 @@ export function LoginFlow({ linkError = false }: { linkError?: boolean }) {
           className="font-semibold text-teal-deep underline"
         >
           Not you? Log out
+        </button>
+      </section>,
+    );
+  }
+
+  function switchProfile() {
+    if (!window.confirm("This clears the progress saved on this device, so the next person starts fresh. Continue?")) return;
+    forgetProfile();
+    resetProgress();
+    setMode("new");
+  }
+
+  if (mode === "login") {
+    return shell(
+      <section className="pixel-box flex w-full max-w-md flex-col items-center gap-4 bg-paper p-8 text-center">
+        <PixelArtBobbin mood="happy" outfit={season} size={140} />
+        {remembered ? (
+          <>
+            <h1 className="font-pixel text-3xl font-bold text-ink">
+              Welcome back{remembered.guest ? "" : `, ${remembered.name}`}!
+            </h1>
+            <p className="text-lg text-ink-soft">Pick up where you left off.</p>
+            <button
+              type="button"
+              className="btn-primary w-full"
+              onClick={() => {
+                setLeaving(true);
+                restoreProfile();
+                router.push("/home");
+              }}
+            >
+              {remembered.guest ? "Continue as guest" : `Log in as ${remembered.name}`}
+            </button>
+          </>
+        ) : (
+          <>
+            <h1 className="font-pixel text-3xl font-bold text-ink">Log in</h1>
+            <p className="text-lg text-ink-soft">
+              {getSupabase()
+                ? "Enter your email and we'll send you a link. No password needed."
+                : "There's no profile saved on this device yet."}
+            </p>
+          </>
+        )}
+        {linkError && (
+          <p role="alert" className="font-semibold text-orange">
+            That sign-in link didn&apos;t work or has expired. Ask for a new one below.
+          </p>
+        )}
+        <div className="w-full">
+          <EmailLinkForm
+            intro={remembered ? "Or log in with your email, on any device. We'll send a link, no password needed." : "We'll email you a link. No password needed."}
+          />
+        </div>
+        {remembered && !remembered.guest && (
+          <button type="button" onClick={switchProfile} className="text-sm font-semibold text-ink-soft underline">
+            Not {remembered.name}? Use a different profile
+          </button>
+        )}
+        <button type="button" onClick={() => setMode("new")} className="font-semibold text-teal-deep underline">
+          New here? Create a profile
         </button>
       </section>,
     );
@@ -225,6 +288,10 @@ export function LoginFlow({ linkError = false }: { linkError?: boolean }) {
         className="btn-secondary"
       >
         Continue as guest
+      </button>
+
+      <button type="button" onClick={() => setMode("login")} className="font-semibold text-teal-deep underline">
+        Already have a profile? Log in
       </button>
 
       <p className="text-center text-sm text-ink-soft">

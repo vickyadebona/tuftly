@@ -112,8 +112,65 @@ export function continueAsGuest() {
   write({ name: "Guest", email: null, guest: true, tourDone: tourAlreadySeen() });
 }
 
+/**
+ * Logging out keeps a note of who was here, so coming back is one tap instead of typing a name
+ * again. It lives only on this device and holds no password (there isn't one to leak). Real
+ * sign-in on other devices is the email link.
+ */
+const LAST_KEY = "tuftly-last-profile-v1";
+let lastCache: { raw: string | null; value: Account | null } = { raw: null, value: null };
+
+function readLast(): Account | null {
+  try {
+    const raw = window.localStorage.getItem(LAST_KEY);
+    if (raw === lastCache.raw) return lastCache.value;
+    lastCache = { raw, value: raw ? (JSON.parse(raw) as Account) : null };
+    return lastCache.value;
+  } catch {
+    return null;
+  }
+}
+
+/** The profile that last logged out on this device, if any. Pair with useHydrated(). */
+export function useRememberedProfile(): Account | null {
+  return useSyncExternalStore(subscribe, readLast, () => null);
+}
+
 export function signOut() {
+  const a = read();
+  if (a) {
+    try {
+      window.localStorage.setItem(LAST_KEY, JSON.stringify(a));
+    } catch {
+      // Storage blocked: logging out still works, it just won't be remembered.
+    }
+  }
   write(null);
+}
+
+/** Log back in as the remembered profile. Returns false when there isn't one. */
+export function restoreProfile(): boolean {
+  const last = readLast();
+  if (!last) return false;
+  write(last);
+  try {
+    window.localStorage.removeItem(LAST_KEY);
+  } catch {
+    // ignore
+  }
+  listeners.forEach((l) => l());
+  return true;
+}
+
+/** Forget the remembered profile (someone else is using this device). */
+export function forgetProfile() {
+  try {
+    window.localStorage.removeItem(LAST_KEY);
+    window.localStorage.removeItem(TOUR_SEEN_KEY);
+  } catch {
+    // ignore
+  }
+  listeners.forEach((l) => l());
 }
 
 export function completeTour() {

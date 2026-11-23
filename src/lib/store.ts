@@ -105,6 +105,11 @@ export function saveLessonPosition(lessonId: string, pos: LessonPosition) {
   update((p) => ({ ...p, lessonProgress: { ...p.lessonProgress, [lessonId]: { ...pos, updatedAt: Date.now() } } }));
 }
 
+/** Wipe progress on this device (used when someone else takes over the device). */
+export function resetProgress() {
+  update(() => ({ ...EMPTY }));
+}
+
 export function clearLessonPosition(lessonId: string) {
   update((p) => {
     return { ...p, lessonProgress: without(p.lessonProgress, lessonId) };
