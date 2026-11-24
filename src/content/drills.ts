@@ -9,6 +9,7 @@ export const drills: Drill[] = [
     topic: "arrays",
     kind: "pick-a-or-b",
     prompt: "You need to sort an array but keep the original order intact. Which is better?",
+    code: `const arr = [3, 1, 2];`,
     options: ["arr.sort()", "[...arr].sort()"],
     answerIndex: 1,
     rubric: [
@@ -46,6 +47,7 @@ export const drills: Drill[] = [
     topic: "arrays",
     kind: "pick-a-or-b",
     prompt: "You want a new array containing only the even numbers. Which is better?",
+    code: `const nums = [1, 2, 3, 4];`,
     options: ["nums.map(n => n % 2 === 0)", "nums.filter(n => n % 2 === 0)"],
     answerIndex: 1,
     rubric: [
@@ -101,6 +103,7 @@ export const drills: Drill[] = [
     topic: "objects",
     kind: "pick-a-or-b",
     prompt: "You need a fully independent copy of nested data. Which is better?",
+    code: `const obj = { name: "Sam", tags: ["a"] };`,
     options: ["{ ...obj }", "structuredClone(obj)"],
     answerIndex: 1,
     rubric: [
@@ -187,6 +190,7 @@ export const drills: Drill[] = [
     topic: "maps-sets",
     kind: "pick-a-or-b",
     prompt: 'You want to know whether a Map has the key "x". Which is right?',
+    code: `const m = new Map([["x", 1]]);`,
     options: ['m.includes("x")', 'm.has("x")'],
     answerIndex: 1,
     rubric: ["has(key) is the Map method for checking a key", "includes is for arrays and strings, not Maps"],

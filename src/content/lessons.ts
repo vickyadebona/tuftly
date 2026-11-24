@@ -40,7 +40,7 @@ const codeLessons: Lesson[] = [
         },
         check: {
           prompt: "Fill in the blank so names keeps its original order.",
-          code: `const sortedNames = ___.sort();`,
+          code: `const names = ["Sam", "Alex", "Jo"];\nconst sortedNames = ___.sort();`,
           options: ["names", "[...names]", "names.length", "names.sort"],
           answerIndex: 1,
           explanation:
@@ -71,6 +71,7 @@ const codeLessons: Lesson[] = [
           },
           {
             prompt: "Which line leaves prices in its original order?",
+            code: `const prices = [30, 10, 20];`,
             options: ["prices.sort()", "[...prices].sort()", "prices.reverse()", "prices.sort().slice()"],
             answerIndex: 1,
             explanation:
@@ -100,7 +101,7 @@ const codeLessons: Lesson[] = [
         },
         check: {
           prompt: "Fill in the blank to sort the numbers from largest to smallest.",
-          code: `nums.sort((a, b) => ___);`,
+          code: `const nums = [5, 25, 100];\nnums.sort((a, b) => ___);`,
           options: ["a - b", "b - a", "a > b", "a + b"],
           answerIndex: 1,
           explanation:
@@ -131,6 +132,7 @@ const codeLessons: Lesson[] = [
           },
           {
             prompt: "Which call sorts numbers from smallest to largest?",
+            code: `const nums = [3, 20, 100];`,
             options: [
               "nums.sort()",
               "nums.sort((a, b) => a - b)",
@@ -165,7 +167,7 @@ const codeLessons: Lesson[] = [
         },
         check: {
           prompt: "Fill in the blank to build a new array with every score doubled.",
-          code: `const doubled = scores.___(n => n * 2);`,
+          code: `const scores = [30, 10, 20];\nconst doubled = scores.___(n => n * 2);`,
           options: ["forEach", "map", "filter", "reduce"],
           answerIndex: 1,
           explanation:
@@ -188,7 +190,7 @@ const codeLessons: Lesson[] = [
         retries: [
           {
             prompt: "Fill in the blank to keep only the names longer than 3 letters.",
-            code: `const long = names.___(name => name.length > 3);`,
+            code: `const names = ["Sam", "Alex", "Jo", "Priya"];\nconst long = names.___(name => name.length > 3);`,
             options: ["map", "filter", "forEach", "sort"],
             answerIndex: 1,
             explanation:
@@ -317,7 +319,7 @@ const codeLessons: Lesson[] = [
             "If a property holds a simple value (a string, number or boolean), the new object gets its own copy.",
             "If a property holds an object or array, the new object gets a reference to the same one, so that nested piece is shared.",
           ],
-          code: `const copy = { ...user };\ncopy.name = "Alex";   // only copy changes\ncopy.tags.push("b"); // user.tags changes too`,
+          code: `const user = { name: "Sam", tags: ["a"] };\nconst copy = { ...user };\ncopy.name = "Alex";   // only copy changes\ncopy.tags.push("b"); // user.tags changes too`,
         },
         retries: [
           {
@@ -360,7 +362,7 @@ const codeLessons: Lesson[] = [
         },
         check: {
           prompt: "Fill in the blank to make a fully independent copy, including nested data.",
-          code: `const deep = ___(user);`,
+          code: `const user = { name: "Sam", tags: ["a"] };\nconst deep = ___(user);`,
           options: ["Object.assign", "structuredClone", "Object.freeze", "Object.create"],
           answerIndex: 1,
           explanation:
@@ -492,7 +494,7 @@ const codeLessons: Lesson[] = [
         },
         check: {
           prompt: 'Fill in the blank to check whether the key "b" exists in the Map.',
-          code: `counts.___("b")`,
+          code: `const counts = new Map([["a", 2], ["b", 1]]);\ncounts.___("b")`,
           options: ["has", "includes", "contains", "exists"],
           answerIndex: 0,
           explanation: "Map has has(key). includes is for arrays and strings. contains and exists aren't Map methods.",
@@ -514,13 +516,14 @@ const codeLessons: Lesson[] = [
         retries: [
           {
             prompt: 'Fill in the blank to remove the key "a".',
-            code: `counts.___("a");`,
+            code: `const counts = new Map([["a", 2], ["b", 1]]);\ncounts.___("a");`,
             options: ["remove", "delete", "clear", "pop"],
             answerIndex: 1,
             explanation: "delete(key) removes one entry. clear() removes everything. remove and pop aren't Map methods.",
           },
           {
             prompt: "How do you get the number of entries in counts?",
+            code: `const counts = new Map([["a", 2], ["b", 1]]);`,
             options: ["counts.size", "counts.length", "counts.size()", "counts.count"],
             answerIndex: 0,
             explanation: "size is a property on Maps, so there are no parentheses. length is for arrays.",
@@ -548,7 +551,7 @@ const codeLessons: Lesson[] = [
         },
         check: {
           prompt: "Fill in the blank to remove the duplicates from nums.",
-          code: `const unique = [...new ___(nums)];`,
+          code: `const nums = [1, 2, 2, 3];\nconst unique = [...new ___(nums)];`,
           options: ["Map", "Set", "Array", "Object"],
           answerIndex: 1,
           explanation: "A Set stores each value only once. Spreading it back out gives an array without the repeats.",
