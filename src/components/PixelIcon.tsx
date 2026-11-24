@@ -60,6 +60,9 @@ const ICONS = {
 
 export type PixelIconName = keyof typeof ICONS;
 
+/** Every icon name, for galleries and docs. */
+export const PIXEL_ICON_NAMES = Object.keys(ICONS) as PixelIconName[];
+
 export function PixelIcon({
   name,
   size = 24,

@@ -41,3 +41,7 @@ yarn-error.log*
 next-env.d.ts
 .next-build
 !.env.local.example
+
+# storybook
+/storybook-static
+*storybook.log
