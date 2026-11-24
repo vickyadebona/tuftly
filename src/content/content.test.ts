@@ -266,6 +266,7 @@ test("the marked answer is what the code really prints, and the marked fill-in a
 });
 
 test("the first lesson takes as long as the landing and About pages say", () => {
+  // The first reviewed lesson in app order is the one a new learner starts with in production.
   const first = lessons.find((l) => l.reviewed);
   assert.equal(first?.minutes, FIRST_LESSON_MINUTES);
 });
@@ -284,7 +285,10 @@ function variablesNamed(text: string): string[] {
 function definedIn(text: string): Set<string> {
   const s = new Set<string>();
   for (const m of text.matchAll(/\b(?:const|let|var)\s+([A-Za-z_]\w*)/g)) s.add(m[1]);
-  for (const m of text.matchAll(/\(?\b([a-z]\w*)\b(?:\s*,\s*([a-z]\w*))?\)?\s*=>/g)) { s.add(m[1]); if (m[2]) s.add(m[2]); }
+  // Arrow function parameters: `x =>`, `(a, b, c) =>`, `({ name, tags }) =>`, `([k, v]) =>`.
+  for (const m of text.matchAll(/(?:\(([^()]*)\)|\b([a-z]\w*))\s*=>/g)) {
+    for (const name of (m[1] ?? m[2]).matchAll(/[A-Za-z_]\w*/g)) s.add(name[0]);
+  }
   for (const m of text.matchAll(/\b([a-z]\w*)\s*=\s*[{\[]/g)) s.add(m[1]);
   return s;
 }
