@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Nunito, Pixelify_Sans } from "next/font/google";
+import { faviconFor } from "@/lib/favicon";
 import { SeasonFavicon } from "@/components/SeasonFavicon";
 import "./globals.css";
 
@@ -17,8 +18,8 @@ export const metadata: Metadata = {
     "Short lessons, spaced practice and a friendly bird to help you warm up for web-dev interviews.",
   // Winter until the browser knows the date; SeasonFavicon then swaps in the current season.
   icons: {
-    icon: [{ url: "/favicons/winter.png", type: "image/png" }],
-    apple: "/favicons/winter-apple.png",
+    icon: [{ url: faviconFor("winter").icon, type: "image/png" }],
+    apple: faviconFor("winter").apple,
   },
 };
 

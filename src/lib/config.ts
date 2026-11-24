@@ -8,6 +8,9 @@ export const APP_NAME = "tuftly";
 /** Free AI interviews per user per day (cost control while the product is free-first). */
 export const DAILY_INTERVIEW_CAP = 2;
 
+/** How long the first lesson takes, as promised on the landing and About pages. A content test keeps it true. */
+export const FIRST_LESSON_MINUTES = 6;
+
 /** One companion character for v1. Users do not pick; customization comes later. */
 export const COMPANION = {
   id: "bobbin",

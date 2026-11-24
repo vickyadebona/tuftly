@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { APP_NAME, DAILY_INTERVIEW_CAP } from "@/lib/config";
+import { APP_NAME, DAILY_INTERVIEW_CAP, FIRST_LESSON_MINUTES } from "@/lib/config";
 import { SEASONS, type Season } from "@/lib/season";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelCloud, PixelIcon, type PixelIconName } from "./PixelIcon";
@@ -313,7 +313,7 @@ function FinalCall() {
           <Title>Ready when you are</Title>
           <p className="text-lg text-ink-soft">
             Start free today and get {DAILY_INTERVIEW_CAP === 2 ? "two" : DAILY_INTERVIEW_CAP}{" "}
-            practice interviews every day. Your first lesson takes about six minutes.
+            practice interviews every day. Your first lesson takes about {FIRST_LESSON_MINUTES} minutes.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link href="/login?mode=new" className="btn-primary">

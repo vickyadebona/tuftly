@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { APP_NAME, DAILY_INTERVIEW_CAP } from "@/lib/config";
+import { APP_NAME, DAILY_INTERVIEW_CAP, FIRST_LESSON_MINUTES } from "@/lib/config";
 import { Eyebrow, Footer, INNER, Nav, SECTION, Title } from "./Landing";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelIcon, type PixelIconName } from "./PixelIcon";
@@ -146,7 +146,7 @@ export function About() {
             <PixelArtBobbin mood="cheering" outfit="winter" size={140} />
             <Title>Come practice with Bobbin</Title>
             <p className="max-w-xl text-lg text-ink-soft">
-              Your first lesson takes about six minutes. No card, no pressure.
+              Your first lesson takes about {FIRST_LESSON_MINUTES} minutes. No card, no pressure.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
               <Link href="/login?mode=new" className="btn-primary">
