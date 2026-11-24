@@ -313,7 +313,7 @@ function FinalCall() {
           <Title>Ready when you are</Title>
           <p className="text-lg text-ink-soft">
             Start free today and get {DAILY_INTERVIEW_CAP === 2 ? "two" : DAILY_INTERVIEW_CAP}{" "}
-            practice interviews every day. Your first lesson takes about four minutes.
+            practice interviews every day. Your first lesson takes about six minutes.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link href="/login?mode=new" className="btn-primary">
