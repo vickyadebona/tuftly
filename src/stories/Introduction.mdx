@@ -1,0 +1,53 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Introduction" />
+
+# tuftly components
+
+A reference for the pieces the app is built from. The look is a pixel-art one: chunky outlines, hard offset shadows, a warm cream page and a small round bird named Bobbin.
+
+## What's here
+
+- **Foundations**: the colour palette, type scale, and the shared `.pixel-box`, `.pixel-chip` and button classes from `src/app/globals.css`.
+- **Pixel art**: `PixelIcon`, clouds and the teacup, `PixelArtBobbin` (every mood in every season) and `Bobbin` with a speech bubble.
+- **Learning**: `ChoiceList`, `CodeBlock` and the unit and lesson intros.
+- **Loading**: the skeleton screens shown while saved progress is read.
+- **Screens**: the quest map, a lesson at each step, and the pitch builder, seeded with sample progress.
+
+The Figma file "tuftly: layout explorations" has the matching Button, LessonNode and StatPill components and the same colour variables.
+
+## Running it
+
+```bash
+npm run storybook        # http://localhost:6006
+npm run build-storybook  # static site in storybook-static/
+```
+
+Note: like the live site, a static build hides lessons and drills marked `reviewed: false`. The dev server shows everything.
+
+## Adding a story
+
+Put `ComponentName.stories.tsx` next to the component. Give it a `title` like `"Learning/ComponentName"`, and an `args` object with typical props. Stories are plain objects:
+
+```tsx
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { MyThing } from "./MyThing";
+
+const meta = { title: "Learning/MyThing", component: MyThing, tags: ["autodocs"] } satisfies Meta<typeof MyThing>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = { args: { label: "Hello" } };
+```
+
+### Screens that read saved state
+
+Screens read progress, the profile and the pitch from `localStorage`. Seed them with the `tuftly` parameter. Anything you leave out is cleared, so each story starts clean:
+
+```tsx
+export const WithProgress: Story = {
+  parameters: { tuftly: { account: learner, progress: midProgress() } },
+};
+```
+
+Sample states live in `src/stories/seeds.ts`.

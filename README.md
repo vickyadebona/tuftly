@@ -43,6 +43,15 @@ nvm use
 npm run dev
 ```
 
+## Component docs (Storybook)
+
+A reference for the colours, type, pixel-art pieces and screens. Run it with `npm run storybook` (http://localhost:6006); `npm run build-storybook` makes a static site in `storybook-static/` (git-ignored).
+
+- Stories live next to their component as `ComponentName.stories.tsx`. Foundations (palette, type, boxes and buttons) are in `src/stories/`.
+- Screens read progress, the profile and the pitch from `localStorage`. A story sets them with `parameters: { tuftly: { account, progress, pitch } }`; sample states are in `src/stories/seeds.ts`. Anything not given is cleared, so every story starts clean.
+- Like the live site, a static build hides lessons and drills marked `reviewed: false`. The dev server shows everything.
+- Tailwind runs through Turbopack in the app, so Storybook uses the Vite plugin (`@tailwindcss/vite`) against the same `src/app/globals.css`.
+
 ## Accounts and saved progress (Supabase, optional)
 Everything works on this device without it. With Supabase set up, people can sign in with an emailed link (no passwords) and their progress follows them across devices. The app stays local-first: it reads and writes this device, then merges with the saved copy and syncs a moment later (`src/lib/merge.ts` has the rules and tests).
 1. Create a project at supabase.com.
