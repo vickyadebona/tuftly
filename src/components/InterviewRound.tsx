@@ -10,7 +10,8 @@ import { lessonMix, minutesFor, SESSIONS, sessionQuestions, type RoundQuestion }
 import { useSeason } from "@/lib/useSeason";
 import { CodeBlock } from "./CodeBlock";
 import { PixelArtBobbin } from "./PixelArtBobbin";
-import { PixelIcon, Teacup } from "./PixelIcon";
+import { PixelIcon } from "./PixelIcon";
+import { TeaBreak } from "./TeaBreak";
 import { InterviewSkeleton } from "./Skeleton";
 import { RichText } from "./RichText";
 
@@ -115,15 +116,7 @@ function Round({ pressure, title, questions, onLeave }: { pressure: PressureLeve
 
       {onBreak ? (
         <div className="flex flex-1 items-center justify-center">
-        <section className="pixel-box flex max-w-lg flex-col items-center gap-4 bg-teal-wash p-8 text-center">
-          <Teacup size={96} />
-          <h2 className="font-pixel text-2xl font-bold text-ink">Tea time</h2>
-          <p className="text-lg text-ink">Sip, breathe, then come back when you are ready. The clock is paused.</p>
-          <p className="text-ink-soft">In for four. Hold for four. Out for four.</p>
-          <button type="button" className="btn-primary" onClick={() => setOnBreak(false)}>
-            I&apos;m ready
-          </button>
-        </section>
+          <TeaBreak onReady={() => setOnBreak(false)} />
         </div>
       ) : (
         <div

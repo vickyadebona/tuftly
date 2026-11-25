@@ -128,5 +128,15 @@ body {
   .bobbin-idle, .bobbin-sleep, .bobbin-cheer { animation: none; }
 }
 
+/* Bobbin's wings close round the cup once it has arrived. */
+@keyframes tea-wings {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.tea-wings { animation: tea-wings 0.15s 0.4s both; }
+@media (prefers-reduced-motion: reduce) {
+  .tea-wings { animation: none; }
+}
+
 /* Pixel art stays crisp when scaled. */
 img[src^="/bobbin/"] { image-rendering: pixelated; }
