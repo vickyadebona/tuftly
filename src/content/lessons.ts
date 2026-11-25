@@ -234,9 +234,16 @@ const codeLessons: Lesson[] = [
         },
         workedExample: {
           code: `const a = { n: 1 };\nconst b = a;\nb.n = 2;\nconsole.log(a.n);     // 2\nconsole.log(a === b); // true`,
+          diagram: {
+            kind: "one-object",
+            names: ["a", "b"],
+            rows: ["n: 2"],
+            caption: "Two names, one object.",
+            description: "The names a and b both point to the same object, where n is 2.",
+          },
           walkthrough: [
             "An object lives in one place. a and b are two names that point to it.",
-            "const b = a doesn't copy anything. It gives the same object a second name.",
+            "const b = a **doesn't copy anything**. It gives the same object a second name.",
             "So changing b.n changes what a sees too, and a === b is true.",
           ],
         },
@@ -294,10 +301,20 @@ const codeLessons: Lesson[] = [
         },
         workedExample: {
           code: `const user = { name: "Sam", tags: ["a"] };\nconst copy = { ...user };\ncopy.name = "Alex";\ncopy.tags.push("b");\nconsole.log(user.name); // "Sam"\nconsole.log(user.tags); // ["a", "b"]`,
+          diagram: {
+            kind: "two-objects",
+            shared: true,
+            objects: [
+              { name: "user", field: 'name: "Sam"', tags: '["a","b"]' },
+              { name: "copy", field: 'name: "Alex"', tags: '["a","b"]' },
+            ],
+            caption: "Two separate objects, but their tags are the same array.",
+            description: 'user and copy are different objects with names Sam and Alex. Both tags properties point to one array holding "a" and "b".',
+          },
           walkthrough: [
             "{ ...user } copies the top-level properties into a new object.",
             'name is a string, so copy.name = "Alex" changes only the copy.',
-            "tags is an array (an object), so both objects still share the same array. Pushing to it shows up in both.",
+            "tags is an array (an object), so both objects still **share the same array**. Pushing to it shows up in both.",
           ],
         },
         check: {
@@ -355,9 +372,19 @@ const codeLessons: Lesson[] = [
         },
         workedExample: {
           code: `const user = { name: "Sam", tags: ["a"] };\nconst deep = structuredClone(user);\ndeep.tags.push("b");\nconsole.log(user.tags); // ["a"]\nconsole.log(deep.tags); // ["a", "b"]`,
+          diagram: {
+            kind: "two-objects",
+            shared: false,
+            objects: [
+              { name: "user", field: 'name: "Sam"', tags: '["a"]' },
+              { name: "deep", field: 'name: "Sam"', tags: '["a","b"]' },
+            ],
+            caption: "Two separate objects, each with its own tags array.",
+            description: 'user and deep are different objects. user\'s tags array holds "a". deep has its own array holding "a" and "b".',
+          },
           walkthrough: [
             "structuredClone(user) copies user and everything nested inside it.",
-            "deep.tags is its own array, so pushing to it doesn't affect user.tags.",
+            "deep.tags is **its own array**, so pushing to it doesn't affect user.tags.",
             "Use it when you need a fully independent copy. For a flat object with no nested data, spread is enough.",
           ],
         },

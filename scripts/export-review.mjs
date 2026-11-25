@@ -60,6 +60,7 @@ for (const lesson of lessons) {
       "#### Worked example",
       workedExample.code && code(workedExample.code),
       workedExample.sample && quote(workedExample.sample),
+      workedExample.diagram && `**Diagram:** ${workedExample.diagram.caption} ${workedExample.diagram.description}`,
       numbered(workedExample.walkthrough),
     );
 
