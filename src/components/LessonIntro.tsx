@@ -1,6 +1,7 @@
 "use client";
 
 import type { Lesson, UnitInfo } from "@/lib/types";
+import { lessonSummary } from "@/lib/units";
 import { Bobbin } from "./Bobbin";
 import { PixelIcon } from "./PixelIcon";
 
@@ -23,7 +24,6 @@ export function UnitIntro({
   lessons: Lesson[];
   onStart: () => void;
 }) {
-  const totalMinutes = lessons.reduce((n, l) => n + l.minutes, 0);
   return (
     <section className="flex flex-col gap-5" aria-labelledby="unit-intro-title">
       <p className="font-pixel text-sm font-semibold uppercase tracking-wide text-teal-deep">Unit {number}</p>
@@ -64,7 +64,7 @@ export function UnitIntro({
           ))}
         </ol>
         <p className="text-sm text-ink-soft">
-          About {totalMinutes} minutes in total. {unit.format}
+          {lessonSummary(lessons)} {unit.format}
         </p>
       </div>
 

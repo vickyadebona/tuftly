@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { APP_NAME, DAILY_INTERVIEW_CAP, FIRST_LESSON_MINUTES } from "@/lib/config";
+import { APP_NAME, FIRST_LESSON_MINUTES } from "@/lib/config";
 import { SEASONS, type Season } from "@/lib/season";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelCloud, PixelIcon, type PixelIconName } from "./PixelIcon";
@@ -103,15 +103,15 @@ function Hero() {
         <div className="flex flex-col items-start gap-6">
           <span className="pixel-chip">
             <PixelIcon name="star" size={18} color="#f2b93b" />
-            Free practice, and the tea on AI interviews
+            Free practice, with tea breaks
           </span>
           <h1 className="font-pixel text-4xl font-bold leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
             Warm up for your next coding interview
           </h1>
           <p className="max-w-xl text-lg text-ink-soft sm:text-xl">
             {APP_NAME} is a friendly practice space. Take short lessons, play through game-like
-            drills and rehearse real interview questions with Bobbin, a pixel bird who gives
-            feedback that points you forward.
+            drills and rehearse interview questions with Bobbin, a pixel bird who keeps you
+            company while you work out what to practice next.
           </p>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-4">
             <Link href="/login?mode=new" className="btn-primary">
@@ -152,7 +152,7 @@ const STEPS: { icon: PixelIconName; bg: string; fg: string; title: string; text:
     bg: "bg-lilac-deep",
     fg: "#fffdf4",
     title: "Rehearse with Bobbin",
-    text: "Answer interview questions out loud or in text and get kind, useful feedback.",
+    text: "Answer interview questions in your own words, then check yourself against the key points.",
   },
 ];
 
@@ -185,9 +185,9 @@ function HowItWorks() {
 }
 
 const FEATURES: { icon: PixelIconName; color: string; title: string; text: string }[] = [
-  { icon: "star", color: "#f2b93b", title: "Bite-size lessons", text: "Two to five minutes each. Guess first, study a worked example, then try it yourself." },
+  { icon: "star", color: "#f2b93b", title: "Bite-size lessons", text: "A few minutes each. Guess first, study a worked example, then try it yourself." },
   { icon: "gem", color: "#9fd5ea", title: "Practice that sticks", text: "Questions come back on a schedule and mix across topics, so what you learn stays with you." },
-  { icon: "heart", color: "#ff9e80", title: "Mock interviews with Bobbin", text: "Bobbin asks follow-up questions, nudges weak answers and finishes with a score and next steps." },
+  { icon: "heart", color: "#ff9e80", title: "Practice rounds with Bobbin", text: "Answer, compare with a strong answer, tick the key points you covered and see what to practice next." },
   { icon: "flame", color: "#f08a24", title: "Pick your pressure", text: "Start relaxed, then work up to a strict, timed round that feels like interview day." },
   { icon: "check", color: "#2f7f78", title: "Gentle streaks", text: "Rest days and a grace day keep your streak safe. There are no leaderboards." },
   { icon: "coin", color: "#f2b93b", title: "Seasonal outfits", text: "A scarf in winter, a flower crown in spring, a sun hat in summer and a beret in autumn." },
@@ -251,9 +251,9 @@ function MeetBobbin() {
 }
 
 const LEVELS = [
-  { mood: "happy", bg: "bg-mint", name: "Relaxed", text: "Hints are on and there is no timer. Bobbin explains as you go." },
-  { mood: "sparkle", bg: "bg-peach", name: "Standard", text: "Follow-up questions and a gentle timer, like a friendly screen." },
-  { mood: "determined", bg: "bg-lilac", name: "Interview day", text: "Strict timing and fewer hints, so the real thing feels familiar." },
+  { mood: "happy", bg: "bg-mint", name: "Relaxed", text: "Hints are on and there is no timer. Take all the time you need." },
+  { mood: "sparkle", bg: "bg-peach", name: "Standard", text: "Hints are on, with a gentle timer for each question." },
+  { mood: "determined", bg: "bg-lilac", name: "Interview day", text: "No hints and a shorter timer, so the real thing feels familiar." },
 ] as const;
 
 function Pressure() {
@@ -312,8 +312,7 @@ function FinalCall() {
         <div className="flex max-w-xl flex-col items-start gap-4">
           <Title>Ready when you are</Title>
           <p className="text-lg text-ink-soft">
-            Start free today and get {DAILY_INTERVIEW_CAP === 2 ? "two" : DAILY_INTERVIEW_CAP}{" "}
-            practice interviews every day. Your first lesson takes about {FIRST_LESSON_MINUTES} minutes.
+            Start free today. Your first lesson takes about {FIRST_LESSON_MINUTES} minutes.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link href="/login?mode=new" className="btn-primary">

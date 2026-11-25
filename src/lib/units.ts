@@ -8,3 +8,9 @@ import type { Track } from "./types.ts";
 export function unitNumber(order: Track[], isShown: (track: Track) => boolean, track: Track): number {
   return order.filter(isShown).indexOf(track) + 1;
 }
+
+/** "2 lessons, about 12 minutes in total." Counts only the lessons passed in, so pass the published ones. */
+export function lessonSummary(lessons: { minutes: number }[]): string {
+  const minutes = lessons.reduce((n, l) => n + l.minutes, 0);
+  return `${lessons.length} ${lessons.length === 1 ? "lesson" : "lessons"}, about ${minutes} minutes in total.`;
+}
