@@ -6,7 +6,7 @@ const meta = {
   component: Bobbin,
   tags: ["autodocs"],
   args: { say: "Make a guess before you see the answer. A wrong guess is fine.", mood: "thinking", outfit: "winter" },
-  argTypes: { mood: { control: "select", options: ["sparkle", "happy", "thinking", "cheering", "sleepy", "determined", "nervous", "teary"] }, outfit: { control: "inline-radio", options: ["winter", "spring", "summer", "autumn"] } },
+  argTypes: { mood: { control: "select", options: ["sparkle", "wink", "happy", "thinking", "cheering", "sleepy", "determined", "nervous", "teary"] }, outfit: { control: "inline-radio", options: ["winter", "spring", "summer", "autumn"] } },
   decorators: [(Story) => <div className="w-[520px] max-w-full"><Story /></div>],
 } satisfies Meta<typeof Bobbin>;
 

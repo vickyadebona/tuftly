@@ -1,4 +1,4 @@
-import { HEMISPHERE } from "./config";
+import { HEMISPHERE, SEASON_OVERRIDE } from "./config";
 import { todayStr } from "./dates";
 import { seasonFor, type Season } from "./season";
 import { useHydrated } from "./store";
@@ -6,5 +6,6 @@ import { useHydrated } from "./store";
 /** The current season from the device's date. Winter until the browser is ready (no flash of nothing). */
 export function useSeason(): Season {
   const hydrated = useHydrated();
+  if (SEASON_OVERRIDE) return SEASON_OVERRIDE;
   return hydrated ? seasonFor(todayStr(), HEMISPHERE) : "winter";
 }

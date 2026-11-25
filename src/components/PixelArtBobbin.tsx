@@ -1,13 +1,18 @@
+"use client";
+
 import Image from "next/image";
 import { COMPANION } from "@/lib/config";
 import type { Season } from "@/lib/season";
+import { useSeason } from "@/lib/useSeason";
 import type { BobbinMood } from "./Bobbin";
 
 // AI-generated pixel-art sets (200x200, transparent) in /public/bobbin/pixel/<season>/<mood>.webp.
 // Lossless WebP (pixel-identical to the PNG originals in /design, about a third smaller). Images
 // load lazily; pass `priority` for the one above the fold so it is not delayed. "calm" has no separate drawing, so it uses sparkle.
+// "wink" is drawn from sparkle and cheering by scripts/make-wink.mjs: rerun it if those change.
 const FILE: Record<BobbinMood, string> = {
   sparkle: "sparkle",
+  wink: "wink",
   calm: "sparkle",
   happy: "happy",
   thinking: "thinking",
@@ -20,22 +25,25 @@ const FILE: Record<BobbinMood, string> = {
 
 export function PixelArtBobbin({
   mood = "sparkle",
-  outfit = "winter",
+  outfit,
   size = 96,
   priority = false,
 }: {
   mood?: BobbinMood;
+  /** Leave this off: Bobbin dresses for today's season. Set it only to show a particular outfit. */
   outfit?: Season;
   size?: number;
   /** Above-the-fold image: load right away instead of lazily. */
   priority?: boolean;
 }) {
+  const today = useSeason();
+  const season = outfit ?? today;
   const motion =
     mood === "cheering" ? "bobbin-cheer" : mood === "sleepy" ? "bobbin-sleep" : "bobbin-idle";
   return (
     <Image
-      src={`/bobbin/pixel/${outfit}/${FILE[mood]}.webp`}
-      alt={`${COMPANION.name}, a little round pixel-art bird in a ${outfit} outfit, looking ${mood}`}
+      src={`/bobbin/pixel/${season}/${FILE[mood]}.webp`}
+      alt={`${COMPANION.name}, a little round pixel-art bird in a ${season} outfit, ${mood === "wink" ? "winking" : `looking ${mood}`}`}
       width={size}
       height={size}
       unoptimized

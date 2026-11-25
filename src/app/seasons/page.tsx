@@ -4,14 +4,15 @@ import { PixelArtBobbin } from "@/components/PixelArtBobbin";
 import { SEASONS, type Season } from "@/lib/season";
 
 const BLURB: Record<Season, string> = {
-  winter: "Nov–Feb. Teal scarf: cozy and cold-weather ready.",
+  winter: "Dec–Feb. Teal scarf: cozy and cold-weather ready.",
   spring: "Mar–May. A flower crown around the tuft.",
   summer: "Jun–Aug. A straw sun hat with a teal ribbon.",
-  autumn: "Sep–Oct. A dusty-red beret.",
+  autumn: "Sep–Nov. A dusty-red beret.",
 };
 
 const MOODS: BobbinMood[] = [
   "sparkle",
+  "wink",
   "happy",
   "thinking",
   "cheering",
@@ -31,7 +32,7 @@ export default function SeasonsPage() {
       <h1 className="text-2xl font-semibold">Bobbin: seasons and expressions</h1>
       <p className="text-sm text-zinc-600">
         Pixel art only. The app picks the outfit from today&apos;s date (northern hemisphere by
-        default; change <code>HEMISPHERE</code> in the config). Every season has the same 8
+        default; change <code>HEMISPHERE</code> in the config). Every season has the same 9
         expressions.
       </p>
 

@@ -64,7 +64,7 @@ export function About() {
               </p>
             </div>
             <div className="mx-auto lg:mx-0">
-              <PixelArtBobbin mood="thinking" outfit="winter" size={200} priority />
+              <PixelArtBobbin mood="thinking" size={200} priority />
             </div>
           </div>
         </section>
@@ -143,7 +143,7 @@ export function About() {
 
         <section className={`${SECTION} bg-teal-wash`}>
           <div className={`${INNER} flex flex-col items-center gap-6 text-center`}>
-            <PixelArtBobbin mood="cheering" outfit="winter" size={140} />
+            <PixelArtBobbin mood="cheering" size={140} />
             <Title>Come practice with Bobbin</Title>
             <p className="max-w-xl text-lg text-ink-soft">
               Your first lesson takes about {FIRST_LESSON_MINUTES} minutes. No card, no pressure.
