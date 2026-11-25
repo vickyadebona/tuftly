@@ -10,11 +10,13 @@ import type { BobbinMood } from "./Bobbin";
 // Lossless WebP (pixel-identical to the PNG originals in /design, about a third smaller). Images
 // load lazily; pass `priority` for the one above the fold so it is not delayed. "calm" has no separate drawing, so it uses sparkle.
 // "wink" is drawn from sparkle and cheering by scripts/make-wink.mjs: rerun it if those change.
+// "talk" is sparkle with cheering's open beak (scripts/make-talk.mjs).
 // "sip" is happy without its side wings (scripts/make-sip.mjs), for the tea break.
 const FILE: Record<BobbinMood, string> = {
   sparkle: "sparkle",
   wink: "wink",
   sip: "sip",
+  talk: "talk",
   calm: "sparkle",
   happy: "happy",
   thinking: "thinking",
@@ -45,7 +47,7 @@ export function PixelArtBobbin({
   return (
     <Image
       src={`/bobbin/pixel/${season}/${FILE[mood]}.webp`}
-      alt={`${COMPANION.name}, a little round pixel-art bird in a ${season} outfit, ${mood === "wink" ? "winking" : mood === "sip" ? "having a sip" : `looking ${mood}`}`}
+      alt={`${COMPANION.name}, a little round pixel-art bird in a ${season} outfit, ${mood === "wink" ? "winking" : mood === "sip" ? "having a sip" : mood === "talk" ? "talking" : `looking ${mood}`}`}
       width={size}
       height={size}
       unoptimized

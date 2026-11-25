@@ -3,7 +3,7 @@ import { SEASONS } from "@/lib/season";
 import type { BobbinMood } from "./Bobbin";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 
-const MOODS: BobbinMood[] = ["sparkle", "wink", "happy", "thinking", "cheering", "sleepy", "determined", "nervous", "teary"];
+const MOODS: BobbinMood[] = ["sparkle", "wink", "happy", "thinking", "cheering", "sleepy", "determined", "nervous", "teary", "talk"];
 
 const meta = {
   title: "Pixel art/PixelArtBobbin",
@@ -23,7 +23,7 @@ type Story = StoryObj<typeof meta>;
 /** Bobbin, the little round bird. 200×200 pixel art in /public/bobbin/pixel, one image per season and mood. */
 export const Playground: Story = {};
 
-/** All eight expressions in one season. The app picks the outfit from today's date. */
+/** The expressions in one season. The app picks the outfit from today's date. */
 export const Moods: Story = {
   parameters: { layout: "padded" },
   render: (args) => (

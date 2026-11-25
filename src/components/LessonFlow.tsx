@@ -26,6 +26,7 @@ import { LessonDiagram } from "./LessonDiagram";
 import { RichText } from "./RichText";
 import { LessonIntro, UnitIntro } from "./LessonIntro";
 import { LessonSkeleton } from "./Skeleton";
+import { TalkingBobbin } from "./TalkingBobbin";
 
 const STAGE_LABEL = { guess: "Guess", example: "Example", check: "Your turn", reteach: "Another look", explain: "Say it" } as const;
 
@@ -170,7 +171,11 @@ function LessonRun({
 
       {!recap && pos.stage === "example" && (
         <section className="flex flex-col gap-4">
-          <h2 className="font-pixel text-xl font-bold text-ink">Worked example</h2>
+          <div className="flex items-end gap-3">
+            {/* He talks when the example is something said out loud, not code. */}
+            <div className="w-16 shrink-0">{idea.workedExample.sample ? <TalkingBobbin /> : <Bobbin />}</div>
+            <h2 className="font-pixel mb-2 text-xl font-bold text-ink">Worked example</h2>
+          </div>
           {idea.workedExample.code && <CodeBlock code={idea.workedExample.code} />}
           {idea.workedExample.sample && (
             <blockquote className="pixel-box whitespace-pre-line bg-teal-wash p-4 text-ink">{idea.workedExample.sample}</blockquote>

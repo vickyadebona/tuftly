@@ -8,6 +8,7 @@ import { PixelArtBobbin } from "./PixelArtBobbin";
 export type BobbinMood =
   | "wink"
   | "sip"
+  | "talk"
   | "sparkle"
   | "calm"
   | "happy"

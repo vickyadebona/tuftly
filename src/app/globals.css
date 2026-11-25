@@ -126,8 +126,14 @@ body {
 .bobbin-still img { animation: none; }
 .bobbin-sleep { animation: bobbin-breathe 4s ease-in-out infinite; transform-origin: 50% 90%; }
 .bobbin-cheer { animation: bobbin-wiggle 0.6s ease-in-out 3; transform-origin: 50% 90%; }
+/* Talking: the closed beak covers the open one a few times, then Bobbin rests mid-word. */
+@keyframes bobbin-talk {
+  0% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.bobbin-shut { opacity: 0; animation: bobbin-talk 0.4s steps(1) 8; }
 @media (prefers-reduced-motion: reduce) {
-  .bobbin-idle, .bobbin-sleep, .bobbin-cheer { animation: none; }
+  .bobbin-idle, .bobbin-sleep, .bobbin-cheer, .bobbin-shut { animation: none; }
 }
 
 /* Pixel art stays crisp when scaled. */
