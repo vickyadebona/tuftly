@@ -39,12 +39,14 @@ const GROUPS: { title: string; swatches: { name: string; cls: string; use: strin
   {
     title: "Brand and accents",
     swatches: [
-      { name: "teal", cls: "bg-teal", use: "Primary buttons, done" },
-      { name: "teal-deep", cls: "bg-teal-deep", use: "Links, hover" },
+      { name: "teal", cls: "bg-teal", use: "Primary buttons, done (brown text only)" },
+      { name: "teal-deep", cls: "bg-teal-deep", use: "Links, small teal text" },
+      { name: "teal-light", cls: "bg-teal-light", use: "Primary button hover" },
       { name: "butter", cls: "bg-butter", use: "Current step, accent buttons" },
       { name: "butter-deep", cls: "bg-butter-deep", use: "Stars, accent hover" },
       { name: "coral", cls: "bg-coral", use: "Hearts, warm accents" },
-      { name: "orange", cls: "bg-orange", use: "Flames, errors" },
+      { name: "orange", cls: "bg-orange", use: "Flames (decoration)" },
+      { name: "orange-deep", cls: "bg-orange-deep", use: "Error text, meaningful lines" },
       { name: "grass", cls: "bg-grass", use: "Hero ground" },
       { name: "lilac-deep", cls: "bg-lilac-deep", use: "Story unit header" },
     ],

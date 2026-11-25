@@ -57,7 +57,7 @@ export function GoogleButton() {
         Continue with Google
       </button>
       {failed && (
-        <span role="alert" className="text-center text-sm font-semibold text-orange">
+        <span role="alert" className="text-center text-sm font-semibold text-orange-deep">
           Google sign-in didn&apos;t start. Please try again.
         </span>
       )}

@@ -9,7 +9,7 @@ export function RichText({ text }: { text: string }) {
         if (i % 2 === 0) return part;
         if (part.startsWith("`")) {
           return (
-            <code key={i} className="break-words bg-teal-wash px-0.5 font-mono text-[0.9em]">
+            <code key={i} className="break-words bg-lilac px-1 font-mono text-[0.9em]">
               {part.slice(1, -1)}
             </code>
           );
