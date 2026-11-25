@@ -54,10 +54,10 @@ function TwoObjects({ diagram }: { diagram: Extract<Diagram, { kind: "two-object
         <p className="h-6 leading-6">{o.field}</p>
         <div className="flex h-8 items-center gap-1.5">
           <span>tags:</span>
-          <span className={`whitespace-nowrap border-[3px] px-1 ${shared ? "border-orange bg-peach" : "border-line bg-mint"}`}>
+          <span className={`whitespace-nowrap border-[3px] px-1 ${shared ? "border-orange-deep bg-peach" : "border-line bg-mint"}`}>
             {o.tags}
           </span>
-          {shared && <span className="-mr-[calc(1.25rem+3px)] flex-1 border-t-[3px] border-orange" />}
+          {shared && <span className="-mr-[calc(1.25rem+3px)] flex-1 border-t-[3px] border-orange-deep" />}
         </div>
       </div>
     </div>
@@ -71,7 +71,7 @@ function TwoObjects({ diagram }: { diagram: Extract<Diagram, { kind: "two-object
       </p>
       {row(bottom)}
       {shared && (
-        <span className="absolute bottom-[calc(1.5rem+3px)] right-3 top-[calc(3rem+3px)] w-[3px] translate-x-1/2 bg-orange" />
+        <span className="absolute bottom-[calc(1.5rem+3px)] right-3 top-[calc(3rem+3px)] w-[3px] translate-x-1/2 bg-orange-deep" />
       )}
     </div>
   );

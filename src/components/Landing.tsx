@@ -136,7 +136,7 @@ const STEPS: { icon: PixelIconName; bg: string; fg: string; title: string; text:
   {
     icon: "check",
     bg: "bg-teal",
-    fg: "#fffdf4",
+    fg: "#4a3326",
     title: "Learn a little",
     text: "Open a lesson, make a guess, study an example and try one yourself.",
   },

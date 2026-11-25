@@ -65,7 +65,7 @@ function SignInOptions({ name, intro, onSent }: { name?: string; intro: string; 
           className="border-[3px] border-line bg-paper p-3 text-ink"
         />
         {status === "error" && (
-          <span role="alert" className="text-sm font-semibold text-orange">
+          <span role="alert" className="text-sm font-semibold text-orange-deep">
             That didn&apos;t work. Check the email address and try again.
           </span>
         )}
@@ -155,7 +155,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
           Continue
         </Link>
         {linkError && !auth.user && (
-          <p role="alert" className="font-semibold text-orange">
+          <p role="alert" className="font-semibold text-orange-deep">
             That sign-in didn&apos;t finish. Please try again below.
           </p>
         )}
@@ -215,7 +215,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
           </>
         )}
         {linkError && (
-          <p role="alert" className="font-semibold text-orange">
+          <p role="alert" className="font-semibold text-orange-deep">
             That sign-in didn&apos;t finish. Please try again below.
           </p>
         )}
@@ -274,7 +274,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
             className="border-[3px] border-line bg-paper p-3 font-normal text-ink"
           />
           {error && (
-            <span id="name-error" role="alert" className="text-sm font-semibold text-orange">
+            <span id="name-error" role="alert" className="text-sm font-semibold text-orange-deep">
               {error}
             </span>
           )}
@@ -299,7 +299,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
       </form>
 
       {linkError && (
-        <p role="alert" className="text-center font-semibold text-orange">
+        <p role="alert" className="text-center font-semibold text-orange-deep">
           That sign-in didn&apos;t finish. Please try again below.
         </p>
       )}

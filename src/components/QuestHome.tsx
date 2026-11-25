@@ -36,7 +36,7 @@ function PathNode({ state }: { state: NodeState }) {
   if (state === "done")
     return (
       <span className={`${base} bg-teal`}>
-        <PixelIcon name="check" size={32} color="#fffdf4" />
+        <PixelIcon name="check" size={32} color="#4a3326" />
       </span>
     );
   if (state === "current")
@@ -143,7 +143,7 @@ export function QuestHome() {
           const unitDone = unitLessons.filter((l) => done.has(l.id)).length;
           return (
             <section key={unit.track} aria-labelledby={`unit-${unit.track}`} className="flex min-w-0 flex-col gap-6">
-              <div className={`flex flex-wrap items-end justify-between gap-4 border-[3px] border-line px-6 py-5 text-white shadow-[4px_4px_0_rgb(91_58_41/0.28)] ${unit.bg}`}>
+              <div className={`flex flex-wrap items-end justify-between gap-4 border-[3px] border-line px-6 py-5 text-ink shadow-[4px_4px_0_rgb(91_58_41/0.28)] ${unit.bg}`}>
                 <div>
                   <p className="font-pixel text-sm font-semibold uppercase tracking-wide">Unit {unitIndex + 1}</p>
                   <h2 id={`unit-${unit.track}`} className="font-pixel text-2xl font-bold sm:text-3xl">
@@ -296,7 +296,7 @@ export function QuestHome() {
                   title={rest ? "Rest day (tap to undo)" : "Tap to make this a rest day"}
                   className={`h-9 flex-1 border-[3px] border-line font-bold ${
                     active
-                      ? "bg-teal text-white"
+                      ? "bg-teal text-ink"
                       : rest
                         ? "bg-lilac-deep text-ink"
                         : isToday

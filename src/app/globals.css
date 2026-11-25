@@ -27,14 +27,16 @@
   --color-butter: #ffd966;
   --color-butter-deep: #f2b93b;
   --color-teal: #4fb3a9;
-  --color-teal-deep: #2f7f78;
+  --color-teal-deep: #276e68;
+  --color-teal-light: #6cc5bc; /* hover on teal buttons */
   --color-coral: #ff9e80;
-  --color-orange: #f08a24;
+  --color-orange: #f08a24; /* decoration only: too light for text */
+  --color-orange-deep: #a85300; /* error text, meaningful lines */
   --color-grass: #8dd19e;
   --color-lilac-deep: #cdb9f2;
 
   --color-ink: #4a3326;
-  --color-ink-soft: #7a6253;
+  --color-ink-soft: #72594b;
   --color-line: #5b3a29;
 
   --font-sans: var(--font-nunito);
@@ -84,7 +86,7 @@ body {
     box-shadow: 0 1px 0 rgb(91 58 41 / 0.35);
   }
   .btn-primary {
-    @apply bg-teal text-white hover:bg-teal-deep;
+    @apply bg-teal text-ink hover:bg-teal-light; /* brown text: white fails contrast on teal */
   }
   .btn-secondary {
     @apply bg-paper text-ink hover:bg-cream-deep;
