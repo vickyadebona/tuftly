@@ -344,3 +344,15 @@ test("diagrams are described in words and bold markers come in pairs", () => {
     }
   }
 });
+
+test("backticks around code in bullet points and answer boxes come in pairs", () => {
+  const bullets = [
+    ...lessons.flatMap((l) => [
+      ...l.intro.outcomes,
+      ...l.ideas.flatMap((i) => [...i.workedExample.walkthrough, ...i.reteach.steps, ...i.explain.keyPoints, i.recap]),
+    ]),
+    ...drills.flatMap((d) => [...d.rubric, d.sayIt]),
+    ...lessons.flatMap((l) => l.ideas.flatMap((i) => [i.guess.reveal, i.explain.modelAnswer, ...[i.check, ...i.retries].map((q) => q.explanation)])),
+  ];
+  for (const b of bullets) assert.equal(b.split("`").length % 2, 1, `unpaired backtick: ${b}`);
+});

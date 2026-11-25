@@ -52,7 +52,7 @@ export interface LessonIdea {
     sample?: string;
     /** A picture of what the code does, shown under it. */
     diagram?: Diagram;
-    /** Wrap the one phrase to remember in **double asterisks** to show it bold. */
+    /** Here and in reveals, explanations and spoken answers, `backticks` mark code; **double asterisks** mark the one phrase to remember. */
     walkthrough: string[];
   };
   /** The "your turn" check. A wrong answer sends the learner to `reteach`. */
