@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useEffect, useRef, useState } from "react";
 
-// Swatches read the real colour from the page, so this stays in step with src/app/globals.css.
+// Swatches read the real color from the page, so this stays in step with src/app/globals.css.
 function Swatch({ name, cls, use }: { name: string; cls: string; use: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [hex, setHex] = useState("");

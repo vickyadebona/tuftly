@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { getDrills } from "@/content";
+import { useEffect, useState } from "react";
+import { getDrills, getLessons } from "@/content";
 import { COMPANION, type PressureLevel } from "@/lib/config";
 import { useHydrated, useProgress } from "@/lib/store";
 import { interleave } from "@/lib/queue";
+import { lessonMix, minutesFor, SESSIONS, sessionQuestions, type RoundQuestion } from "@/lib/sessions";
 import { useSeason } from "@/lib/useSeason";
 import { CodeBlock } from "./CodeBlock";
 import { PixelArtBobbin } from "./PixelArtBobbin";
@@ -13,10 +14,9 @@ import { PixelIcon, Teacup } from "./PixelIcon";
 import { InterviewSkeleton } from "./Skeleton";
 import { RichText } from "./RichText";
 
-// A practice round with the content we already have. Questions come from the drill bank and you
-// check your own answer against key points. The AI interviewer (follow-ups, scoring) comes later.
-
-const ROUND_SIZE = 5;
+// A practice round with the content we already have: a named session, or a mix from finished
+// lessons. You check your own answer against key points. The AI interviewer (follow-ups,
+// scoring) comes later.
 
 const PRESSURE: { id: PressureLevel; label: string; seconds: number | null; hints: boolean; note: string }[] = [
   { id: "relaxed", label: "Relaxed", seconds: null, hints: true, note: "Hints on · No timer" },
@@ -30,12 +30,8 @@ function fmt(total: number) {
   return `${m}:${s}`;
 }
 
-function Round({ pressure }: { pressure: PressureLevel }) {
+function Round({ pressure, title, questions, onLeave }: { pressure: PressureLevel; title: string; questions: RoundQuestion[]; onLeave: () => void }) {
   const season = useSeason();
-  const learned = useProgress().lessonsDone;
-  // Only ask about lessons the learner has finished.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const questions = useMemo(() => interleave(getDrills().filter((d) => learned.includes(d.lessonId))).slice(0, ROUND_SIZE), []);
   const level = PRESSURE.find((p) => p.id === pressure)!;
 
   const [index, setIndex] = useState(0);
@@ -73,29 +69,13 @@ function Round({ pressure }: { pressure: PressureLevel }) {
     setLeft(level.seconds);
   }
 
-  // Nothing to ask yet (for example no finished lesson has drills available).
-  if (questions.length === 0) {
-    return (
-      <section className="pixel-box mx-auto flex max-w-xl flex-col items-center gap-4 bg-peach p-8 text-center">
-        <PixelArtBobbin mood="thinking" outfit={season} size={120} />
-        <h1 className="font-pixel text-2xl font-bold text-ink">No questions yet</h1>
-        <p className="text-lg text-ink">
-          Finish a lesson first. Once you have, I&apos;ll have questions from it ready for you here.
-        </p>
-        <Link href="/home" className="btn-primary">
-          Back to the quest map
-        </Link>
-      </section>
-    );
-  }
-
-  if (finished) return <Summary results={results} season={season} />;
+  if (finished) return <Summary results={results} season={season} onAnother={onLeave} />;
 
   const mood = onBreak ? "sleepy" : phase === "checking" ? "happy" : "thinking";
   const bobbinSays = onBreak
     ? "Breathe in, breathe out. I'll hold your place."
     : phase === "checking"
-      ? "Tick the key points your answer covered. This is only for you."
+      ? "Check off the key points your answer covered. This is only for you."
       : "Answer in your own words. A rough answer is a fine start.";
   const timeUp = pressure === "zara-like" && left === 0;
 
@@ -104,6 +84,7 @@ function Round({ pressure }: { pressure: PressureLevel }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="font-pixel text-2xl font-bold text-ink">Interview with Bobbin</h1>
+          <span className="pixel-chip bg-butter">{title}</span>
           <span className="pixel-chip bg-peach">{level.label}</span>
           <span className="pixel-chip bg-sky">
             Question <span className="font-sans">{index + 1}</span> of <span className="font-sans">{questions.length}</span>
@@ -237,43 +218,72 @@ function Round({ pressure }: { pressure: PressureLevel }) {
 const LEVEL_MOOD = { relaxed: "happy", standard: "sparkle", "zara-like": "determined" } as const;
 const LEVEL_BG = { relaxed: "bg-mint", standard: "bg-peach", "zara-like": "bg-lilac" } as const;
 
-/** Needs one finished practice first, then you pick how it feels, then the round starts. */
+const MIX = "mix";
+
+/** Pick what to practice and how it should feel, then the round starts. */
 export function InterviewRound() {
   const hydrated = useHydrated();
   const progress = useProgress();
   const season = useSeason();
   const [pressure, setPressure] = useState<PressureLevel>("relaxed");
-  const [started, setStarted] = useState(false);
+  const [picked, setPicked] = useState<string | null>(null);
+  // The questions are fixed when the round starts, so finishing a lesson elsewhere can't change them.
+  const [round, setRound] = useState<{ title: string; questions: RoundQuestion[] } | null>(null);
 
   if (!hydrated) return <InterviewSkeleton />;
 
+  // The mix needs a finished lesson and one practice. Named sessions are open to everyone.
   const practiced = Object.keys(progress.cards).length > 0;
+  const mixReady = practiced && getDrills().some((d) => progress.lessonsDone.includes(d.lessonId));
+  const lessons = getLessons();
+  const named = SESSIONS.map((s) => ({ ...s, count: sessionQuestions(s, lessons).length })).filter((s) => s.count > 0);
+  const chosen = picked ?? (mixReady ? MIX : named[0]?.id);
 
-  if (!practiced) {
-    return (
-      <section className="pixel-box mx-auto flex max-w-xl flex-col items-center gap-4 bg-peach p-8 text-center">
-        <PixelArtBobbin mood="sparkle" outfit={season} size={140} />
-        <h1 className="font-pixel text-2xl font-bold text-ink">Warm up first</h1>
-        <p className="text-lg text-ink">
-          Do one short practice before your first interview with {COMPANION.name}. It takes a couple of
-          minutes and makes the round much friendlier.
-        </p>
-        <Link href={progress.lessonsDone.length === 0 ? "/home" : "/review"} className="btn-primary">
-          {progress.lessonsDone.length === 0 ? "Start with a lesson" : "Start a practice"}
-        </Link>
-        {progress.lessonsDone.length === 0 && (
-          <p className="text-sm text-ink-soft">Practice drills unlock once you finish a lesson.</p>
-        )}
-      </section>
+  function start() {
+    const session = named.find((s) => s.id === chosen);
+    setRound(
+      session
+        ? { title: session.title, questions: sessionQuestions(session, lessons) }
+        : { title: "Mix from your lessons", questions: lessonMix(getDrills(), progress.lessonsDone, interleave) },
     );
   }
 
-  if (started) return <Round pressure={pressure} />;
+  if (round) return <Round pressure={pressure} title={round.title} questions={round.questions} onLeave={() => setRound(null)} />;
+
+  const card = (id: string, name: string, about: string, note: string, disabled = false) => (
+    <button
+      key={id}
+      type="button"
+      role="radio"
+      aria-checked={chosen === id}
+      disabled={disabled}
+      onClick={() => setPicked(id)}
+      className={`pixel-box flex flex-col px-3 py-2 text-left sm:p-4 disabled:cursor-not-allowed disabled:bg-cream-deep ${
+        chosen === id ? "bg-butter outline outline-4 outline-offset-2 outline-teal-deep" : "bg-paper"
+      }`}
+    >
+      <span className="font-pixel text-lg font-bold text-ink">{name}</span>
+      <span className="text-sm text-ink-soft sm:text-base">{about}</span>
+      <span className="text-sm font-semibold text-ink">{note}</span>
+    </button>
+  );
 
   return (
     <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 text-center">
-      <h1 className="font-pixel text-3xl font-bold text-ink">How should it feel today?</h1>
-      <p className="text-lg text-ink-soft">Pick a pace. You can change it next time.</p>
+      <h1 className="font-pixel text-3xl font-bold text-ink">What do you want to practice?</h1>
+      <p className="text-lg text-ink-soft">Pick a session. You can try any of them, in any order.</p>
+      <div role="radiogroup" aria-label="Session" className="grid w-full gap-3 sm:grid-cols-2 sm:gap-4">
+        {card(
+          MIX,
+          "Mix from your lessons",
+          mixReady ? "Questions from what you've finished" : "Finish a lesson and one short practice to open this",
+          mixReady ? "Up to 5 questions · about 10 minutes" : "Not open yet",
+          !mixReady,
+        )}
+        {named.map((s) => card(s.id, s.title, s.about, `${s.count} questions · about ${minutesFor(s.count)} minutes`))}
+      </div>
+      <h2 className="font-pixel text-2xl font-bold text-ink">How should it feel today?</h2>
+      <p className="text-ink-soft">Pick a pace. You can change it next time.</p>
       <div role="radiogroup" aria-label="How it feels" className="grid w-full gap-5 md:grid-cols-3">
         {PRESSURE.map((p) => {
           const chosen = pressure === p.id;
@@ -299,7 +309,7 @@ export function InterviewRound() {
           );
         })}
       </div>
-      <button type="button" className="btn-primary" onClick={() => setStarted(true)}>
+      <button type="button" className="btn-primary" onClick={start}>
         Start round
       </button>
     </section>
@@ -309,9 +319,11 @@ export function InterviewRound() {
 function Summary({
   results,
   season,
+  onAnother,
 }: {
   results: { topic: string; hit: number; total: number }[];
   season: ReturnType<typeof useSeason>;
+  onAnother: () => void;
 }) {
   const byTopic = new Map<string, { hit: number; total: number }>();
   for (const r of results) {
@@ -347,7 +359,7 @@ function Summary({
       <ul className="flex w-full flex-col gap-3 text-left">
         {rows.map((r) => (
           <li key={r.topic} className="pixel-box flex items-center justify-between gap-4 px-4 py-3">
-            <span className="font-bold capitalize text-ink">{r.topic}</span>
+            <span className="font-bold text-ink first-letter:uppercase">{r.topic}</span>
             <span className="text-ink-soft">
               {r.hit} of {r.total} key points
             </span>
@@ -356,11 +368,14 @@ function Summary({
       </ul>
       {next && next.pct < 1 && (
         <p className="text-ink">
-          Next up: a few short drills on <strong className="capitalize">{next.topic}</strong> will help it stick.
+          Worth another go: <strong>{next.topic}</strong>.
         </p>
       )}
       <div className="flex flex-wrap justify-center gap-4">
-        <Link href="/review" className="btn-primary">
+        <button type="button" className="btn-primary" onClick={onAnother}>
+          Try another session
+        </button>
+        <Link href="/review" className="btn-secondary">
           Practice drills
         </Link>
         <Link href="/home" className="btn-secondary">

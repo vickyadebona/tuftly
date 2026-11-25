@@ -150,7 +150,7 @@ const answerDepth: Lesson = {
           prompt: "After you explain a design choice, the interviewer asks, “When would you not do that?” What are they checking?",
           options: [
             "Whether you'll take your answer back",
-            "Whether you memorised the documentation",
+            "Whether you memorized the documentation",
             "Whether you can talk for longer",
             "Whether you know the limits of your choice",
           ],
@@ -212,7 +212,7 @@ const propertyLookup: Lesson = {
           "Picture each object holding a link to a backup object.",
           "Reading follows the links. Writing normally stays on the object you wrote to.",
         ],
-        code: `const parent = { colour: "red" };\nconst kid = Object.create(parent);\nparent.colour = "blue";\nconsole.log(kid.colour); // blue`,
+        code: `const parent = { color: "red" };\nconst kid = Object.create(parent);\nparent.color = "blue";\nconsole.log(kid.color); // blue`,
       },
       retries: [
         {
@@ -547,7 +547,7 @@ const stableTests: Lesson = {
       title: "Control what varies",
       guess: {
         question: "In an automated test suite, a test passes alone but fails when everything runs together. What's the likeliest cause?",
-        options: ["The test file name", "Tests share data and change it for each other", "Too many assertions", "The browser window colour"],
+        options: ["The test file name", "Tests share data and change it for each other", "Too many assertions", "The browser window color"],
         answerIndex: 1,
         reveal: "Shared accounts and records make results depend on what ran before, or alongside.",
       },

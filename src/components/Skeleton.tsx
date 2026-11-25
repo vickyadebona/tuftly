@@ -42,15 +42,15 @@ export function QuestSkeleton() {
   );
 }
 
-/** Interview screen: pace picker or locked card while saved progress loads. */
+/** Interview screen: session and pace picker while saved progress loads. */
 export function InterviewSkeleton() {
   return (
     <Frame label="Loading your interview" className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6">
       <Skeleton className="h-9 w-80 max-w-full" />
       <Skeleton className="h-5 w-56 max-w-full" />
-      <div className="grid w-full gap-5 md:grid-cols-3">
-        {[0, 1, 2].map((i) => (
-          <Skeleton key={i} className="h-48 w-full" />
+      <div className="grid w-full gap-3 sm:grid-cols-2 sm:gap-4">
+        {[0, 1, 2, 3].map((i) => (
+          <Skeleton key={i} className="h-24 w-full" />
         ))}
       </div>
       <Skeleton className="h-12 w-40" />

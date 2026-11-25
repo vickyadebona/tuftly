@@ -64,7 +64,7 @@ export interface LessonIdea {
   };
   /**
    * "Say it" step: the idea as an interviewer would ask it, answered in words. The learner writes
-   * their own answer, then compares with `modelAnswer` and ticks the `keyPoints` they covered.
+   * their own answer, then compares with `modelAnswer` and checks the `keyPoints` they covered.
    */
   explain: {
     question: string;
@@ -125,7 +125,7 @@ export interface Drill {
   code?: string;
   options: string[];
   answerIndex: number;
-  /** Key points a strong "why" covers. Shown after answering; learner ticks what they hit. */
+  /** Key points a strong "why" covers. Shown after answering; learner checks what they hit. */
   rubric: string[];
   hint: string;
   /** How you could say the answer in an interview: a few plain sentences, not just code or output. */

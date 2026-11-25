@@ -310,7 +310,7 @@ function LessonRun({
 
 /**
  * Interviews ask you to explain, not just to know. Write it the way you'd say it out loud, then
- * compare with one way to say it and tick what you covered. Nothing here is graded or saved.
+ * compare with one way to say it and check what you covered. Nothing here is graded or saved.
  */
 function ExplainStep({
   explain,
@@ -376,7 +376,7 @@ function ExplainStep({
             </p>
           </div>
           <fieldset className="pixel-box p-4">
-            <legend className="font-pixel px-1 text-sm font-bold text-ink">Tick what your answer covered</legend>
+            <legend className="font-pixel px-1 text-sm font-bold text-ink">Check what your answer covered</legend>
             {explain.keyPoints.map((k, i) => (
               <label key={k} className="flex items-start gap-2 py-1 text-ink">
                 <input

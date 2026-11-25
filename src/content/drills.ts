@@ -307,9 +307,9 @@ export const drills: Drill[] = [
     prompt: "“What are you working on improving?” Which is the better answer?",
     options: ["I can stay stuck too long. It once held up a teammate, so now I ask for help after an hour", "I lack experience with back-end work"],
     answerIndex: 0,
-    rubric: ["Names a specific behaviour", "Says what it cost", "Says what you do differently now"],
+    rubric: ["Names a specific behavior", "Says what it cost", "Says what you do differently now"],
     hint: "Which one describes something you do, and something you changed?",
-    sayIt: "I'd name a specific behaviour, what it cost and what I do now. For example: I've stayed stuck too long before asking, which once held up a teammate. Now I ask after an hour, with notes on what I've tried.",
+    sayIt: "I'd name a specific behavior, what it cost and what I do now. For example: I've stayed stuck too long before asking, which once held up a teammate. Now I ask after an hour, with notes on what I've tried.",
     reviewed: true,
   },
   {

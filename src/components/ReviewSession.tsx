@@ -30,7 +30,7 @@ interface Extra {
   seen: string[];
   /** What the learner said is still hard. Aims the questions that follow. */
   gap: string;
-  /** Set while asking what's still hard: the key points they didn't tick. */
+  /** Set while asking what's still hard: the key points they didn't check. */
   asking: string[] | null;
   /** Show the lesson's other explanation above the question. */
   refresh: boolean;
@@ -119,7 +119,7 @@ function DrillCard({
             </p>
           </div>
           {drill.rubric.length > 0 && <fieldset className="pixel-box bg-mint p-4">
-            <legend className="font-pixel px-1 text-sm font-bold text-ink">Key points. Tick the ones you had.</legend>
+            <legend className="font-pixel px-1 text-sm font-bold text-ink">Key points. Check the ones you had.</legend>
             {drill.rubric.map((r, i) => (
               <label key={r} className="flex items-start gap-2 py-1 text-ink">
                 <input
@@ -165,7 +165,7 @@ const canShare = SHARE_GAPS && supabaseConfigured;
 
 /**
  * After "Almost": ask what's still fuzzy, so the next question can aim at it. Nothing leaves the
- * device unless the learner ticks the box to share it.
+ * device unless the learner checks the box to share it.
  */
 function GapStep({ drillId, missed, onPractice, onMoveOn }: { drillId: string; missed: string[]; onPractice: (gap: string) => void; onMoveOn: () => void }) {
   const [text, setText] = useState("");
@@ -182,7 +182,9 @@ function GapStep({ drillId, missed, onPractice, onMoveOn }: { drillId: string; m
       <h2 className="font-pixel text-xl font-bold text-ink">Almost there. What&apos;s still fuzzy?</h2>
       {missed.length > 0 && (
         <fieldset className="pixel-box bg-mint p-4">
-          <legend className="font-pixel px-1 text-sm font-bold text-ink">Points you didn&apos;t tick. Pick any that are hard.</legend>
+          {/* Floated so a heading that wraps stays inside the box instead of across its border. */}
+          <legend className="font-pixel float-left mb-2 w-full text-sm font-bold text-ink">Points you didn&apos;t check. Pick any that are hard.</legend>
+          <div className="clear-both" />
           {missed.map((m) => (
             <label key={m} className="flex items-start gap-2 py-1 text-ink">
               <input
@@ -221,7 +223,7 @@ function GapStep({ drillId, missed, onPractice, onMoveOn }: { drillId: string; m
         </label>
       )}
       <div className="flex flex-wrap items-center gap-3">
-        {/* Typed words and picked points aim the next question. With neither, the unticked points do. */}
+        {/* Typed words and picked points aim the next question. With neither, the unchecked points do. */}
         <button
           type="button"
           onClick={() => {

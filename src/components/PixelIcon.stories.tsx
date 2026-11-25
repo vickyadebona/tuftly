@@ -16,7 +16,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Tiny sprites drawn as SVG rects, so they stay crisp at any size and take any colour. */
+/** Tiny sprites drawn as SVG rects, so they stay crisp at any size and take any color. */
 export const Playground: Story = {};
 
 /** Every icon, at the same size. */

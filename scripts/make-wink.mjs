@@ -63,7 +63,7 @@ for (const season of SEASONS) {
   const shut = blobs(cheer, isDark, EYE_BOX, DIAGONALS[season])[0];
   if (!open || !shut) throw new Error(`${season}: couldn't find an eye`);
 
-  // Paint over the open eye (and its white glint) with the face colour just beside it.
+  // Paint over the open eye (and its white glint) with the face color just beside it.
   const skin = Uint8Array.from(px(bird, open.left - 3, mid(open.top, open.bottom)));
   for (let y = open.top - 1; y <= open.bottom + 1; y++) {
     for (let x = open.left - 1; x <= open.right + 1; x++) px(bird, x, y).set(skin);

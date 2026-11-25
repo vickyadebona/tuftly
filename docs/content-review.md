@@ -61,7 +61,7 @@ In a “tell me about yourself” answer, which sentence belongs in the “past�
 #### Another look (after a miss)
 
 1. Think of it as a few short sentences: who you are now, one or two things you've done, and what you want next.
-2. It's a headline, not a biography. They can ask for more detail afterwards.
+2. It's a headline, not a biography. They can ask for more detail afterward.
 3. Aim for about 30 to 60 seconds, which is roughly 70 to 150 words.
 
 **Fresh question 1**
@@ -113,7 +113,7 @@ The job description asks for “experience with React and accessibility.” You'
 
 - All of them, in the order you did them
 - **✔ The projects that show React and accessibility**
-- Your favourite project, even if it's unrelated
+- Your favorite project, even if it's unrelated
 - Only how many years you've worked
 
 **Reveal:** Pick the two or three things the role asks for and talk about the experience that matches them. The interviewer is listening for a fit, not a full history.
@@ -455,7 +455,7 @@ In a project walkthrough during an interview, which line is the result?
 - I rebuilt the card fields with clearer errors.
 - **✔ Drop-offs fell by 18% the following month.**
 
-**Explanation:** The result says what changed afterwards. The first is the situation, the second the task and the third the action.
+**Explanation:** The result says what changed afterward. The first is the situation, the second the task and the third the action.
 
 #### Another look (after a miss)
 
@@ -483,7 +483,7 @@ In an interview, a candidate describes a project: “The app was slow, and my jo
 - The action
 - **✔ The result**
 
-**Explanation:** It gives the problem and what you did, but not what changed afterwards. Add the result, such as how much faster it got.
+**Explanation:** It gives the problem and what you did, but not what changed afterward. Add the result, such as how much faster it got.
 
 #### Say it
 
@@ -670,7 +670,7 @@ id: `strength-evidence`
 
 An interviewer asks, “What's one of your strengths?” Which answer works best?
 
-- I'm hard-working, organised, creative, friendly and a fast learner.
+- I'm hard-working, organized, creative, friendly and a fast learner.
 - **✔ I check my work the way people will use it. On our checkout rebuild, a screen reader test showed me that error messages weren't being read out, and I fixed that before launch.**
 - I'm probably the best at React on any team I join.
 - I don't really like talking about myself.
@@ -683,7 +683,7 @@ An interviewer asks, “What's one of your strengths?” Which answer works best
 
 1. Name it: one strength, in plain words.
 2. Evidence: one real moment, including what you did.
-3. Change: what was different for the work or the team afterwards.
+3. Change: what was different for the work or the team afterward.
 
 #### Your turn
 
@@ -704,7 +704,7 @@ An interviewer asks, “What's one of your strengths?” Which answer works best
 
 **Fresh question 1**
 
-Which part is missing? “I'm very organised, and that has really helped my team.”
+Which part is missing? “I'm very organized, and that has really helped my team.”
 
 - The name of the strength
 - **✔ A real moment that shows it**
@@ -754,19 +754,19 @@ The interviewer asks, “What's something you're working on improving?” Which 
 - Nothing comes to mind, to be honest.
 - **✔ I can stay stuck too long before asking for help. It once held up a teammate, so now I ask after an hour with notes on what I've tried.**
 
-**Reveal:** A specific behaviour, what it cost and what you do now shows that you notice things and act on them. A disguised strength, a broad gap or “nothing” tells the interviewer much less.
+**Reveal:** A specific behavior, what it cost and what you do now shows that you notice things and act on them. A disguised strength, a broad gap or “nothing” tells the interviewer much less.
 
 #### Worked example
 
-> “I've tended to stay stuck on a problem too long before asking for help. When we moved our component library to TypeScript, I spent most of two days on one type error, and a teammate waiting on that component couldn't start. Now, if I'm still stuck after an hour, I write down what I've tried and ask. I'm still practising it.”
+> “I've tended to stay stuck on a problem too long before asking for help. When we moved our component library to TypeScript, I spent most of two days on one type error, and a teammate waiting on that component couldn't start. Now, if I'm still stuck after an hour, I write down what I've tried and ask. I'm still practicing it.”
 
-1. Behaviour: something you do, specific enough to picture.
+1. Behavior: something you do, specific enough to picture.
 2. Cost: what it led to, said plainly and without drama.
 3. Now: what you do differently. It's fine to say you're still working on it.
 
 #### Your turn
 
-Which of these names a specific behaviour?
+Which of these names a specific behavior?
 
 - I lack experience with testing.
 - I'm not the best communicator.
@@ -785,12 +785,12 @@ Which of these names a specific behaviour?
 
 “I've sometimes skipped writing tests when I was rushing, and a bug reached our users.” What's missing?
 
-- The behaviour
+- The behavior
 - The cost
 - **✔ What you do differently now**
 - A strength to balance it
 
-**Explanation:** It names the behaviour and what it cost. Adding what you do now shows what you took from it.
+**Explanation:** It names the behavior and what it cost. Adding what you do now shows what you took from it.
 
 **Fresh question 2**
 
@@ -801,7 +801,7 @@ Why is “I work too hard” a weak answer to this question?
 - It's too short to count
 - Interviewers don't want to hear about work
 
-**Explanation:** The question asks what you're improving. A dressed-up strength avoids it, and there's no behaviour or change to talk about.
+**Explanation:** The question asks what you're improving. A dressed-up strength avoids it, and there's no behavior or change to talk about.
 
 #### Say it
 
@@ -813,12 +813,12 @@ What's something you're working on improving?
 > I've tended to stay stuck too long before asking for help. While moving our component library to TypeScript, I spent most of two days on one type error, and a teammate couldn't start their work. Now, after an hour, I write down what I've tried and ask.
 
 **Key points:**
-- Names a specific behaviour, not a broad gap
+- Names a specific behavior, not a broad gap
 - Says what it cost
 - Says what you do differently now
 - Is real, with nothing invented
 
-**Recap line:** For a growth area, name a specific behaviour, what it cost and what you do differently now.
+**Recap line:** For a growth area, name a specific behavior, what it cost and what you do differently now.
 
 ### Idea 3: Sharpen a vague first try
 
@@ -833,7 +833,7 @@ Your first try is “I could be better at communication.” What's the most usef
 - How can I make it sound like a strength?
 - What do other candidates usually say?
 
-**Reveal:** A vague answer usually has a real moment behind it. Finding that moment gives you the behaviour, what it cost and what you changed.
+**Reveal:** A vague answer usually has a real moment behind it. Finding that moment gives you the behavior, what it cost and what you changed.
 
 #### Worked example
 
@@ -843,7 +843,7 @@ Your first try is “I could be better at communication.” What's the most usef
 
 1. A first try is often a label. That's a fine place to start.
 2. Ask: when did it happen, what did I do, and what followed?
-3. Swap the label for the behaviour, then add the cost and what you do now. The same questions sharpen a strength.
+3. Swap the label for the behavior, then add the cost and what you do now. The same questions sharpen a strength.
 
 #### Your turn
 
@@ -871,7 +871,7 @@ Which rewrite of “I need to work on time management” is the sharpest?
 - **✔ I've said yes to extra tasks without checking my deadline, and one feature slipped. Now I check what it would delay first.**
 - I'm usually on time, so it isn't a big problem.
 
-**Explanation:** It names a behaviour, what it cost and the change. The others stay at the level of the label or brush it aside.
+**Explanation:** It names a behavior, what it cost and the change. The others stay at the level of the label or brush it aside.
 
 **Fresh question 2**
 
@@ -886,7 +886,7 @@ While sharpening an answer, you can't remember how big the effect was. What shou
 
 #### Say it
 
-Take a vague line about yourself, such as “I could be better at organising”, and give the sharper answer you'd say out loud.
+Take a vague line about yourself, such as “I could be better at organizing”, and give the sharper answer you'd say out loud.
 
 **Starter:** A time this happened was … I … Now I …
 
@@ -936,14 +936,14 @@ idea: `growth-area`
 - I lack experience with back-end work
 
 **Key points a good "why" covers:**
-- Names a specific behaviour
+- Names a specific behavior
 - Says what it cost
 - Says what you do differently now
 
 **Hint:** Which one describes something you do, and something you changed?
 
 **How you could say it:**
-> I'd name a specific behaviour, what it cost and what I do now. For example: I've stayed stuck too long before asking, which once held up a teammate. Now I ask after an hour, with notes on what I've tried.
+> I'd name a specific behavior, what it cost and what I do now. For example: I've stayed stuck too long before asking, which once held up a teammate. Now I ask after an hour, with notes on what I've tried.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -2462,7 +2462,7 @@ In an interview answer about a design choice, which phrase signals a tradeoff?
 After you explain a design choice, the interviewer asks, “When would you not do that?” What are they checking?
 
 - Whether you'll take your answer back
-- Whether you memorised the documentation
+- Whether you memorized the documentation
 - Whether you can talk for longer
 - **✔ Whether you know the limits of your choice**
 
@@ -2599,10 +2599,10 @@ console.log(defaults.size);
 2. Reading follows the links. Writing normally stays on the object you wrote to.
 
 ```js
-const parent = { colour: "red" };
+const parent = { color: "red" };
 const kid = Object.create(parent);
-parent.colour = "blue";
-console.log(kid.colour); // blue
+parent.color = "blue";
+console.log(kid.color); // blue
 ```
 
 **Fresh question 1**
@@ -3294,7 +3294,7 @@ In an automated test suite, a test passes alone but fails when everything runs t
 - `The test file name`
 - **✔ `Tests share data and change it for each other`**
 - `Too many assertions`
-- `The browser window colour`
+- `The browser window color`
 
 **Reveal:** Shared accounts and records make results depend on what ran before, or alongside.
 
