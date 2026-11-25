@@ -55,12 +55,13 @@ A reference for the colours, type, pixel-art pieces and screens. Run it with `np
 ## Accounts and saved progress (Supabase, optional)
 Everything works on this device without it. With Supabase set up, people can sign in with an emailed link (no passwords) and their progress follows them across devices. The app stays local-first: it reads and writes this device, then merges with the saved copy and syncs a moment later (`src/lib/merge.ts` has the rules and tests).
 1. Create a project at supabase.com.
-2. SQL editor: run `supabase/migrations/0001_user_data.sql` (one table, row level security so people only see their own row).
+2. SQL editor: run the files in `supabase/migrations/` in order (one table, row level security so people only see their own row).
 3. Authentication > URL Configuration: set the Site URL to `https://tuftly.vercel.app` and add redirect URLs `http://localhost:3000/**`, `https://tuftly.vercel.app/auth/callback` and, so preview links can sign in, `https://tuftly-*-terra-scape.vercel.app/**`.
 4. Copy `.env.local.example` to `.env.local` and fill in the project URL and publishable key (Project Settings > API). Add the same two variables in Vercel.
 5. Restart the dev server.
-The built-in email sender only mails addresses on the project's own team, a couple per hour, so add custom SMTP before anyone else signs in. The pitch builder is not synced yet.
-Next: Google sign-in, and a server-side counter for the 2 interviews a day cap.
+The built-in email sender only mails addresses on the project's own team, a couple per hour, so add custom SMTP before anyone else signs in.
+Google sign-in (optional): in Google Cloud, create an OAuth client of type "Web application" with the authorized redirect URI `https://<project-ref>.supabase.co/auth/v1/callback`, then paste its client ID and secret into Supabase under Authentication > Sign In / Providers > Google. The button appears by itself once the provider is on.
+Next: a server-side counter for the 2 interviews a day cap.
 
 ## Deploy
 The GitHub repo is `vickyadebona/tuftly` (private) and Vercel builds it. Pushes to `main` go live; other branches get preview links. Node 22 is pinned in `package.json`.

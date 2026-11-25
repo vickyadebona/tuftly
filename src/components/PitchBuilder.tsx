@@ -16,6 +16,8 @@ import {
 } from "@/lib/pitch";
 import { getLessons } from "@/content";
 import { useHydrated } from "@/lib/store";
+import { supabaseConfigured } from "@/lib/supabase/config";
+import { useAuthUser } from "@/lib/useAuthUser";
 import { Bobbin } from "./Bobbin";
 import { CardSkeleton } from "./Skeleton";
 
@@ -26,12 +28,13 @@ const field = "w-full border-[3px] border-line bg-paper p-3 text-ink placeholder
 /**
  * A guided worksheet: paste the role, pick what it asks for, match each to something you really
  * did, then get a first draft of "tell me about yourself" to edit and practice. It only arranges
- * the learner's own words. Saved on this device after every change, so they can leave and return.
+ * the learner's own words. Saved after every change, so they can leave and return.
  */
 export function PitchBuilder() {
   const hydrated = useHydrated();
   const d = usePitch();
-  if (!hydrated) return <CardSkeleton label="Loading your pitch" />;
+  const auth = useAuthUser();
+  if (!hydrated || !auth.ready) return <CardSkeleton label="Loading your pitch" />;
 
   const step = Math.min(d.step, STEPS.length - 1);
   const go = (n: number) => savePitch({ step: n });
@@ -53,8 +56,24 @@ export function PitchBuilder() {
           </p>
         </div>
         <p className="text-sm text-ink-soft">
-          Saved on this device only, so you can leave and come back. It&apos;s your own words: nothing here
-          writes claims for you, and you should only use things you can talk about in detail.
+          {auth.user ? (
+            "Saved with your account, so you can leave and pick it up on any device."
+          ) : (
+            <>
+              Saved on this device, so you can leave and come back.
+              {supabaseConfigured && (
+                <>
+                  {" "}
+                  <Link href="/login" className="font-semibold text-teal-deep underline">
+                    Sign in
+                  </Link>{" "}
+                  to save it with your account.
+                </>
+              )}
+            </>
+          )}{" "}
+          It&apos;s your own words: nothing here writes claims for you, and you should only use things you can talk
+          about in detail.
         </p>
       </div>
 
@@ -115,7 +134,7 @@ function RoleStep({ d, onNext }: { d: D; onNext: () => void }) {
         />
       </label>
       <p className="text-sm text-ink-soft">
-        It stays in your browser. You can also skip pasting and type what they&apos;re asking for in the next step.
+        You can also skip pasting and type what they&apos;re asking for in the next step.
       </p>
       <Nav onNext={onNext} />
     </section>
@@ -380,7 +399,7 @@ function FollowUpStep({ d, onBack }: { d: D; onBack: () => void }) {
           type="button"
           className="font-semibold text-teal-deep underline"
           onClick={() => {
-            if (window.confirm("Start over with a new role? This clears your current pitch from this device.")) clearPitch();
+            if (window.confirm("Start over with a new role? This clears your current pitch.")) clearPitch();
           }}
         >
           Start over with a new role

@@ -4,17 +4,20 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { continueAsGuest, createAccount, forgetProfile, restoreProfile, signOut, useAccount, useRememberedProfile } from "@/lib/account";
+import { forgetPitch } from "@/lib/pitch";
 import { resetProgress, useHydrated } from "@/lib/store";
 import { useSeason } from "@/lib/useSeason";
 import { getSupabase } from "@/lib/supabase/client";
 import { useAuthUser } from "@/lib/useAuthUser";
+import { GoogleButton, useGoogleEnabled } from "./GoogleButton";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { Skeleton } from "./Skeleton";
 
-/** Passwordless sign-in: we email a one-time link. Shown only when Supabase is set up. */
-function EmailLinkForm({ name, intro, onSent }: { name?: string; intro: string; onSent: (email: string) => void }) {
+/** Passwordless sign-in: Google, or a one-time link by email. Shown only when Supabase is set up. */
+function SignInOptions({ name, intro, onSent }: { name?: string; intro: string; onSent: (email: string) => void }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
+  const google = useGoogleEnabled();
   const supabase = getSupabase();
   if (!supabase) return null;
 
@@ -37,32 +40,40 @@ function EmailLinkForm({ name, intro, onSent }: { name?: string; intro: string; 
   }
 
   return (
-    <form onSubmit={send} noValidate className="flex flex-col gap-3 border-t-[3px] border-line/25 pt-4">
+    <div className="flex flex-col gap-3 border-t-[3px] border-line/25 pt-4">
       <p className="text-center text-ink-soft">{intro}</p>
-      <label className="sr-only" htmlFor="link-email">
-        Email for the sign-in link
-      </label>
-      <input
-        id="link-email"
-        type="email"
-        autoComplete="email"
-        placeholder="you@example.com"
-        value={email}
-        onChange={(e) => {
-          setEmail(e.target.value);
-          if (status === "error") setStatus("idle");
-        }}
-        className="border-[3px] border-line bg-paper p-3 text-ink"
-      />
-      {status === "error" && (
-        <span role="alert" className="text-sm font-semibold text-orange">
-          That didn&apos;t work. Check the email address and try again.
-        </span>
+      {google && (
+        <>
+          <GoogleButton />
+          <p className="text-center text-sm text-ink-soft">or get a link by email</p>
+        </>
       )}
-      <button type="submit" disabled={status === "sending"} className="btn-accent">
-        {status === "sending" ? "Sending…" : "Email me a sign-in link"}
-      </button>
-    </form>
+      <form onSubmit={send} noValidate className="flex flex-col gap-3">
+        <label className="sr-only" htmlFor="link-email">
+          Email for the sign-in link
+        </label>
+        <input
+          id="link-email"
+          type="email"
+          autoComplete="email"
+          placeholder="you@example.com"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (status === "error") setStatus("idle");
+          }}
+          className="border-[3px] border-line bg-paper p-3 text-ink"
+        />
+        {status === "error" && (
+          <span role="alert" className="text-sm font-semibold text-orange">
+            That didn&apos;t work. Check the email address and try again.
+          </span>
+        )}
+        <button type="submit" disabled={status === "sending"} className="btn-accent">
+          {status === "sending" ? "Sending…" : "Email me a sign-in link"}
+        </button>
+      </form>
+    </div>
   );
 }
 
@@ -143,7 +154,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
         <Link href="/home" className="btn-primary">
           Continue
         </Link>
-        {!auth.user && <EmailLinkForm intro="Want your progress on every device? Sign in with email." onSent={setSentTo} />}
+        {!auth.user && <SignInOptions intro="Want your progress on every device? Sign in." onSent={setSentTo} />}
         <button
           type="button"
           onClick={() => {
@@ -162,6 +173,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
     if (!window.confirm("This clears the progress saved on this device, so the next person starts fresh. Continue?")) return;
     forgetProfile();
     resetProgress();
+    forgetPitch();
     setMode("new");
   }
 
@@ -192,20 +204,20 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
             <h1 className="font-pixel text-3xl font-bold text-ink">Log in</h1>
             <p className="text-lg text-ink-soft">
               {getSupabase()
-                ? "Enter your email and we'll send you a link. No password needed."
+                ? "Sign in to pick up your progress."
                 : "There's no profile saved on this device yet."}
             </p>
           </>
         )}
         {linkError && (
           <p role="alert" className="font-semibold text-orange">
-            That sign-in link didn&apos;t work or has expired. Ask for a new one below.
+            That sign-in didn&apos;t finish. Please try again below.
           </p>
         )}
         <div className="w-full">
-          <EmailLinkForm
+          <SignInOptions
             onSent={setSentTo}
-            intro={remembered ? "Or log in with your email, on any device. We'll send a link, no password needed." : "We'll email you a link. No password needed."}
+            intro={remembered ? "Or sign in, on any device. No password needed." : "No password needed."}
           />
         </div>
         {remembered && !remembered.guest && (
@@ -283,14 +295,14 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
 
       {linkError && (
         <p role="alert" className="text-center font-semibold text-orange">
-          That sign-in link didn&apos;t work or has expired. Ask for a new one below.
+          That sign-in didn&apos;t finish. Please try again below.
         </p>
       )}
 
-      <EmailLinkForm
+      <SignInOptions
         name={name}
         onSent={setSentTo}
-        intro="Already have an account, or want your progress on every device? We'll email you a link. No password needed."
+        intro="Already have an account, or want your progress on every device? Sign in, no password needed."
       />
 
       <button
@@ -310,7 +322,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
       </button>
 
       <p className="text-center text-sm text-ink-soft">
-        Your profile and progress are saved on this device. Sign in with email to keep them safe and
+        Your profile and progress are saved on this device. Sign in to keep them safe and
         pick up on any device.
       </p>
     </section>,
