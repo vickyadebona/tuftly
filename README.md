@@ -8,7 +8,7 @@ A free-first, gentle practice space for web-dev interviews: short lessons, game-
 - **Audience:** all levels, including people returning after time away. Starts with JavaScript, then TypeScript; backend and system design later.
 - **Freemium, free-first.** AI interviews are capped at **2 per day** (`src/lib/config.ts`).
 - **One companion character** for v1: **Bobbin, a little round bird** (hatch, grow, fledge as skills level up). Bobbin is **pixel art only** (decided): AI-generated with Canva from one approved concept, saved as 200×200 transparent PNGs in `public/bobbin/pixel/<season>/<mood>.png`; sparkly eyes are the default. The earlier smooth SVG and code-generated sprite versions were removed. AI concept art lives in `design/`. Logo exploration is at `/logo`. **Seasonal outfits** follow the device date (`src/lib/season.ts`; winter scarf Dec–Feb, autumn beret Sep–Nov, spring flower crown, summer sun hat, autumn beret; `HEMISPHERE` and `SEASON_OVERRIDE` in config), previewed at `/seasons`. Every season has all 9 pixel-art expressions (the wink is drawn from the others by `scripts/make-wink.mjs`), plus a sipping pose for the tea break made by `scripts/make-sip.mjs` (`public/bobbin/pixel/<season>/`). No picking or customization yet. Before launch: get a trademark attorney to check "tuftly" (nearby TUFT/TUFTCON filings exist) and "Bobbin", and register the domain (tuftly.app / .io / .dev looked free; tuft.ly is a risky `.ly` domain, best used only as a redirect) and handles.
-- **No leaderboards.** Streaks have a grace period and rest days.
+- **No leaderboards.** Streaks count practiced days: one practice answer, interview answer or finished lesson (tea breaks don't count). Up to two rest days and one grace day a week keep them going (`src/lib/streak.ts`).
 - **Feedback:** scores per topic plus targeted drills. No replay of weak moments.
 - **Scoring is rubric-based**, not free-form LLM judgment, so it stays honest and cheaper.
 - **Out of scope:** anything that helps hide AI use during a live interview.
@@ -16,7 +16,8 @@ A free-first, gentle practice space for web-dev interviews: short lessons, game-
 ## UI (layout A, "Quest Map")
 Built from the Figma file "tuftly: layout explorations" (layout A). Pixel look: Pixelify Sans headings, Nunito body, 3px brown outlines with hard shadows, palette tokens in `src/app/globals.css`.
 - `/` landing page (`src/components/Landing.tsx`)
-- `/home` quest map: lessons as a path, today's quests, week strip with rest days (`QuestHome.tsx`)
+- `/home` quest map: lessons as a path, today's quests, week strip (`QuestHome.tsx`)
+- `/streak` calendar with current and longest streak, rest days and whether the week starts Sunday or Monday (`StreakCalendar.tsx`)
 - `/review` practice, `/lessons/[id]` lesson flow (restyled)
 - `/interview` practice round: questions come from the drill bank and you check off key points yourself. Includes a tea break, pressure levels, a round map and a way to leave, which ends the round. The AI interviewer, voice and real scoring are not built yet.
 - Not built from the design: XP, levels, gems and the closet (the data model has none of them), and mobile-specific layouts beyond basic stacking.

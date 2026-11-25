@@ -6,11 +6,10 @@ import { useEffect } from "react";
 import { restartTour, signOut, useAccount } from "@/lib/account";
 import { getSupabase } from "@/lib/supabase/client";
 import { useAuthUser } from "@/lib/useAuthUser";
-import { STREAK } from "@/lib/config";
 import { todayStr } from "@/lib/dates";
 import { NAV_AGAIN } from "@/lib/events";
 import { useHydrated, useProgress } from "@/lib/store";
-import { computeStreak } from "@/lib/streak";
+import { streakSummary } from "@/lib/streak";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelIcon, type PixelIconName } from "./PixelIcon";
 import { Skeleton } from "./Skeleton";
@@ -19,7 +18,7 @@ import { Tour } from "./Tour";
 import { useSeason } from "@/lib/useSeason";
 
 const NAV: { href: string; label: string; icon: PixelIconName; color: string; match: string[]; tour: string }[] = [
-  { href: "/home", label: "Quest map", icon: "star", color: "#f2b93b", match: ["/home", "/lessons"], tour: "nav-quest" },
+  { href: "/home", label: "Quest map", icon: "star", color: "#f2b93b", match: ["/home", "/lessons", "/streak"], tour: "nav-quest" },
   { href: "/review", label: "Practice", icon: "gem", color: "#9fd5ea", match: ["/review"], tour: "nav-review" },
   { href: "/interview", label: "Interviews", icon: "heart", color: "#ff9e80", match: ["/interview"], tour: "nav-interview" },
   { href: "/pitch", label: "Pitch", icon: "speech", color: "#8f73d0", match: ["/pitch"], tour: "nav-pitch" },
@@ -33,9 +32,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const auth = useAuthUser();
   const progress = useProgress();
   const season = useSeason();
-  const streak = hydrated
-    ? computeStreak(progress.activeDays, todayStr(), STREAK.graceDays, progress.restWeekdays)
-    : 0;
+  const streak = hydrated ? streakSummary(progress, todayStr()).current : 0;
 
   // Nobody set up on this device yet: send them to the welcome screen. Wait for the online
   // sign-in check first, since a signed-in person on a new device gets set up automatically.
@@ -79,13 +76,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </details>
           )}
           {hydrated ? (
-            <span data-tour="streak" className="pixel-chip whitespace-nowrap bg-peach" aria-label={`${streak} day streak`}>
+            <Link
+              href="/streak"
+              data-tour="streak"
+              className="pixel-chip whitespace-nowrap bg-peach hover:bg-butter"
+              aria-label={`${streak} day streak. Open your calendar`}
+            >
               <PixelIcon name="flame" size={18} color="#f08a24" />
               <span className="font-sans font-bold">
                 {streak}
                 <span className="hidden sm:inline"> day streak</span>
               </span>
-            </span>
+            </Link>
           ) : (
             <Skeleton className="h-9 w-16 sm:w-36" />
           )}

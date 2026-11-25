@@ -27,7 +27,7 @@ export const SEASON_OVERRIDE: Season | null = null;
 
 /** Streak rules: gentle by design (no leaderboards, no guilt). */
 export const STREAK = {
-  graceDays: 1, // missing a single day does not break the streak
+  // One missed day a week is covered (fixed rule, in src/lib/streak.ts).
   restDaysPerWeek: 2, // user-chosen days off that never count against them
 } as const;
 
