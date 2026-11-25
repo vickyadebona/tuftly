@@ -60,7 +60,8 @@ Everything works on this device without it. With Supabase set up, people can sig
 4. Copy `.env.local.example` to `.env.local` and fill in the project URL and publishable key (Project Settings > API). Add the same two variables in Vercel.
 5. Restart the dev server.
 The built-in email sender only mails addresses on the project's own team, a couple per hour, so add custom SMTP before anyone else signs in. The pitch builder is not synced yet.
-Next: Google sign-in, and a server-side counter for the 2 interviews a day cap.
+Google sign-in (optional): in Google Cloud, create an OAuth client of type "Web application" with the authorized redirect URI `https://<project-ref>.supabase.co/auth/v1/callback`, then paste its client ID and secret into Supabase under Authentication > Sign In / Providers > Google. The button appears by itself once the provider is on.
+Next: a server-side counter for the 2 interviews a day cap.
 
 ## Deploy
 The GitHub repo is `vickyadebona/tuftly` (private) and Vercel builds it. Pushes to `main` go live; other branches get preview links. Node 22 is pinned in `package.json`.

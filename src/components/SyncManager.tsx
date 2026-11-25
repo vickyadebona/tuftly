@@ -23,7 +23,14 @@ export function SyncManager() {
   const { user } = useAuthUser();
   const userId = user?.id;
   const email = user?.email ?? null;
-  const metaName = typeof user?.user_metadata?.name === "string" ? (user.user_metadata.name as string) : null;
+  const meta = user?.user_metadata;
+  // Google sends a full name; Bobbin only needs the first. A name typed at sign-up is kept whole.
+  const metaName =
+    typeof meta?.full_name === "string"
+      ? meta.full_name.split(" ")[0]
+      : typeof meta?.name === "string"
+        ? meta.name
+        : null;
 
   useEffect(() => {
     const supabase = getSupabase();
