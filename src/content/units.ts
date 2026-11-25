@@ -3,7 +3,7 @@ import type { Track, UnitInfo } from "@/lib/types";
 import { getLessons } from "./index";
 
 // What a learner sees once, before the first lesson of a unit. Plain and specific: what it covers,
-// who it's for, how long it takes. The order here is the order on the quest map; "Unit N" is
+// who it's for. Lesson counts and times come from the published lessons, so never write them here. The order here is the order on the quest map; "Unit N" is
 // worked out from it, never written by hand.
 export const units: UnitInfo[] = [
   {
@@ -18,7 +18,7 @@ export const units: UnitInfo[] = [
       "Handling follow-up questions about your work, including gaps and mistakes",
       "Talking about your strengths and growth areas",
     ],
-    format: "3 lessons of about 6 minutes each, plus a Pitch page where you work with your own experience.",
+    format: "There's also a Pitch page where you work with your own experience.",
   },
   {
     track: "javascript",
@@ -31,7 +31,7 @@ export const units: UnitInfo[] = [
       "Copying objects, and when a copy still shares data",
       "Using Map and Set instead of plain objects and arrays",
     ],
-    format: "3 lessons of about 6 minutes each. Practice for each one unlocks when you finish it. Stop and come back whenever you like.",
+    format: "Practice for each lesson unlocks when you finish it. Stop and come back whenever you like.",
   },
 ];
 

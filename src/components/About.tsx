@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { APP_NAME, DAILY_INTERVIEW_CAP, FIRST_LESSON_MINUTES } from "@/lib/config";
+import { APP_NAME, FIRST_LESSON_MINUTES } from "@/lib/config";
 import { Eyebrow, Footer, INNER, Nav, SECTION, Title } from "./Landing";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelIcon, type PixelIconName } from "./PixelIcon";
@@ -23,8 +23,8 @@ const WANTED: { icon: PixelIconName; color: string; title: string; text: string 
   {
     icon: "heart",
     color: "#ff9e80",
-    title: "A practice interviewer who points forward",
-    text: "Bobbin asks follow-up questions and tells you what to work on next, not just how you did.",
+    title: "Practice rounds that point forward",
+    text: "You check your answers against key points, then see what to work on next, not just how you did.",
   },
   {
     icon: "flame",
@@ -123,9 +123,9 @@ export function About() {
             now.
           </p>
           <p>
-            Lessons and drills cost almost nothing to run, so they&apos;re free. Practice interviews
-            use AI, and that costs real money every time, so there&apos;s a limit of{" "}
-            {DAILY_INTERVIEW_CAP === 2 ? "two" : DAILY_INTERVIEW_CAP} a day while it&apos;s free.
+            Lessons, drills and practice rounds cost almost nothing to run, so they&apos;re free.
+            I&apos;d like to add an AI interviewer later. That would cost real money every time, so it
+            would likely come with a daily limit while it&apos;s free.
           </p>
           <p>
             If {APP_NAME} ever has paid options, I want the free part to stay genuinely useful.

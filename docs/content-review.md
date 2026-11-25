@@ -15,7 +15,7 @@ Generated from `src/content/` by `node scripts/export-review.mjs`, so edit the s
 
 ## Lesson: Tell me about yourself
 
-id: `pitch-basics` · track: communication · topic: pitch · 6 min · reviewed: **false**
+id: `pitch-basics` · track: communication · topic: pitch · 6 min · reviewed: **true**
 
 How to answer “tell me about yourself” in about a minute, using your own experience.
 
@@ -267,7 +267,7 @@ Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
 ### Drills for this lesson (3)
 
-#### d-pit-1 (pick-a-or-b) · reviewed: **false**
+#### d-pit-1 (pick-a-or-b) · reviewed: **true**
 
 idea: `pitch-shape`
 
@@ -289,7 +289,7 @@ An interviewer says “Tell me about yourself.” Which is the better start?
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
-#### d-pit-2 (pick-a-or-b) · reviewed: **false**
+#### d-pit-2 (pick-a-or-b) · reviewed: **true**
 
 idea: `pitch-match`
 
@@ -310,7 +310,7 @@ The role asks for “building accessible UIs in React.” How do you answer “W
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
-#### d-pit-3 (pick-a-or-b) · reviewed: **false**
+#### d-pit-3 (pick-a-or-b) · reviewed: **true**
 
 idea: `pitch-evidence`
 
@@ -335,7 +335,7 @@ Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
 ## Lesson: When they dig into your experience
 
-id: `pitch-followups` · track: communication · topic: experience · 6 min · reviewed: **false**
+id: `pitch-followups` · track: communication · topic: experience · 6 min · reviewed: **true**
 
 What to do when the interviewer starts digging into your experience.
 
@@ -585,7 +585,7 @@ Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
 ### Drills for this lesson (3)
 
-#### d-exp-1 (pick-a-or-b) · reviewed: **false**
+#### d-exp-1 (pick-a-or-b) · reviewed: **true**
 
 idea: `own-your-part`
 
@@ -606,7 +606,7 @@ idea: `own-your-part`
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
-#### d-exp-2 (pick-a-or-b) · reviewed: **false**
+#### d-exp-2 (pick-a-or-b) · reviewed: **true**
 
 idea: `walk-through`
 
@@ -628,7 +628,7 @@ idea: `walk-through`
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
-#### d-exp-3 (pick-a-or-b) · reviewed: **false**
+#### d-exp-3 (pick-a-or-b) · reviewed: **true**
 
 idea: `be-honest`
 
@@ -653,7 +653,7 @@ Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
 ## Lesson: Strengths and growth areas
 
-id: `pitch-strengths` · track: communication · topic: strengths · 6 min · reviewed: **false**
+id: `pitch-strengths` · track: communication · topic: strengths · 6 min · reviewed: **true**
 
 How to answer “what are your strengths and weaknesses?” with real moments from your own work.
 
@@ -905,7 +905,7 @@ Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
 ### Drills for this lesson (3)
 
-#### d-str-1 (pick-a-or-b) · reviewed: **false**
+#### d-str-1 (pick-a-or-b) · reviewed: **true**
 
 idea: `strength-evidence`
 
@@ -926,7 +926,7 @@ idea: `strength-evidence`
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
-#### d-str-2 (pick-a-or-b) · reviewed: **false**
+#### d-str-2 (pick-a-or-b) · reviewed: **true**
 
 idea: `growth-area`
 
@@ -947,7 +947,7 @@ idea: `growth-area`
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
-#### d-str-3 (pick-a-or-b) · reviewed: **false**
+#### d-str-3 (pick-a-or-b) · reviewed: **true**
 
 idea: `sharpen-answer`
 
@@ -1822,7 +1822,7 @@ const obj = { name: "Sam", tags: ["a"] };
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
-#### d-obj-4 (quick-fire) · reviewed: **false**
+#### d-obj-4 (quick-fire) · reviewed: **true**
 
 idea: `shared-reference`
 
@@ -2284,7 +2284,7 @@ new Set([1, 2, 2, 3]).size
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
-#### d-map-4 (pick-a-or-b) · reviewed: **false**
+#### d-map-4 (pick-a-or-b) · reviewed: **true**
 
 idea: `map-methods`
 

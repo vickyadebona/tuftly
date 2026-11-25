@@ -264,7 +264,7 @@ export const communicationLessons: Lesson[] = [
     topic: "experience",
     title: "When they dig into your experience",
     minutes: 6,
-    reviewed: false,
+    reviewed: true,
     intro: {
       summary: "What to do when the interviewer starts digging into your experience.",
       outcomes: ["Say clearly what you personally did", "Walk through a project from situation to result", "Answer honestly about gaps and mistakes"],
