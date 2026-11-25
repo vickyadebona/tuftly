@@ -41,7 +41,7 @@ export const communicationLessons: Lesson[] = [
           ],
         },
         check: {
-          prompt: "Which sentence belongs in the “past” part of the pitch?",
+          prompt: "In a “tell me about yourself” answer, which sentence belongs in the “past” part?",
           options: [
             "I'm a developer who loves learning new things.",
             "Last year I rebuilt our signup flow, which cut drop-off by 12%.",
@@ -73,7 +73,7 @@ export const communicationLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: "About how long should a “tell me about yourself” answer be?",
+            prompt: "In an interview, about how long should a “tell me about yourself” answer be?",
             options: [
               "About 30 to 60 seconds",
               "Five minutes, so nothing is missed",
@@ -86,7 +86,7 @@ export const communicationLessons: Lesson[] = [
           },
           {
             prompt:
-              "“I'm a backend developer with five years of experience. I'm looking for a role where I can work on payments.” Which part is missing?",
+              "A candidate introduces themselves in an interview: “I'm a backend developer with five years of experience. I'm looking for a role where I can work on payments.” Which part is missing?",
             options: ["The present", "The past: something you've done", "The future", "Nothing, it's complete"],
             answerIndex: 1,
             explanation:
@@ -121,7 +121,7 @@ export const communicationLessons: Lesson[] = [
           ],
         },
         check: {
-          prompt: "The role asks for “building data dashboards.” Which line from your background fits best?",
+          prompt: "In an interview, the role asks for “building data dashboards.” Which line from your background fits best?",
           options: [
             "I'm a quick learner and I enjoy new challenges.",
             "I built a sales dashboard in React that 40 people check every morning.",
@@ -153,7 +153,7 @@ export const communicationLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: "The role needs “someone who can improve page speed.” Which answer matches?",
+            prompt: "In an interview, the role needs “someone who can improve page speed.” Which answer matches?",
             options: [
               "I enjoy working on performance when I get the chance.",
               "I cut our page load from 4 seconds to 1.5 by compressing images and splitting the bundle.",
@@ -165,7 +165,7 @@ export const communicationLessons: Lesson[] = [
               "It gives a specific thing you did and a result. The others show interest or willingness, but not that you've done it.",
           },
           {
-            prompt: "How many things from the job description should you aim to match in a short answer?",
+            prompt: "In a short interview answer, how many things from the job description should you aim to match?",
             options: ["Two or three", "All of them", "Just one", "As many as fit in five minutes"],
             answerIndex: 0,
             explanation:
@@ -178,7 +178,7 @@ export const communicationLessons: Lesson[] = [
         id: "pitch-evidence",
         title: "Show it with a result",
         guess: {
-          question: "Which of these is the strongest thing to say?",
+          question: "In an interview about your past work, which of these is the strongest thing to say?",
           options: [
             "I'm a strong problem solver and a great teammate.",
             "I cut our build time from 12 minutes to 4 by caching dependencies, and the whole team now uses it.",
@@ -199,7 +199,7 @@ export const communicationLessons: Lesson[] = [
           ],
         },
         check: {
-          prompt: "Which version is the strongest?",
+          prompt: "In an interview answer about your work, which version is the strongest?",
           options: [
             "I improved the app's performance.",
             "I'm very good at making things fast.",
@@ -231,7 +231,7 @@ export const communicationLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: "You don't have an exact number for your result. What's the best thing to do?",
+            prompt: "In an interview, you don't have an exact number for a result you achieved. What's the best thing to do?",
             options: [
               "Estimate a number that sounds good",
               "Describe what changed, for example “the support tickets about it stopped”",
@@ -243,7 +243,7 @@ export const communicationLessons: Lesson[] = [
               "A real, describable change is honest and still gives evidence. An invented number can fall apart when the interviewer asks how you measured it.",
           },
           {
-            prompt: "Which line is a claim rather than evidence?",
+            prompt: "In an interview answer, which line is a claim rather than evidence?",
             options: [
               "I'm excellent at debugging.",
               "I traced a memory leak to an unclosed event listener and fixed it.",
@@ -327,7 +327,7 @@ export const communicationLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: "You're asked what your part was. Which phrase is the weakest start?",
+            prompt: "In an interview about a team project, you're asked what your part was. Which phrase is the weakest start?",
             options: [
               "I owned the search screen.",
               "We did a bit of everything.",
@@ -339,7 +339,7 @@ export const communicationLessons: Lesson[] = [
               "“We did a bit of everything” doesn't tell the interviewer what you did. Starting with something specific you owned does.",
           },
           {
-            prompt: "If someone else did most of a project, what should you say?",
+            prompt: "In an interview, if someone else did most of a project you mention, what should you say?",
             options: [
               "Take credit for it, since you were there",
               "Say clearly what you did, and credit the others",
@@ -378,7 +378,7 @@ export const communicationLessons: Lesson[] = [
           ],
         },
         check: {
-          prompt: "Which line is the result?",
+          prompt: "In a project walkthrough during an interview, which line is the result?",
           options: [
             "Checkout drop-offs were high.",
             "My job was the payment form.",
@@ -410,13 +410,13 @@ export const communicationLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: "Which part of a project walkthrough should get the most time?",
+            prompt: "In an interview, which part of a project walkthrough should get the most time?",
             options: ["The situation", "The action: what you did", "The result", "The team's background"],
             answerIndex: 1,
             explanation: "The action is where the interviewer learns how you work, so give it the most detail.",
           },
           {
-            prompt: "Which part is missing? “The app was slow, and my job was to speed it up. I added caching and split the bundle.”",
+            prompt: "In an interview, a candidate describes a project: “The app was slow, and my job was to speed it up. I added caching and split the bundle.” Which part is missing?",
             options: ["The situation", "The task", "The action", "The result"],
             answerIndex: 3,
             explanation:
@@ -482,7 +482,7 @@ export const communicationLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: "You're asked about a tool you've never used. What's the safest start?",
+            prompt: "In an interview, you're asked about a tool you've never used. What's the safest start?",
             options: [
               "Say you've used it a little",
               "Say you haven't, then mention something related you have done",
@@ -494,7 +494,7 @@ export const communicationLessons: Lesson[] = [
               "Being honest and pointing to related experience is believable, and it shows how you'd approach it.",
           },
           {
-            prompt: "What makes an answer about a mistake work?",
+            prompt: "In an interview, what makes an answer about a mistake work?",
             options: [
               "It was someone else's fault",
               "It's specific, and says what you did and what you learned",

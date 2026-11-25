@@ -17,6 +17,7 @@ export const units: UnitInfo[] = [
       "Matching your experience to a role",
       "Handling follow-up questions about your work, including gaps and mistakes",
       "Talking about your strengths and growth areas",
+      "Going a level deeper: how it works, and what you traded off",
     ],
     format: "There's also a Pitch page where you work with your own experience.",
   },
@@ -30,8 +31,25 @@ export const units: UnitInfo[] = [
       "Sorting and transforming arrays without surprises",
       "Copying objects, and when a copy still shares data",
       "Using Map and Set instead of plain objects and arrays",
+      "Explaining how property lookup follows the prototype chain",
     ],
     format: "Practice for each lesson unlocks when you finish it. Stop and come back whenever you like.",
+  },
+  {
+    track: "typescript",
+    title: "TypeScript, precisely",
+    blurb: "Common TypeScript questions, answered with what the compiler actually does rather than a rule of thumb.",
+    forWho: "Anyone who has written some TypeScript.",
+    learn: ["Why unknown is safer than any", "How interface and type differ"],
+    format: "Practice unlocks when you finish one.",
+  },
+  {
+    track: "engineering",
+    title: "Explaining how you build",
+    blurb: "Follow-up questions about design and testing: where a rule is enforced, and why a test can be trusted.",
+    forWho: "Anyone who can talk about a web app they've worked on.",
+    learn: ["Placing checks in the browser, server and database", "Keeping tests stable and repeatable"],
+    format: "Practice unlocks when you finish one.",
   },
 ];
 

@@ -1,7 +1,7 @@
 import type { PressureLevel } from "./config";
 
 /** "communication" lessons teach how to talk about yourself and your work, not code. */
-export type Track = "javascript" | "typescript" | "communication";
+export type Track = "javascript" | "typescript" | "communication" | "engineering";
 
 /** A multiple-choice question with a short explanation shown after answering. */
 export interface Question {

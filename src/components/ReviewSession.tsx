@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { getDrills } from "@/content";
+import { getDrills, getLessons } from "@/content";
 import { todayStr } from "@/lib/dates";
+import { nextCard, practicePool, type PracticeCard } from "@/lib/practice";
 import { buildQueue, summarize } from "@/lib/queue";
 import type { Grade } from "@/lib/scheduler";
 import { recordReview, useHydrated, useProgress } from "@/lib/store";
-import type { Drill } from "@/lib/types";
+import type { Drill, LessonIdea } from "@/lib/types";
 import { ChoiceList } from "./ChoiceList";
 import { CodeBlock } from "./CodeBlock";
 import { Bobbin } from "./Bobbin";
@@ -19,7 +20,29 @@ const GRADES: { grade: Grade; label: string }[] = [
   { grade: "not-yet", label: "Not yet" },
 ];
 
-function DrillCard({ drill, onGrade }: { drill: Drill; onGrade: (g: Grade) => void }) {
+interface Extra {
+  /** Questions already answered on this idea, oldest first. */
+  seen: string[];
+  /** What the learner said is still hard. Aims the questions that follow. */
+  gap: string;
+  /** Set while asking what's still hard: the key points they didn't tick. */
+  asking: string[] | null;
+  /** Show the lesson's other explanation above the question. */
+  refresh: boolean;
+}
+
+const NO_EXTRA: Extra = { seen: [], gap: "", asking: null, refresh: false };
+
+function DrillCard({
+  drill,
+  onGrade,
+  onMoveOn,
+}: {
+  drill: PracticeCard;
+  onGrade: (g: Grade, missed: string[]) => void;
+  /** Set during extra practice, so a learner can leave an idea without saying they've got it. */
+  onMoveOn?: () => void;
+}) {
   const [picked, setPicked] = useState<number | null>(null);
   const [why, setWhy] = useState("");
   const [hint, setHint] = useState(false);
@@ -65,9 +88,11 @@ function DrillCard({ drill, onGrade }: { drill: Drill; onGrade: (g: Grade) => vo
             >
               Check my answer
             </button>
-            <button onClick={() => setHint(true)} className="font-semibold text-teal-deep underline">
-              Need a nudge?
-            </button>
+            {drill.hint && (
+              <button onClick={() => setHint(true)} className="font-semibold text-teal-deep underline">
+                Need a nudge?
+              </button>
+            )}
           </div>
           {hint && <p className="text-ink-soft">Nudge: {drill.hint}</p>}
         </>
@@ -81,10 +106,10 @@ function DrillCard({ drill, onGrade }: { drill: Drill; onGrade: (g: Grade) => vo
               : "Not quite. It's an easy one to mix up, so here's the idea:"}
           </p>
           <div className="pixel-box bg-sky p-4 text-ink">
-            <p className="font-pixel mb-1 text-sm font-bold">One way to say it</p>
-            <p>{drill.sayIt}</p>
+            <p className="font-pixel mb-1 text-sm font-bold">{drill.sayIt ? "One way to say it" : "Why"}</p>
+            <p>{drill.sayIt ?? drill.explanation}</p>
           </div>
-          <fieldset className="pixel-box bg-mint p-4">
+          {drill.rubric.length > 0 && <fieldset className="pixel-box bg-mint p-4">
             <legend className="font-pixel px-1 text-sm font-bold text-ink">Key points. Tick the ones you had.</legend>
             {drill.rubric.map((r, i) => (
               <label key={r} className="flex items-start gap-2 py-1 text-ink">
@@ -97,22 +122,96 @@ function DrillCard({ drill, onGrade }: { drill: Drill; onGrade: (g: Grade) => vo
                 {r}
               </label>
             ))}
-          </fieldset>
+          </fieldset>}
           <div>
-            <p className="mb-2 text-ink">How did that feel?</p>
+            <p className="text-ink">How did that feel?</p>
+            <p className="mb-2 text-sm text-ink-soft">
+              &quot;Got it&quot; moves on. &quot;Almost&quot; asks what&apos;s still fuzzy. &quot;Not yet&quot; gives you another
+              question on this idea.
+            </p>
             <div className="flex gap-2">
               {GRADES.map(({ grade, label }) => (
                 <button
                   key={grade}
-                  onClick={() => onGrade(grade)}
+                  onClick={() => onGrade(grade, drill.rubric.filter((_, i) => !covered[i]))}
                   className={grade === suggested ? "btn-accent" : "btn-secondary"}
                 >
                   {label}
                 </button>
               ))}
             </div>
+            {onMoveOn && (
+              <button type="button" onClick={onMoveOn} className="mt-3 font-semibold text-teal-deep underline">
+                Move on for now
+              </button>
+            )}
           </div>
         </>
+      )}
+    </div>
+  );
+}
+
+/** After "Almost": ask what's still fuzzy, so the next question can aim at it. Nothing is saved. */
+function GapStep({ missed, onPractice, onMoveOn }: { missed: string[]; onPractice: (gap: string) => void; onMoveOn: () => void }) {
+  const [text, setText] = useState("");
+  const [chosen, setChosen] = useState<string[]>([]);
+
+  return (
+    <section className="flex flex-col gap-4">
+      <h2 className="font-pixel text-xl font-bold text-ink">Almost there. What&apos;s still fuzzy?</h2>
+      {missed.length > 0 && (
+        <fieldset className="pixel-box bg-mint p-4">
+          <legend className="font-pixel px-1 text-sm font-bold text-ink">Points you didn&apos;t tick. Pick any that are hard.</legend>
+          {missed.map((m) => (
+            <label key={m} className="flex items-start gap-2 py-1 text-ink">
+              <input
+                type="checkbox"
+                checked={chosen.includes(m)}
+                onChange={() => setChosen((c) => (c.includes(m) ? c.filter((x) => x !== m) : [...c, m]))}
+                className="mt-1 h-5 w-5 accent-teal"
+              />
+              {m}
+            </label>
+          ))}
+        </fieldset>
+      )}
+      <label className="flex flex-col gap-1 text-ink">
+        What are you struggling with most? A few words is fine.
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          rows={3}
+          className="border-[3px] border-line bg-paper p-2 text-ink"
+        />
+      </label>
+      <div className="flex flex-wrap items-center gap-3">
+        {/* Typed words and picked points aim the next question. With neither, the unticked points do. */}
+        <button type="button" onClick={() => onPractice([text, ...chosen].join(" ").trim() || missed.join(" "))} className="btn-primary">
+          Practice this part
+        </button>
+        <button type="button" onClick={onMoveOn} className="font-semibold text-teal-deep underline">
+          Move on for now
+        </button>
+      </div>
+    </section>
+  );
+}
+
+/** The lesson's second way of explaining the idea, shown above the next question. */
+function Refresher({ reteach }: { reteach: LessonIdea["reteach"] }) {
+  return (
+    <div className="pixel-box bg-butter/40 p-4 text-ink">
+      <p className="font-pixel mb-1 text-sm font-bold">Another way to look at it</p>
+      <ul className="list-disc space-y-1 pl-5">
+        {reteach.steps.map((step) => (
+          <li key={step}>{step}</li>
+        ))}
+      </ul>
+      {reteach.code && (
+        <div className="mt-3">
+          <CodeBlock code={reteach.code} />
+        </div>
       )}
     </div>
   );
@@ -125,6 +224,8 @@ export function ReviewSession() {
   const [queue, setQueue] = useState<Drill[] | null>(null);
   const [index, setIndex] = useState(0);
   const [requeued, setRequeued] = useState<string[]>([]);
+  // Extra practice on the current idea. No questions seen means the scheduled drill is showing.
+  const [extra, setExtra] = useState<Extra>(NO_EXTRA);
 
   if (!hydrated) return <CardSkeleton label="Loading your practice" />;
 
@@ -178,21 +279,60 @@ export function ReviewSession() {
     );
   }
 
-  function handleGrade(grade: Grade) {
-    recordReview(drill.id, grade);
-    if (grade === "not-yet" && !requeued.includes(drill.id)) {
-      setRequeued([...requeued, drill.id]);
-      setQueue([...queue!, drill]); // one more try at the end of this session
-    }
+  const lessons = getLessons();
+  const idea = lessons.find((l) => l.id === drill.lessonId)?.ideas.find((x) => x.id === drill.ideaId);
+
+  const pool = practicePool(drill, drills, lessons);
+  const turn = extra.seen.length;
+  const card = turn === 0 ? pool[0] : nextCard(pool, extra.seen, extra.gap);
+
+  function moveOn() {
+    setExtra(NO_EXTRA);
     setIndex(index + 1);
+  }
+
+  function handleGrade(grade: Grade, missed: string[]) {
+    // Only the first answer sets when the drill comes back. Extra practice never changes that.
+    if (turn === 0) {
+      recordReview(drill.id, grade);
+      if (grade === "not-yet" && !requeued.includes(drill.id)) {
+        setRequeued([...requeued, drill.id]);
+        setQueue([...queue!, drill]); // one more try at the end of this session
+      }
+    }
+    if (grade === "got") return moveOn();
+    setExtra({
+      seen: [...extra.seen, card.id],
+      gap: extra.gap,
+      asking: grade === "almost" ? missed : null,
+      refresh: false,
+    });
   }
 
   return (
     <div className="flex flex-col gap-4">
       <p className="text-sm text-ink-soft">
         {index + 1} of {queue.length}
+        {turn > 0 && ` · More practice${idea ? `: ${idea.title}` : ""}`}
       </p>
-      <DrillCard key={`${drill.id}-${index}`} drill={drill} onGrade={handleGrade} />
+      {extra.asking ? (
+        <GapStep
+          key={turn}
+          missed={extra.asking}
+          onPractice={(gap) => setExtra({ ...extra, gap, asking: null, refresh: true })}
+          onMoveOn={moveOn}
+        />
+      ) : (
+        <>
+          {extra.refresh && idea && <Refresher reteach={idea.reteach} />}
+          <DrillCard
+            key={`${drill.id}-${index}-${turn}`}
+            drill={card}
+            onGrade={handleGrade}
+            onMoveOn={turn > 0 ? moveOn : undefined}
+          />
+        </>
+      )}
     </div>
   );
 }

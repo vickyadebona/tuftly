@@ -1,5 +1,6 @@
 import type { Lesson } from "@/lib/types";
 import { communicationLessons } from "./communication.ts";
+import { depthLessons } from "./depth.ts";
 
 // AI-drafted starter content. Set `reviewed: true` only after you've checked every claim.
 //
@@ -23,7 +24,7 @@ const codeLessons: Lesson[] = [
         id: "sort-mutates",
         title: "sort() changes the original",
         guess: {
-          question: "What do you think this prints?",
+          question: "In JavaScript, what do you think this prints?",
           code: `const a = [3, 1, 2];\nconst b = a.sort();\nconsole.log(a, b === a);`,
           options: ["[3, 1, 2] false", "[1, 2, 3] true", "[1, 2, 3] false", "[3, 1, 2] true"],
           answerIndex: 1,
@@ -39,7 +40,7 @@ const codeLessons: Lesson[] = [
           ],
         },
         check: {
-          prompt: "Fill in the blank so names keeps its original order.",
+          prompt: "In JavaScript, fill in the blank so names keeps its original order.",
           code: `const names = ["Sam", "Alex", "Jo"];\nconst sortedNames = ___.sort();`,
           options: ["names", "[...names]", "names.length", "names.sort"],
           answerIndex: 1,
@@ -62,7 +63,7 @@ const codeLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: "What does this print?",
+            prompt: "In JavaScript, what does this print?",
             code: `const list = ["b", "c", "a"];\nconst result = list.sort();\nconsole.log(list[0]);`,
             options: ['"b"', '"a"', '"c"', "undefined"],
             answerIndex: 1,
@@ -70,7 +71,7 @@ const codeLessons: Lesson[] = [
               'sort() reordered list itself, so list[0] is now "a". result is just another name for the same array.',
           },
           {
-            prompt: "Which line leaves prices in its original order?",
+            prompt: "In JavaScript, which line leaves prices in its original order?",
             code: `const prices = [30, 10, 20];`,
             options: ["prices.sort()", "[...prices].sort()", "prices.reverse()", "prices.sort().slice()"],
             answerIndex: 1,
@@ -84,7 +85,7 @@ const codeLessons: Lesson[] = [
         id: "sort-numbers",
         title: "Sorting numbers",
         guess: {
-          question: "What do you think this prints?",
+          question: "In JavaScript, what do you think this prints?",
           code: `console.log([5, 25, 100].sort());`,
           options: ["[5, 25, 100]", "[100, 25, 5]", "[25, 5, 100]", "[100, 5, 25]"],
           answerIndex: 1,
@@ -100,7 +101,7 @@ const codeLessons: Lesson[] = [
           ],
         },
         check: {
-          prompt: "Fill in the blank to sort the numbers from largest to smallest.",
+          prompt: "In JavaScript, fill in the blank to sort the numbers from largest to smallest.",
           code: `const nums = [5, 25, 100];\nnums.sort((a, b) => ___);`,
           options: ["a - b", "b - a", "a > b", "a + b"],
           answerIndex: 1,
@@ -123,7 +124,7 @@ const codeLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: "What does this print?",
+            prompt: "In JavaScript, what does this print?",
             code: `console.log([3, 20, 100].sort());`,
             options: ["[3, 20, 100]", "[100, 20, 3]", "[100, 3, 20]", "[20, 100, 3]"],
             answerIndex: 1,
@@ -131,7 +132,7 @@ const codeLessons: Lesson[] = [
               'Without a compare function the numbers are compared as text: "100" < "20" < "3". So the result is [100, 20, 3].',
           },
           {
-            prompt: "Which call sorts numbers from smallest to largest?",
+            prompt: "In JavaScript, which call sorts numbers from smallest to largest?",
             code: `const nums = [3, 20, 100];`,
             options: [
               "nums.sort()",
@@ -150,7 +151,7 @@ const codeLessons: Lesson[] = [
         id: "map-filter",
         title: "map and filter",
         guess: {
-          question: "What do you think this prints?",
+          question: "In JavaScript, what do you think this prints?",
           code: `const nums = [1, 2, 3, 4];\nconst result = nums.filter(n => n > 2);\nconsole.log(result, nums.length);`,
           options: ["[3, 4] 4", "[3, 4] 2", "[false, false, true, true] 4", "[1, 2] 4"],
           answerIndex: 0,
@@ -166,7 +167,7 @@ const codeLessons: Lesson[] = [
           ],
         },
         check: {
-          prompt: "Fill in the blank to build a new array with every score doubled.",
+          prompt: "In JavaScript, fill in the blank to build a new array with every score doubled.",
           code: `const scores = [30, 10, 20];\nconst doubled = scores.___(n => n * 2);`,
           options: ["forEach", "map", "filter", "reduce"],
           answerIndex: 1,
@@ -189,7 +190,7 @@ const codeLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: "Fill in the blank to keep only the names longer than 3 letters.",
+            prompt: "In JavaScript, fill in the blank to keep only the names longer than 3 letters.",
             code: `const names = ["Sam", "Alex", "Jo", "Priya"];\nconst long = names.___(name => name.length > 3);`,
             options: ["map", "filter", "forEach", "sort"],
             answerIndex: 1,
@@ -197,7 +198,7 @@ const codeLessons: Lesson[] = [
               "filter keeps the items where the function returns true. map would give back an array of true and false instead.",
           },
           {
-            prompt: "How many items does result have?",
+            prompt: "In JavaScript, how many items does result have?",
             code: `const result = [1, 2, 3].map(n => n > 1);\nconsole.log(result.length);`,
             options: ["3", "2", "1", "0"],
             answerIndex: 0,
@@ -225,7 +226,7 @@ const codeLessons: Lesson[] = [
         id: "shared-reference",
         title: "Assigning shares the object",
         guess: {
-          question: "What do you think this prints?",
+          question: "In JavaScript, what do you think this prints?",
           code: `const a = { n: 1 };\nconst b = a;\nb.n = 2;\nconsole.log(a.n);`,
           options: ["1", "2", "undefined", "It throws an error"],
           answerIndex: 1,
@@ -240,7 +241,7 @@ const codeLessons: Lesson[] = [
           ],
         },
         check: {
-          prompt: "Which one gives you a separate object, so changing one doesn't touch the other?",
+          prompt: "In JavaScript, which one gives you a separate object, so changing one doesn't touch the other?",
           code: `const original = { n: 1 };\nconst other = ___;`,
           options: ["original", "{ ...original }", "[original]", "original.n"],
           answerIndex: 1,
@@ -263,14 +264,14 @@ const codeLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: "What does this print?",
+            prompt: "In JavaScript, what does this print?",
             code: `const x = { v: 1 };\nconst y = x;\ny.v = 5;\nconsole.log(x.v);`,
             options: ["1", "5", "undefined", "It throws an error"],
             answerIndex: 1,
             explanation: "y is another name for the same object as x, so changing y.v changes x.v too.",
           },
           {
-            prompt: "What does this print?",
+            prompt: "In JavaScript, what does this print?",
             code: `const x = { v: 1 };\nconst y = { v: 1 };\nconsole.log(x === y);`,
             options: ["true", "false", "undefined", "It throws an error"],
             answerIndex: 1,
@@ -284,7 +285,7 @@ const codeLessons: Lesson[] = [
         id: "shallow-copy",
         title: "Spread is a shallow copy",
         guess: {
-          question: "What do you think this prints?",
+          question: "In JavaScript, what do you think this prints?",
           code: `const user = { name: "Sam", tags: ["a"] };\nconst copy = { ...user };\ncopy.tags.push("b");\nconsole.log(user.tags);`,
           options: ['["a"]', '["a", "b"]', "undefined", "It throws an error"],
           answerIndex: 1,
@@ -300,7 +301,7 @@ const codeLessons: Lesson[] = [
           ],
         },
         check: {
-          prompt: "What does this print?",
+          prompt: "In JavaScript, what does this print?",
           code: `const user = { name: "Sam", tags: ["a"] };\nconst copy = { ...user };\ncopy.name = "Alex";\nconsole.log(user.name);`,
           options: ['"Sam"', '"Alex"', "undefined", "It throws an error"],
           answerIndex: 0,
@@ -323,7 +324,7 @@ const codeLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: "Which change will also show up in the original a?",
+            prompt: "In JavaScript, which change will also show up in the original a?",
             code: `const a = { n: 1, list: [1] };\nconst b = { ...a };`,
             options: ["b.n = 2", "b.list.push(2)", "b.extra = true", "delete b.n"],
             answerIndex: 1,
@@ -331,7 +332,7 @@ const codeLessons: Lesson[] = [
               "list is shared between a and b, so pushing to it changes both. The other lines only change b's own top-level properties.",
           },
           {
-            prompt: "What does this print?",
+            prompt: "In JavaScript, what does this print?",
             code: `const a = { inner: { x: 1 } };\nconst b = { ...a };\nconsole.log(a.inner === b.inner);`,
             options: ["true", "false", "undefined", "It throws an error"],
             answerIndex: 0,
@@ -345,7 +346,7 @@ const codeLessons: Lesson[] = [
         id: "deep-copy",
         title: "Deep copies with structuredClone",
         guess: {
-          question: "What do you think this prints?",
+          question: "In JavaScript, what do you think this prints?",
           code: `const user = { name: "Sam", tags: ["a"] };\nconst deep = structuredClone(user);\ndeep.tags.push("b");\nconsole.log(user.tags);`,
           options: ['["a"]', '["a", "b"]', "undefined", "It throws an error"],
           answerIndex: 0,
@@ -361,7 +362,7 @@ const codeLessons: Lesson[] = [
           ],
         },
         check: {
-          prompt: "Fill in the blank to make a fully independent copy, including nested data.",
+          prompt: "In JavaScript, fill in the blank to make a fully independent copy, including nested data.",
           code: `const user = { name: "Sam", tags: ["a"] };\nconst deep = ___(user);`,
           options: ["Object.assign", "structuredClone", "Object.freeze", "Object.create"],
           answerIndex: 1,
@@ -385,14 +386,14 @@ const codeLessons: Lesson[] = [
         retries: [
           {
             prompt:
-              "You have settings = { theme: { dark: true } } and want a copy you can change without touching the original. Which is safest?",
+              "In JavaScript, you have settings = { theme: { dark: true } } and want a copy you can change without touching the original. Which is safest?",
             options: ["{ ...settings }", "settings", "structuredClone(settings)", "Object.assign({}, settings)"],
             answerIndex: 2,
             explanation:
               "Spread and Object.assign would share the theme object, and plain settings isn't a copy at all. structuredClone copies theme too.",
           },
           {
-            prompt: "What does this print?",
+            prompt: "In JavaScript, what does this print?",
             code: `const a = { list: [1] };\nconst b = structuredClone(a);\nb.list.push(2);\nconsole.log(a.list.length);`,
             options: ["1", "2", "0", "It throws an error"],
             answerIndex: 0,
@@ -419,7 +420,7 @@ const codeLessons: Lesson[] = [
         id: "map-keys",
         title: "Map keys keep their type",
         guess: {
-          question: "What do you think this prints?",
+          question: "In JavaScript, what do you think this prints?",
           code: `const m = new Map();\nm.set(1, "a");\nm.set("1", "b");\nconsole.log(m.size);`,
           options: ["1", "2", "0", "It throws an error"],
           answerIndex: 1,
@@ -435,7 +436,7 @@ const codeLessons: Lesson[] = [
           ],
         },
         check: {
-          prompt: "What does this print?",
+          prompt: "In JavaScript, what does this print?",
           code: `const m = new Map();\nm.set(true, "yes");\nm.set("true", "no");\nconsole.log(m.size);`,
           options: ["1", "2", "0", "It throws an error"],
           answerIndex: 1,
@@ -457,14 +458,14 @@ const codeLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: "What does this print?",
+            prompt: "In JavaScript, what does this print?",
             code: `const o = {};\no[2] = "x";\no["2"] = "y";\nconsole.log(o[2]);`,
             options: ['"x"', '"y"', "undefined", "It throws an error"],
             answerIndex: 1,
             explanation: 'The number 2 becomes the string "2", the same key as the second line, so "y" overwrites "x".',
           },
           {
-            prompt: "What does this print?",
+            prompt: "In JavaScript, what does this print?",
             code: `const k = { id: 1 };\nconst m = new Map();\nm.set(k, "found");\nconsole.log(m.get(k));`,
             options: ['"found"', "undefined", '"[object Object]"', "It throws an error"],
             answerIndex: 0,
@@ -477,7 +478,7 @@ const codeLessons: Lesson[] = [
         id: "map-methods",
         title: "Working with a Map",
         guess: {
-          question: "What do you think this prints?",
+          question: "In JavaScript, what do you think this prints?",
           code: `const counts = new Map();\ncounts.set("a", 1);\nconsole.log(counts.get("b") ?? 0);`,
           options: ["undefined", "0", "null", "It throws an error"],
           answerIndex: 1,
@@ -493,7 +494,7 @@ const codeLessons: Lesson[] = [
           ],
         },
         check: {
-          prompt: 'Fill in the blank to check whether the key "b" exists in the Map.',
+          prompt: 'In JavaScript, fill in the blank to check whether the key "b" exists in the Map.',
           code: `const counts = new Map([["a", 2], ["b", 1]]);\ncounts.___("b")`,
           options: ["has", "includes", "contains", "exists"],
           answerIndex: 0,
@@ -515,14 +516,14 @@ const codeLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: 'Fill in the blank to remove the key "a".',
+            prompt: 'In JavaScript, fill in the blank to remove the key "a".',
             code: `const counts = new Map([["a", 2], ["b", 1]]);\ncounts.___("a");`,
             options: ["remove", "delete", "clear", "pop"],
             answerIndex: 1,
             explanation: "delete(key) removes one entry. clear() removes everything. remove and pop aren't Map methods.",
           },
           {
-            prompt: "How do you get the number of entries in counts?",
+            prompt: "In JavaScript, how do you get the number of entries in the Map called counts?",
             code: `const counts = new Map([["a", 2], ["b", 1]]);`,
             options: ["counts.size", "counts.length", "counts.size()", "counts.count"],
             answerIndex: 0,
@@ -535,7 +536,7 @@ const codeLessons: Lesson[] = [
         id: "set-unique",
         title: "Set stores unique values",
         guess: {
-          question: "What do you think this prints?",
+          question: "In JavaScript, what do you think this prints?",
           code: `console.log(new Set([1, 2, 2, 3]).size);`,
           options: ["4", "3", "2", "It throws an error"],
           answerIndex: 1,
@@ -550,7 +551,7 @@ const codeLessons: Lesson[] = [
           ],
         },
         check: {
-          prompt: "Fill in the blank to remove the duplicates from nums.",
+          prompt: "In JavaScript, fill in the blank to remove the duplicates from nums.",
           code: `const nums = [1, 2, 2, 3];\nconst unique = [...new ___(nums)];`,
           options: ["Map", "Set", "Array", "Object"],
           answerIndex: 1,
@@ -572,14 +573,14 @@ const codeLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: "What does this print?",
+            prompt: "In JavaScript, what does this print?",
             code: `const s = new Set();\ns.add("a");\ns.add("b");\ns.add("a");\nconsole.log(s.size);`,
             options: ["3", "2", "1", "0"],
             answerIndex: 1,
             explanation: 'The second "a" is ignored, so the Set holds just "a" and "b".',
           },
           {
-            prompt: "What does this evaluate to?",
+            prompt: "In JavaScript, what does this evaluate to?",
             code: `[...new Set("banana")]`,
             options: ['["b", "a", "n"]', '["b", "a", "n", "a", "n", "a"]', '["a", "b", "n"]', '"ban"'],
             answerIndex: 0,
@@ -594,4 +595,4 @@ const codeLessons: Lesson[] = [
 ];
 
 // Telling your story comes first: "tell me about yourself" is how most interviews begin.
-export const lessons: Lesson[] = [...communicationLessons, ...codeLessons];
+export const lessons: Lesson[] = [...communicationLessons, ...codeLessons, ...depthLessons];

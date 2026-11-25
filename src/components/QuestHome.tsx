@@ -7,6 +7,7 @@ import { COMPANION, STREAK } from "@/lib/config";
 import { addDays, todayStr, weekday } from "@/lib/dates";
 import { summarize } from "@/lib/queue";
 import { toggleRestWeekday, useHydrated, useProgress } from "@/lib/store";
+import type { Track } from "@/lib/types";
 import { useSeason } from "@/lib/useSeason";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelIcon } from "./PixelIcon";
@@ -18,7 +19,7 @@ const COMING_SOON = ["Async basics", "Closures"];
 type NodeState = "done" | "current" | "locked";
 
 const UNITS: {
-  track: "javascript" | "communication";
+  track: Track;
   title: string;
   bg: string;
   comingSoon?: string[];
@@ -26,6 +27,8 @@ const UNITS: {
 }[] = [
   { track: "communication", title: "Telling your story", bg: "bg-lilac-deep", pitchLink: true },
   { track: "javascript", title: "Arrays, objects and maps", bg: "bg-teal", comingSoon: COMING_SOON },
+  { track: "typescript", title: "TypeScript, precisely", bg: "bg-lilac-deep" },
+  { track: "engineering", title: "Explaining how you build", bg: "bg-teal" },
 ];
 
 function PathNode({ state }: { state: NodeState }) {
