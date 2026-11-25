@@ -91,16 +91,3 @@ export function LessonDiagram({ diagram }: { diagram: Diagram }) {
     </figure>
   );
 }
-
-/** Text where **marked phrases** are shown bold, for the one idea to take away. */
-export function Emphasis({ text }: { text: string }) {
-  return text.split(/\*\*(.+?)\*\*/g).map((part, i) =>
-    i % 2 ? (
-      <strong key={i} className="font-extrabold">
-        {part}
-      </strong>
-    ) : (
-      part
-    ),
-  );
-}

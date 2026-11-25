@@ -183,13 +183,13 @@ const propertyLookup: Lesson = {
         code: `const base = { greeting: "hi" };\nconst child = Object.create(base);\nconsole.log(child.greeting);`,
         options: ['"hi"', "undefined", "It throws an error"],
         answerIndex: 0,
-        reveal: "child has no greeting of its own, so JavaScript looks at its prototype, base, and finds it there.",
+        reveal: "`child` has no `greeting` of its own, so JavaScript looks at its prototype, `base`, and finds it there.",
       },
       workedExample: {
         code: `const base = { greeting: "hi" };\nconst child = Object.create(base);\nconsole.log(child.greeting); // hi\nchild.greeting = "yo";\nconsole.log(child.greeting); // yo\nconsole.log(base.greeting); // hi`,
         walkthrough: [
-          "A read checks the object itself first, then its prototype, then that one's prototype, until it reaches null.",
-          "A plain assignment doesn't change the prototype. It creates a property on child that hides (shadows) the inherited one.",
+          "A read checks the object itself first, then its prototype, then that one's prototype, until it reaches `null`.",
+          "A plain assignment doesn't change the prototype. It creates a property on `child` that hides (shadows) the inherited one.",
           "A setter or a read-only property higher up the chain changes what an assignment does.",
         ],
       },
@@ -198,14 +198,14 @@ const propertyLookup: Lesson = {
         code: `const defaults = { size: "M" };\nconst order = Object.create(defaults);\norder.size = "L";\nconsole.log(defaults.size);`,
         options: ['"L"', '"M"', "undefined"],
         answerIndex: 1,
-        explanation: "The assignment created a size on order. defaults was not touched.",
+        explanation: "The assignment created a `size` on `order`. `defaults` was not touched.",
       },
       explain: {
         question: "What happens when you read a property that isn't on the object?",
         starter: "JavaScript first checks the object itself, then …",
         modelAnswer:
-          "JavaScript checks the object's own properties first. If it isn't there, it follows the object's prototype and looks there, and keeps going up the chain until it reaches null. If nothing has it, the result is undefined. Assigning is different: it normally creates a property on the object itself.",
-        keyPoints: ["Own properties are checked first", "Then the prototype chain, ending at null", "Missing everywhere gives undefined", "Assignment normally creates an own property"],
+          "JavaScript checks the object's own properties first. If it isn't there, it follows the object's prototype and looks there, and keeps going up the chain until it reaches `null`. If nothing has it, the result is `undefined`. Assigning is different: it normally creates a property on the object itself.",
+        keyPoints: ["Own properties are checked first", "Then the prototype chain, ending at `null`", "Missing everywhere gives `undefined`", "Assignment normally creates an own property"],
       },
       reteach: {
         steps: [
@@ -220,14 +220,14 @@ const propertyLookup: Lesson = {
           code: `const a = { n: 1 };\nconst b = Object.create(a);\nconst c = Object.create(b);\nconsole.log(c.n);`,
           options: ["undefined", "It throws an error", "1"],
           answerIndex: 2,
-          explanation: "The lookup goes from c to b to a, where n is found.",
+          explanation: "The lookup goes from `c` to `b` to `a`, where `n` is found.",
         },
         {
           prompt: "In JavaScript, what does this print?",
           code: `const point = { x: 1 };\nconsole.log(point.y);`,
           options: ["undefined", "null", "It throws an error"],
           answerIndex: 0,
-          explanation: "No object in the chain has y, so the result is undefined.",
+          explanation: "No object in the chain has `y`, so the result is `undefined`.",
         },
       ],
       recap: "Reads walk the prototype chain. Plain assignment creates an own property.",
@@ -240,14 +240,14 @@ const propertyLookup: Lesson = {
         code: `const counts = {};\nconsole.log("toString" in counts);`,
         options: ["true", "false"],
         answerIndex: 0,
-        reveal: "in checks the whole chain, and an object written with {} inherits toString from Object.prototype.",
+        reveal: "`in` checks the whole chain, and an object written with `{}` inherits `toString` from `Object.prototype`.",
       },
       workedExample: {
         code: `const counts = {};\nconsole.log("toString" in counts); // true\nconsole.log(Object.hasOwn(counts, "toString")); // false\nconst safe = new Map();\nconsole.log(safe.has("toString")); // false`,
         walkthrough: [
-          "in asks “is it anywhere in the chain?”",
-          "Object.hasOwn asks “is it on this object itself?”",
-          "A Map has no inherited keys, which makes it a good fit when keys come from users.",
+          "`in` asks “is it anywhere in the chain?”",
+          "`Object.hasOwn` asks “is it on this object itself?”",
+          "A `Map` has no inherited keys, which makes it a good fit when keys come from users.",
         ],
       },
       check: {
@@ -255,19 +255,19 @@ const propertyLookup: Lesson = {
         code: `const saved = { apple: 1 };\nconst word = "constructor";`,
         options: ["word in saved", "Object.hasOwn(saved, word)", "saved[word] !== undefined"],
         answerIndex: 1,
-        explanation: "The other two also find the inherited constructor, even though nobody saved it.",
+        explanation: "The other two also find the inherited `constructor`, even though nobody saved it.",
       },
       explain: {
         question: "When would you use a Map instead of a plain object?",
         starter: "I'd use a Map when the keys …",
         modelAnswer:
-          "I use a plain object for a record with a known shape, like a product. I use a Map when keys are added at run time, especially from user input, because it has no inherited keys, accepts any type as a key and has a size. The catch is that it doesn't turn into JSON by itself.",
-        keyPoints: ["Object for a known shape", "Map for keys added at run time", "Plain objects inherit keys from their prototype", "A Map needs converting for JSON"],
+          "I use a plain object for a record with a known shape, like a product. I use a `Map` when keys are added at run time, especially from user input, because it has no inherited keys, accepts any type as a key and has a size. The catch is that it doesn't turn into JSON by itself.",
+        keyPoints: ["Object for a known shape", "`Map` for keys added at run time", "Plain objects inherit keys from their prototype", "A `Map` needs converting for JSON"],
       },
       reteach: {
         steps: [
-          "A plain object arrives with inherited names such as toString and constructor.",
-          "Use Object.hasOwn to ignore them, or a Map to avoid them.",
+          "A plain object arrives with inherited names such as `toString` and `constructor`.",
+          "Use `Object.hasOwn` to ignore them, or a `Map` to avoid them.",
         ],
       },
       retries: [
@@ -276,17 +276,17 @@ const propertyLookup: Lesson = {
           code: `const tally = {};\nconsole.log(Object.keys(tally).length);`,
           options: ["1", "undefined", "0"],
           answerIndex: 2,
-          explanation: "Object.keys lists own enumerable string keys only. Inherited ones aren't counted.",
+          explanation: "`Object.keys` lists own enumerable string keys only. Inherited ones aren't counted.",
         },
         {
           prompt: "In JavaScript, what does this print?",
           code: `const bare = Object.create(null);\nconsole.log("toString" in bare);`,
           options: ["true", "false"],
           answerIndex: 1,
-          explanation: "bare has no prototype, so there is nothing to inherit.",
+          explanation: "`bare` has no prototype, so there is nothing to inherit.",
         },
       ],
-      recap: "in includes inherited properties. Object.hasOwn does not.",
+      recap: "`in` includes inherited properties. `Object.hasOwn` does not.",
     },
   ],
 };
@@ -300,7 +300,7 @@ const typePrecision: Lesson = {
   reviewed: true,
   intro: {
     summary: "Two common TypeScript questions, answered with what the compiler actually does.",
-    outcomes: ["Explain why unknown is safer than any", "Say what interface can do that type can't, and the reverse"],
+    outcomes: ["Explain why `unknown` is safer than `any`", "Say what `interface` can do that `type` can't, and the reverse"],
   },
   ideas: [
     {
@@ -311,14 +311,14 @@ const typePrecision: Lesson = {
         code: `const loose: any = "hi";\nconst careful: unknown = "hi";`,
         options: ["careful.toUpperCase()", "loose.toUpperCase()", "Both lines", "Neither line"],
         answerIndex: 0,
-        reveal: "any switches checking off. unknown accepts any value but won't let you use it until you've shown what it is.",
+        reveal: "`any` switches checking off. `unknown` accepts any value but won't let you use it until you've shown what it is.",
       },
       workedExample: {
         code: `function shout(input: unknown): string {\n  if (typeof input === "string") {\n    return input.toUpperCase();\n  }\n  return "not text";\n}`,
         walkthrough: [
-          "Anything can be passed in, because every type fits into unknown.",
-          "Inside the if, TypeScript narrows input to string, so toUpperCase is allowed.",
-          "Use unknown for data from outside: parsed JSON, responses, caught errors. These checks happen at run time. A type annotation alone checks nothing at run time.",
+          "Anything can be passed in, because every type fits into `unknown`.",
+          "Inside the `if`, TypeScript narrows `input` to `string`, so `toUpperCase` is allowed.",
+          "Use `unknown` for data from outside: parsed JSON, responses, caught errors. These checks happen at run time. A type annotation alone checks nothing at run time.",
         ],
       },
       check: {
@@ -331,18 +331,18 @@ const typePrecision: Lesson = {
         question: "What's the difference between unknown and any?",
         starter: "Both accept any value, but …",
         modelAnswer:
-          "Both accept any value. With any, the compiler stops checking: I can call or index it however I like, and it spreads to whatever I assign it to. With unknown, I have to narrow it first, using typeof, instanceof, a type guard or a schema. I use unknown for anything coming from outside.",
-        keyPoints: ["Both accept any value", "any turns checking off and spreads", "unknown must be narrowed before use", "Names a way to narrow", "Gives a real source of unknown data"],
+          "Both accept any value. With `any`, the compiler stops checking: I can call or index it however I like, and it spreads to whatever I assign it to. With `unknown`, I have to narrow it first, using `typeof`, `instanceof`, a type guard or a schema. I use `unknown` for anything coming from outside.",
+        keyPoints: ["Both accept any value", "`any` turns checking off and spreads", "`unknown` must be narrowed before use", "Names a way to narrow", "Gives a real source of unknown data"],
       },
       reteach: {
-        steps: ["any says “trust me”.", "unknown says “prove it first”."],
+        steps: ["`any` says “trust me”.", "`unknown` says “prove it first”."],
       },
       retries: [
         {
           prompt: "In TypeScript, which of these narrows a value typed as unknown?",
           options: ["A longer variable name", "Writing it to the console", "A typeof check", "Declaring it with const"],
           answerIndex: 2,
-          explanation: "typeof is a run-time check that TypeScript understands.",
+          explanation: "`typeof` is a run-time check that TypeScript understands.",
         },
         {
           prompt: "In a TypeScript app that fetches data, why is writing “as User” on a server response risky?",
@@ -356,7 +356,7 @@ const typePrecision: Lesson = {
           explanation: "The cast disappears when the code is compiled, so bad data gets through.",
         },
       ],
-      recap: "any turns checking off. unknown makes you narrow before you use the value.",
+      recap: "`any` turns checking off. `unknown` makes you narrow before you use the value.",
     },
     {
       id: "interface-type",
@@ -371,26 +371,26 @@ const typePrecision: Lesson = {
       workedExample: {
         code: `interface Product { name: string }\ninterface Product { price: number }\nconst mug: Product = { name: "Mug", price: 12 };\n\ntype Size = "S" | "M" | "L";`,
         walkthrough: [
-          "Both Product declarations count, so mug needs name and price. This is how you can add to a library's interface.",
-          "Size is a union. An interface can't express that; type can, along with tuples, mapped and conditional types.",
-          "Both can describe an object shape, be built on (extends for interface, & for type) and be used with implements. A class can't implement a union.",
+          "Both `Product` declarations count, so `mug` needs `name` and `price`. This is how you can add to a library's interface.",
+          "`Size` is a union. An interface can't express that; `type` can, along with tuples, mapped and conditional types.",
+          "Both can describe an object shape, be built on (`extends` for `interface`, `&` for `type`) and be used with `implements`. A class can't implement a union.",
         ],
       },
       check: {
         prompt: "In TypeScript, you need a status that is exactly “paid” or “refunded”. What do you write?",
         options: ["Two interfaces with the same name", "A type alias with a union", "A value typed as any"],
         answerIndex: 1,
-        explanation: "Unions need type.",
+        explanation: "Unions need `type`.",
       },
       explain: {
         question: "interface vs type: how do you choose?",
         starter: "Both can describe an object. The differences are …",
         modelAnswer:
-          "Both can describe object shapes. Interfaces with the same name merge, which lets consumers add to a library's types. Type aliases can't merge, but they can name unions, tuples and computed types. I use interface for object contracts others may extend, and type for unions and composed types, and stay consistent with the codebase.",
-        keyPoints: ["Both describe object shapes", "Interfaces merge, type aliases don't", "type can express unions and tuples", "Gives a rule you actually follow"],
+          "Both can describe object shapes. Interfaces with the same name merge, which lets consumers add to a library's types. Type aliases can't merge, but they can name unions, tuples and computed types. I use `interface` for object contracts others may extend, and `type` for unions and composed types, and stay consistent with the codebase.",
+        keyPoints: ["Both describe object shapes", "Interfaces merge, `type` aliases don't", "`type` can express unions and tuples", "Gives a rule you actually follow"],
       },
       reteach: {
-        steps: ["Merging is what interface has and type doesn't.", "Unions are what type has and interface doesn't."],
+        steps: ["Merging is what `interface` has and `type` doesn't.", "Unions are what `type` has and `interface` doesn't."],
       },
       retries: [
         {
@@ -406,7 +406,7 @@ const typePrecision: Lesson = {
           explanation: "Declaring the interface again, in the right module or global scope, adds to it.",
         },
       ],
-      recap: "interface merges. type names unions, tuples and computed types.",
+      recap: "`interface` merges. `type` names unions, tuples and computed types.",
     },
   ],
 };
@@ -489,9 +489,9 @@ const whereRulesLive: Lesson = {
       workedExample: {
         code: `const schema = \`\n  create table order_lines (\n    id bigint primary key,\n    order_id bigint not null references orders (id),\n    sku text not null,\n    quantity integer not null check (quantity > 0),\n    unique (order_id, sku)\n  );\n\`;`,
         walkthrough: [
-          "not null and check refuse bad values.",
-          "references refuses a line that points to an order that doesn't exist.",
-          "unique stops the same product appearing twice in one order, even with requests arriving together.",
+          "`not null` and `check` refuse bad values.",
+          "`references` refuses a line that points to an order that doesn't exist.",
+          "`unique` stops the same product appearing twice in one order, even with requests arriving together.",
           "The server should catch the error and reply with a clear message.",
         ],
       },
@@ -505,7 +505,7 @@ const whereRulesLive: Lesson = {
         question: "If the server already validates, why add database constraints?",
         starter: "Because the server isn't the only …",
         modelAnswer:
-          "Because rules in one route only protect that route. Scripts, new endpoints and bugs can write too, and two requests can pass the same check at once. Constraints such as not null, check, foreign keys and unique apply to every write. I keep them for rules that must never break, and handle their errors kindly.",
+          "Because rules in one route only protect that route. Scripts, new endpoints and bugs can write too, and two requests can pass the same check at once. Constraints such as `not null`, `check`, foreign keys and `unique` apply to every write. I keep them for rules that must never break, and handle their errors kindly.",
         keyPoints: ["Other code can write to the database", "Concurrent requests can both pass a check", "Names real constraint types", "Handles the error for the user"],
       },
       reteach: {
@@ -613,9 +613,9 @@ const stableTests: Lesson = {
       workedExample: {
         code: `import { test, expect } from "@playwright/test";\n\ntest("places an order", async ({ page }) => {\n  await page.goto("/checkout");\n  await page.getByRole("button", { name: "Pay" }).click();\n  await expect(page.getByText("Order placed")).toBeVisible();\n});`,
         walkthrough: [
-          "getByRole finds the button the way a user would, so a styling change doesn't break the test.",
-          "click waits until the button is ready to be clicked.",
-          "This expect retries until the text shows or the time limit passes. No sleep is needed.",
+          "`getByRole` finds the button the way a user would, so a styling change doesn't break the test.",
+          "`click` waits until the button is ready to be clicked.",
+          "This `expect` retries until the text shows or the time limit passes. No sleep is needed.",
           "For failures in CI, keep a trace so you can see what happened.",
         ],
       },
@@ -693,9 +693,9 @@ export const depthDrills: Drill[] = [
     code: `const shared = { theme: "light" };\nconst mine = Object.create(shared);\nmine.theme = "dark";\ndelete mine.theme;\nconsole.log(mine.theme);`,
     options: ["undefined", '"light"'],
     answerIndex: 1,
-    rubric: ["delete removes only the own property", "The lookup then finds the inherited one"],
+    rubric: ["`delete` removes only the own property", "The lookup then finds the inherited one"],
     hint: "What is still on the prototype?",
-    sayIt: "It prints light. Deleting removes my own theme, so the lookup falls through to the prototype again.",
+    sayIt: "It prints `light`. Deleting removes my own `theme`, so the lookup falls through to the prototype again.",
   }),
   drill({
     id: "d-dep-4",
@@ -706,9 +706,9 @@ export const depthDrills: Drill[] = [
     code: `const votes = {};\nconsole.log(typeof votes["constructor"]);`,
     options: ["function", "undefined"],
     answerIndex: 0,
-    rubric: ["constructor is inherited from Object.prototype", "User-chosen keys can collide with inherited names"],
+    rubric: ["`constructor` is inherited from `Object.prototype`", "User-chosen keys can collide with inherited names"],
     hint: "An empty object still has a prototype.",
-    sayIt: "It prints function, because constructor is inherited. For keys that users choose, I'd use a Map or check own properties.",
+    sayIt: "It prints `function`, because `constructor` is inherited. For keys that users choose, I'd use a `Map` or check own properties.",
   }),
   drill({
     id: "d-dep-5",
@@ -718,9 +718,9 @@ export const depthDrills: Drill[] = [
     prompt: "In a TypeScript project with the strict setting on, you catch an error. Before reading its message, what should you do?",
     options: ["Read it directly", "Check that it is an Error, for example with instanceof"],
     answerIndex: 1,
-    rubric: ["With strict on, the caught value is typed unknown", "Anything can be thrown, so narrow first"],
+    rubric: ["With `strict` on, the caught value is typed `unknown`", "Anything can be thrown, so narrow first"],
     hint: "Can only Error objects be thrown?",
-    sayIt: "With TypeScript's strict setting, a caught value is unknown, since anything can be thrown. I check it's an Error before reading the message.",
+    sayIt: "With TypeScript's `strict` setting, a caught value is `unknown`, since anything can be thrown. I check it's an `Error` before reading the message.",
   }),
   drill({
     id: "d-dep-6",
@@ -733,7 +733,7 @@ export const depthDrills: Drill[] = [
     answerIndex: 0,
     rubric: ["Type aliases don't merge", "Interfaces with the same name would"],
     hint: "Which of the two kinds can merge?",
-    sayIt: "No. A type alias can only be declared once. With two interfaces of the same name, they'd merge instead.",
+    sayIt: "No. A `type` alias can only be declared once. With two interfaces of the same name, they'd merge instead.",
   }),
   drill({
     id: "d-dep-7",

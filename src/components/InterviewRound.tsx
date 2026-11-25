@@ -11,6 +11,7 @@ import { CodeBlock } from "./CodeBlock";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelIcon, Teacup } from "./PixelIcon";
 import { InterviewSkeleton } from "./Skeleton";
+import { RichText } from "./RichText";
 
 // A practice round with the content we already have. Questions come from the drill bank and you
 // check your own answer against key points. The AI interviewer (follow-ups, scoring) comes later.
@@ -166,7 +167,7 @@ function Round({ pressure }: { pressure: PressureLevel }) {
               {phase === "checking" && (
                 <p className="rounded bg-mint p-3 text-ink">
                   <span className="font-bold">A strong answer: </span>
-                  {q.sayIt}
+                  <RichText text={q.sayIt} />
                 </p>
               )}
             </section>
@@ -216,7 +217,7 @@ function Round({ pressure }: { pressure: PressureLevel }) {
                         onChange={() => setTicked((t) => t.map((v, j) => (j === i ? !v : v)))}
                         className="mt-1 h-5 w-5 accent-teal"
                       />
-                      <span>{point}</span>
+                      <RichText text={point} />
                     </label>
                   </li>
                 ))}

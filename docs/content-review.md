@@ -978,9 +978,9 @@ id: `arrays-copy-vs-mutate` · track: javascript · topic: arrays · 6 min · re
 Three things that trip people up with arrays in interviews: sort() changing the array you call it on, sorting numbers, and when to use map or filter.
 
 **By the end you'll be able to:**
-- Explain why sort() changes the original array, and how to avoid that
+- Explain why `sort()` changes the original array, and how to avoid that
 - Sort numbers correctly with a compare function
-- Choose between map and filter, and say why
+- Choose between `map` and `filter`, and say why
 
 ### Idea 1: sort() changes the original
 
@@ -1001,7 +1001,7 @@ console.log(a, b === a);
 - `[1, 2, 3] false`
 - `[3, 1, 2] true`
 
-**Reveal:** sort() rearranges the original array in place and returns that same array, so a is now sorted and b === a is true.
+**Reveal:** `sort()` rearranges the original array in place and returns that same array, so `a` is now sorted and `b === a` is `true`.
 
 #### Worked example
 
@@ -1012,9 +1012,9 @@ console.log(scores); // [30, 10, 20]
 console.log(sorted); // [10, 20, 30]
 ```
 
-1. [...scores] builds a new array with the same items (a shallow copy).
-2. sort() reorders that copy and returns it.
-3. scores is untouched, because only the copy was sorted. Calling scores.sort() directly would have reordered scores itself.
+1. `[...scores]` builds a new array with the same items (a shallow copy).
+2. `sort()` reorders that copy and returns it.
+3. `scores` is untouched, because only the copy was sorted. Calling `scores.sort()` directly would have reordered `scores` itself.
 
 #### Your turn
 
@@ -1030,13 +1030,13 @@ const sortedNames = ___.sort();
 - `names.length`
 - `names.sort`
 
-**Explanation:** [...names] makes a copy, so sort() only reorders the copy. Using names directly would reorder names itself.
+**Explanation:** `[...names]` makes a copy, so `sort()` only reorders the copy. Using `names` directly would reorder `names` itself.
 
 #### Another look (after a miss)
 
-1. Some array methods change the array you call them on. That's called mutating it, and sort() is one of them.
-2. Others, like map and filter, leave the original alone and hand back a new array.
-3. When you need the original order later, copy first with [...arr] or arr.slice(), then sort the copy.
+1. Some array methods change the array you call them on. That's called mutating it, and `sort()` is one of them.
+2. Others, like `map` and `filter`, leave the original alone and hand back a new array.
+3. When you need the original order later, copy first with `[...arr]` or `arr.slice()`, then sort the copy.
 
 ```js
 const a = [3, 1, 2];
@@ -1059,7 +1059,7 @@ console.log(list[0]);
 - `"c"`
 - `undefined`
 
-**Explanation:** sort() reordered list itself, so list[0] is now "a". result is just another name for the same array.
+**Explanation:** `sort()` reordered `list` itself, so `list[0]` is now `"a"`. `result` is just another name for the same array.
 
 **Fresh question 2**
 
@@ -1074,7 +1074,7 @@ const prices = [30, 10, 20];
 - `prices.reverse()`
 - `prices.sort().slice()`
 
-**Explanation:** Only [...prices].sort() sorts a copy. The others reorder prices itself: slice() runs after sort() has already changed it.
+**Explanation:** Only `[...prices].sort()` sorts a copy. The others reorder `prices` itself: `slice()` runs after `sort()` has already changed it.
 
 #### Say it
 
@@ -1083,14 +1083,14 @@ In JavaScript, what's the catch with using sort() on an array?
 **Starter:** sort() changes the original array, so if I need to keep the order I…
 
 **Model answer:**
-> sort() sorts the array in place, which means it changes the original array instead of returning a new one. If I still need the original order, I copy it first, for example with [...arr].sort(), and sort the copy. For instance, calling scores.sort() would reorder scores itself.
+> `sort()` sorts the array in place, which means it changes the original array instead of returning a new one. If I still need the original order, I copy it first, for example with `[...arr].sort()`, and sort the copy. For instance, calling `scores.sort()` would reorder `scores` itself.
 
 **Key points:**
 - It changes (mutates) the original array
 - It sorts in place and returns that same array
-- To keep the original, copy first, e.g. [...arr].sort()
+- To keep the original, copy first, e.g. `[...arr].sort()`
 
-**Recap line:** sort() changes the array you call it on. Copy first with [...arr] when you need the original.
+**Recap line:** `sort()` changes the array you call it on. Copy first with `[...arr]` when you need the original.
 
 ### Idea 2: Sorting numbers
 
@@ -1109,7 +1109,7 @@ console.log([5, 25, 100].sort());
 - `[25, 5, 100]`
 - `[100, 5, 25]`
 
-**Reveal:** With no function, sort() compares items as text. As text, "100" comes before "25", and "25" before "5", so the result is [100, 25, 5].
+**Reveal:** With no function, `sort()` compares items as text. As text, `"100"` comes before `"25"`, and `"25"` before `"5"`, so the result is `[100, 25, 5]`.
 
 #### Worked example
 
@@ -1119,9 +1119,9 @@ nums.sort((a, b) => a - b);
 console.log(nums); // [5, 25, 100]
 ```
 
-1. sort() can take a compare function. It gets two items, a and b, and answers: which goes first?
-2. A negative result means a goes first. Positive means b goes first. Zero means leave them as they are.
-3. a - b is negative when a is smaller, so smaller numbers come first. Use b - a for largest first.
+1. `sort()` can take a compare function. It gets two items, `a` and `b`, and answers: which goes first?
+2. A negative result means `a` goes first. Positive means `b` goes first. Zero means leave them as they are.
+3. `a - b` is negative when `a` is smaller, so smaller numbers come first. Use `b - a` for largest first.
 
 #### Your turn
 
@@ -1137,13 +1137,13 @@ nums.sort((a, b) => ___);
 - `a > b`
 - `a + b`
 
-**Explanation:** b - a is negative when a is the bigger number, so the bigger number goes first. a - b does the opposite. a > b gives true or false, not a number, so it doesn't sort reliably.
+**Explanation:** `b - a` is negative when `a` is the bigger number, so the bigger number goes first. `a - b` does the opposite. `a > b` gives `true` or `false`, not a number, so it doesn't sort reliably.
 
 #### Another look (after a miss)
 
-1. The compare function answers one question: should a come before b?
-2. Negative means yes, a first. Positive means no, b first. Zero means it doesn't matter.
-3. Try a = 2 and b = 7. a - b is -5, which is negative, so 2 goes first. That's ascending order.
+1. The compare function answers one question: should `a` come before `b`?
+2. Negative means yes, `a` first. Positive means no, `b` first. Zero means it doesn't matter.
+3. Try `a = 2` and `b = 7`. `a - b` is `-5`, which is negative, so 2 goes first. That's ascending order.
 
 ```js
 [10, 2, 33].sort((a, b) => a - b); // [2, 10, 33]
@@ -1162,7 +1162,7 @@ console.log([3, 20, 100].sort());
 - `[100, 3, 20]`
 - `[20, 100, 3]`
 
-**Explanation:** Without a compare function the numbers are compared as text: "100" < "20" < "3". So the result is [100, 20, 3].
+**Explanation:** Without a compare function the numbers are compared as text: `"100" < "20" < "3"`. So the result is `[100, 20, 3]`.
 
 **Fresh question 2**
 
@@ -1177,7 +1177,7 @@ const nums = [3, 20, 100];
 - `nums.sort((a, b) => b - a)`
 - `nums.sort((a, b) => a > b)`
 
-**Explanation:** a - b is negative when a is smaller, so smaller numbers go first. The plain sort() compares as text, and b - a goes the other way.
+**Explanation:** `a - b` is negative when `a` is smaller, so smaller numbers go first. The plain `sort()` compares as text, and `b - a` goes the other way.
 
 #### Say it
 
@@ -1186,14 +1186,14 @@ Why does [10, 9, 1].sort() give [1, 10, 9], and how would you fix it?
 **Starter:** By default sort() compares items as text, so…
 
 **Model answer:**
-> By default, sort() converts the items to strings and compares them as text, so "10" comes before "9" because "1" is smaller than "9". To sort numbers properly I pass a compare function, like (a, b) => a - b, which puts smaller numbers first.
+> By default, `sort()` converts the items to strings and compares them as text, so `"10"` comes before `"9"` because `"1"` is smaller than `"9"`. To sort numbers properly I pass a compare function, like `(a, b) => a - b`, which puts smaller numbers first.
 
 **Key points:**
-- Default sort() compares items as text (strings)
-- So "10" sorts before "9": it compares characters, not size
-- Fix: pass a compare function such as (a, b) => a - b
+- Default `sort()` compares items as text (strings)
+- So `"10"` sorts before `"9"`: it compares characters, not size
+- Fix: pass a compare function such as `(a, b) => a - b`
 
-**Recap line:** Default sort() compares as text. Pass (a, b) => a - b to sort numbers smallest first.
+**Recap line:** Default `sort()` compares as text. Pass `(a, b) => a - b` to sort numbers smallest first.
 
 ### Idea 3: map and filter
 
@@ -1214,7 +1214,7 @@ console.log(result, nums.length);
 - `[false, false, true, true] 4`
 - `[1, 2] 4`
 
-**Reveal:** filter keeps the items where the function returns true and gives you a new array. nums itself isn't changed, so its length is still 4.
+**Reveal:** `filter` keeps the items where the function returns `true` and gives you a new array. `nums` itself isn't changed, so its length is still 4.
 
 #### Worked example
 
@@ -1226,9 +1226,9 @@ console.log(doubled); // [60, 20, 40]
 console.log(big);     // [30, 20]
 ```
 
-1. map runs the function on every item and collects the results: 60, 20, 40.
-2. filter runs the function on every item too, but keeps only the items where it returns true.
-3. Both return new arrays, and scores is unchanged.
+1. `map` runs the function on every item and collects the results: 60, 20, 40.
+2. `filter` runs the function on every item too, but keeps only the items where it returns `true`.
+3. Both return new arrays, and `scores` is unchanged.
 
 #### Your turn
 
@@ -1244,13 +1244,13 @@ const doubled = scores.___(n => n * 2);
 - `filter`
 - `reduce`
 
-**Explanation:** map runs the function on every item and returns a new array of the results. forEach returns nothing, and filter only keeps items.
+**Explanation:** `map` runs the function on every item and returns a new array of the results. `forEach` returns nothing, and `filter` only keeps items.
 
 #### Another look (after a miss)
 
-1. map is for changing every item. You get the same number of items out as you put in.
-2. filter is for choosing items. You get some of the same items back, so maybe fewer.
-3. forEach just runs code for each item and returns nothing, so it can't build the new array for you.
+1. `map` is for changing every item. You get the same number of items out as you put in.
+2. `filter` is for choosing items. You get some of the same items back, so maybe fewer.
+3. `forEach` just runs code for each item and returns nothing, so it can't build the new array for you.
 
 ```js
 [1, 2, 3].map(n => n + 1);    // [2, 3, 4]
@@ -1271,7 +1271,7 @@ const long = names.___(name => name.length > 3);
 - `forEach`
 - `sort`
 
-**Explanation:** filter keeps the items where the function returns true. map would give back an array of true and false instead.
+**Explanation:** `filter` keeps the items where the function returns `true`. `map` would give back an array of `true` and `false` instead.
 
 **Fresh question 2**
 
@@ -1287,7 +1287,7 @@ console.log(result.length);
 - `1`
 - `0`
 
-**Explanation:** map returns one result per item, so there are 3: [false, true, true]. It never removes anything. That's filter's job.
+**Explanation:** `map` returns one result per item, so there are 3: `[false, true, true]`. It never removes anything. That's `filter`'s job.
 
 #### Say it
 
@@ -1296,14 +1296,14 @@ What's the difference between map and filter?
 **Starter:** map … every item, while filter …
 
 **Model answer:**
-> map runs a function on every item and returns a new array of the results, so it has the same length as the original. filter keeps only the items where the function returns true, so the new array can be shorter. Neither one changes the original array. For example, nums.map(n => n * 2) doubles every number, and nums.filter(n => n > 2) keeps just the ones above two.
+> `map` runs a function on every item and returns a new array of the results, so it has the same length as the original. `filter` keeps only the items where the function returns `true`, so the new array can be shorter. Neither one changes the original array. For example, `nums.map(n => n * 2)` doubles every number, and `nums.filter(n => n > 2)` keeps just the ones above two.
 
 **Key points:**
-- map transforms every item: same length out
-- filter keeps only some items: it can be shorter
+- `map` transforms every item: same length out
+- `filter` keeps only some items: it can be shorter
 - Both return a new array and leave the original alone
 
-**Recap line:** map changes every item. filter keeps some items. Both return new arrays and leave the original alone.
+**Recap line:** `map` changes every item. `filter` keeps some items. Both return new arrays and leave the original alone.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -1323,14 +1323,14 @@ const arr = [3, 1, 2];
 - **✔ `[...arr].sort()`**
 
 **Key points a good "why" covers:**
-- sort() mutates the original array in place
+- `sort()` mutates the original array in place
 - Spread makes a (shallow) copy first, so the original is untouched
-- Bonus: newer engines have toSorted(), which also returns a copy
+- Bonus: newer engines have `toSorted()`, which also returns a copy
 
 **Hint:** Think about which one changes the array you started with.
 
 **How you could say it:**
-> I'd copy the array first with [...arr] and sort the copy, because sort() changes the original array in place. Newer engines also have toSorted(), which returns a sorted copy and leaves the original alone.
+> I'd copy the array first with `[...arr]` and sort the copy, because `sort()` changes the original array in place. Newer engines also have `toSorted()`, which returns a sorted copy and leaves the original alone.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -1350,14 +1350,14 @@ In JavaScript, what does this evaluate to?
 - `[9, 10, 1]`
 
 **Key points a good "why" covers:**
-- Default sort() converts items to strings
-- As text, "1" < "10" < "9", so the order is 1, 10, 9
-- Pass (a, b) => a - b to sort numbers numerically
+- Default `sort()` converts items to strings
+- As text, `"1" < "10" < "9"`, so the order is `1, 10, 9`
+- Pass `(a, b) => a - b` to sort numbers numerically
 
 **Hint:** What does sort() compare when you don't give it a function?
 
 **How you could say it:**
-> Without a compare function, sort() compares items as text, so "10" comes before "9" and the result is [1, 10, 9]. To sort numbers I pass (a, b) => a - b.
+> Without a compare function, `sort()` compares items as text, so `"10"` comes before `"9"` and the result is `[1, 10, 9]`. To sort numbers I pass `(a, b) => a - b`.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -1375,14 +1375,14 @@ const nums = [1, 2, 3, 4];
 - **✔ `nums.filter(n => n % 2 === 0)`**
 
 **Key points a good "why" covers:**
-- filter keeps the items where the callback returns true
-- map transforms every item, so option A would give an array of true/false values
+- `filter` keeps the items where the callback returns `true`
+- `map` transforms every item, so option A would give an array of `true`/`false` values
 - Both return a new array and leave the original alone
 
 **Hint:** One of these keeps items. The other changes every item.
 
 **How you could say it:**
-> I'd use filter, because it keeps only the items where the callback returns true. map would transform every item, so I'd get an array of true and false values instead of the even numbers.
+> I'd use `filter`, because it keeps only the items where the callback returns `true`. `map` would transform every item, so I'd get an array of `true` and `false` values instead of the even numbers.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -1419,7 +1419,7 @@ console.log(a.n);
 - `undefined`
 - `It throws an error`
 
-**Reveal:** b = a gives both names the same object, so changing b.n changes a.n too.
+**Reveal:** `b = a` gives both names the same object, so changing `b.n` changes `a.n` too.
 
 #### Worked example
 
@@ -1433,9 +1433,9 @@ console.log(a === b); // true
 
 **Diagram:** Two names, one object. The names a and b both point to the same object, where n is 2.
 
-1. An object lives in one place. a and b are two names that point to it.
-2. const b = a **doesn't copy anything**. It gives the same object a second name.
-3. So changing b.n changes what a sees too, and a === b is true.
+1. An object lives in one place. `a` and `b` are two names that point to it.
+2. `const b = a` **doesn't copy anything**. It gives the same object a second name.
+3. So changing `b.n` changes what `a` sees too, and `a === b` is `true`.
 
 #### Your turn
 
@@ -1451,12 +1451,12 @@ const other = ___;
 - `[original]`
 - `original.n`
 
-**Explanation:** { ...original } builds a new object with the same properties. Using original just adds a second name for the same object.
+**Explanation:** `{ ...original }` builds a new object with the same properties. Using `original` just adds a second name for the same object.
 
 #### Another look (after a miss)
 
 1. Think of an object as a document in a shared drive. A variable holds the link, not the document.
-2. const b = a copies the link. Edits through either link change the same document.
+2. `const b = a` copies the link. Edits through either link change the same document.
 3. To get a separate document you have to make a copy on purpose.
 
 ```js
@@ -1481,7 +1481,7 @@ console.log(x.v);
 - `undefined`
 - `It throws an error`
 
-**Explanation:** y is another name for the same object as x, so changing y.v changes x.v too.
+**Explanation:** `y` is another name for the same object as `x`, so changing `y.v` changes `x.v` too.
 
 **Fresh question 2**
 
@@ -1498,7 +1498,7 @@ console.log(x === y);
 - `undefined`
 - `It throws an error`
 
-**Explanation:** === on objects asks whether they are the same object, not whether they look the same. These are two separate objects, so it's false.
+**Explanation:** `===` on objects asks whether they are the same object, not whether they look the same. These are two separate objects, so it's `false`.
 
 #### Say it
 
@@ -1507,12 +1507,12 @@ If I write const b = a with an object and then change b, what happens to a, and 
 **Starter:** Both names point to…
 
 **Model answer:**
-> a changes too. A variable holds a reference to the object, not the object itself, so const b = a doesn't copy the object, it just gives it a second name. Both variables point at the same object, so a change made through b is visible through a. If I want a separate object, I have to copy it, for example with { ...a }.
+> `a` changes too. A variable holds a reference to the object, not the object itself, so `const b = a` doesn't copy the object, it just gives it a second name. Both variables point at the same object, so a change made through `b` is visible through `a`. If I want a separate object, I have to copy it, for example with `{ ...a }`.
 
 **Key points:**
 - Assigning an object copies the reference, not the object
 - Both names point to the same object, so changes show up in both
-- To get a separate object you need to copy it, e.g. { ...a }
+- To get a separate object you need to copy it, e.g. `{ ...a }`
 
 **Recap line:** Assigning an object to another variable gives both names the same object.
 
@@ -1536,7 +1536,7 @@ console.log(user.tags);
 - `undefined`
 - `It throws an error`
 
-**Reveal:** Spread copies the top level only. tags is an array, which is an object, so user and copy hold the same array. Pushing to it shows up in both.
+**Reveal:** Spread copies the top level only. `tags` is an array, which is an object, so `user` and `copy` hold the same array. Pushing to it shows up in both.
 
 #### Worked example
 
@@ -1551,9 +1551,9 @@ console.log(user.tags); // ["a", "b"]
 
 **Diagram:** Two separate objects, but their tags are the same array. user and copy are different objects with names Sam and Alex. Both tags properties point to one array holding "a" and "b".
 
-1. { ...user } copies the top-level properties into a new object.
-2. name is a string, so copy.name = "Alex" changes only the copy.
-3. tags is an array (an object), so both objects still **share the same array**. Pushing to it shows up in both.
+1. `{ ...user }` copies the top-level properties into a new object.
+2. `name` is a string, so `copy.name = "Alex"` changes only the copy.
+3. `tags` is an array (an object), so both objects still **share the same array**. Pushing to it shows up in both.
 
 #### Your turn
 
@@ -1571,7 +1571,7 @@ console.log(user.name);
 - `undefined`
 - `It throws an error`
 
-**Explanation:** name is a string, which is copied by value, so changing copy.name doesn't touch user.name. Only nested objects and arrays, like tags, are shared.
+**Explanation:** `name` is a string, which is copied by value, so changing `copy.name` doesn't touch `user.name`. Only nested objects and arrays, like `tags`, are shared.
 
 #### Another look (after a miss)
 
@@ -1600,7 +1600,7 @@ const b = { ...a };
 - `b.extra = true`
 - `delete b.n`
 
-**Explanation:** list is shared between a and b, so pushing to it changes both. The other lines only change b's own top-level properties.
+**Explanation:** `list` is shared between `a` and `b`, so pushing to it changes both. The other lines only change `b`'s own top-level properties.
 
 **Fresh question 2**
 
@@ -1617,7 +1617,7 @@ console.log(a.inner === b.inner);
 - `undefined`
 - `It throws an error`
 
-**Explanation:** Spread copied the reference to inner, not inner itself. Both objects point at the same inner object, so it's true.
+**Explanation:** Spread copied the reference to `inner`, not `inner` itself. Both objects point at the same `inner` object, so it's `true`.
 
 #### Say it
 
@@ -1626,14 +1626,14 @@ Is the spread operator on an object a deep copy? What can go wrong?
 **Starter:** Spread makes a shallow copy, which means…
 
 **Model answer:**
-> No, spread makes a shallow copy. It copies the top-level properties into a new object, but any nested objects or arrays are still shared between the original and the copy. So if I push to copy.tags, user.tags changes too. Simple values like strings are copied, so each object has its own.
+> No, spread makes a shallow copy. It copies the top-level properties into a new object, but any nested objects or arrays are still shared between the original and the copy. So if I push to `copy.tags`, `user.tags` changes too. Simple values like strings are copied, so each object has its own.
 
 **Key points:**
 - Spread copies only the top level (a shallow copy)
 - Nested objects and arrays are still shared
 - Changing a nested value through the copy changes the original
 
-**Recap line:** Spread { ...obj } is a shallow copy. Nested objects and arrays are still shared.
+**Recap line:** Spread `{ ...obj }` is a shallow copy. Nested objects and arrays are still shared.
 
 ### Idea 3: Deep copies with structuredClone
 
@@ -1655,7 +1655,7 @@ console.log(user.tags);
 - `undefined`
 - `It throws an error`
 
-**Reveal:** structuredClone copies nested data too, so deep.tags is a separate array. Pushing to it leaves user.tags alone.
+**Reveal:** `structuredClone` copies nested data too, so `deep.tags` is a separate array. Pushing to it leaves `user.tags` alone.
 
 #### Worked example
 
@@ -1669,8 +1669,8 @@ console.log(deep.tags); // ["a", "b"]
 
 **Diagram:** Two separate objects, each with its own tags array. user and deep are different objects. user's tags array holds "a". deep has its own array holding "a" and "b".
 
-1. structuredClone(user) copies user and everything nested inside it.
-2. deep.tags is **its own array**, so pushing to it doesn't affect user.tags.
+1. `structuredClone(user)` copies `user` and everything nested inside it.
+2. `deep.tags` is **its own array**, so pushing to it doesn't affect `user.tags`.
 3. Use it when you need a fully independent copy. For a flat object with no nested data, spread is enough.
 
 #### Your turn
@@ -1687,13 +1687,13 @@ const deep = ___(user);
 - `Object.freeze`
 - `Object.create`
 
-**Explanation:** structuredClone makes a deep copy. Spread and Object.assign copy only the top level, Object.freeze only blocks edits, and Object.create doesn't copy anything: it makes a new object that points back at the original.
+**Explanation:** `structuredClone` makes a deep copy. Spread and `Object.assign` copy only the top level, `Object.freeze` only blocks edits, and `Object.create` doesn't copy anything: it makes a new object that points back at the original.
 
 #### Another look (after a miss)
 
 1. A shallow copy makes the top level new, but nested objects are still shared. A deep copy copies the nested ones too.
-2. Object.assign works like spread: shallow. Object.freeze doesn't copy at all, it only blocks edits.
-3. structuredClone is built in and copies nested objects, arrays and Dates.
+2. `Object.assign` works like spread: shallow. `Object.freeze` doesn't copy at all, it only blocks edits.
+3. `structuredClone` is built in and copies nested objects, arrays and Dates.
 4. It has limits: it throws an error if the object contains a function, and class instances come back as plain objects.
 
 **Fresh question 1**
@@ -1705,7 +1705,7 @@ In JavaScript, you have settings = { theme: { dark: true } } and want a copy you
 - **✔ `structuredClone(settings)`**
 - `Object.assign({}, settings)`
 
-**Explanation:** Spread and Object.assign would share the theme object, and plain settings isn't a copy at all. structuredClone copies theme too.
+**Explanation:** Spread and `Object.assign` would share the `theme` object, and plain `settings` isn't a copy at all. `structuredClone` copies `theme` too.
 
 **Fresh question 2**
 
@@ -1723,7 +1723,7 @@ console.log(a.list.length);
 - `0`
 - `It throws an error`
 
-**Explanation:** b.list is a separate array, so pushing to it doesn't change a.list. Its length is still 1.
+**Explanation:** `b.list` is a separate array, so pushing to it doesn't change `a.list`. Its length is still 1.
 
 #### Say it
 
@@ -1732,14 +1732,14 @@ How would you make a fully independent copy of a nested object?
 **Starter:** I'd use structuredClone, because…
 
 **Model answer:**
-> I'd use structuredClone(obj). It makes a deep copy, so nested objects and arrays are copied too and the copy shares nothing with the original. Spread and Object.assign only copy the top level, so nested data would still be shared. It has limits: it throws an error on functions, and class instances come back as plain objects. JSON.parse(JSON.stringify(obj)) also works for plain data, but it turns Dates into strings, drops functions and undefined values in objects, and turns Maps and Sets into empty objects.
+> I'd use `structuredClone(obj)`. It makes a deep copy, so nested objects and arrays are copied too and the copy shares nothing with the original. Spread and `Object.assign` only copy the top level, so nested data would still be shared. It has limits: it throws an error on functions, and class instances come back as plain objects. `JSON.parse(JSON.stringify(obj))` also works for plain data, but it turns Dates into strings, drops functions and `undefined` values in objects, and turns Maps and Sets into empty objects.
 
 **Key points:**
-- structuredClone makes a deep copy, nested data included
-- Spread and Object.assign are shallow
+- `structuredClone` makes a deep copy, nested data included
+- Spread and `Object.assign` are shallow
 - Its limits: it throws on functions, and class instances come back as plain objects
 
-**Recap line:** Use structuredClone(obj) when you need a deep copy.
+**Recap line:** Use `structuredClone(obj)` when you need a deep copy.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -1764,13 +1764,13 @@ console.log(x.v);
 - `It throws an error`
 
 **Key points a good "why" covers:**
-- Spread creates a new object, so y is separate from x
-- Changing y.v doesn't affect x.v
+- Spread creates a new object, so `y` is separate from `x`
+- Changing `y.v` doesn't affect `x.v`
 
 **Hint:** Does { ...x } share the object or make a new one?
 
 **How you could say it:**
-> Spread creates a new object, so y is separate from x. Changing y.v doesn't affect x.v, which is still 1.
+> Spread creates a new object, so `y` is separate from `x`. Changing `y.v` doesn't affect `x.v`, which is still 1.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -1794,13 +1794,13 @@ console.log(user.tags);
 
 **Key points a good "why" covers:**
 - Spread is a shallow copy: only the top level is copied
-- tags is an array, so both objects hold a reference to the same array
-- push on copy.tags therefore also shows up in user.tags
+- `tags` is an array, so both objects hold a reference to the same array
+- `push` on `copy.tags` therefore also shows up in `user.tags`
 
 **Hint:** Spread copies the top level. What is tags, really?
 
 **How you could say it:**
-> Spread is a shallow copy: it only copies the top level. tags is an array, so both objects point to the same array, and pushing to copy.tags also changes user.tags.
+> Spread is a shallow copy: it only copies the top level. `tags` is an array, so both objects point to the same array, and pushing to `copy.tags` also changes `user.tags`.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -1819,12 +1819,12 @@ const obj = { name: "Sam", tags: ["a"] };
 
 **Key points a good "why" covers:**
 - Spread is shallow: nested objects and arrays are still shared
-- structuredClone makes a deep copy of nested data
+- `structuredClone` makes a deep copy of nested data
 
 **Hint:** Which one also copies the objects inside the object?
 
 **How you could say it:**
-> I'd use structuredClone, because it makes a deep copy of nested data. Spread is shallow, so nested objects and arrays would still be shared with the original.
+> I'd use `structuredClone`, because it makes a deep copy of nested data. Spread is shallow, so nested objects and arrays would still be shared with the original.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -1847,13 +1847,13 @@ console.log(cfg.debug);
 - `It throws an error`
 
 **Key points a good "why" covers:**
-- alias = cfg gives the same object a second name; nothing is copied
-- Changing alias.debug therefore changes what cfg sees
+- `alias = cfg` gives the same object a second name; nothing is copied
+- Changing `alias.debug` therefore changes what `cfg` sees
 
 **Hint:** Did alias = cfg make a new object, or a second name for the same one?
 
 **How you could say it:**
-> alias = cfg doesn't copy the object, it gives it a second name. Both point at the same object, so setting alias.debug to true also changes cfg.debug.
+> `alias = cfg` doesn't copy the object, it gives it a second name. Both point at the same object, so setting `alias.debug` to `true` also changes `cfg.debug`.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -1890,7 +1890,7 @@ console.log(m.size);
 - `0`
 - `It throws an error`
 
-**Reveal:** A Map keeps keys as they are, so the number 1 and the string "1" are different keys. A plain object would turn both into the string "1".
+**Reveal:** A `Map` keeps keys as they are, so the number `1` and the string `"1"` are different keys. A plain object would turn both into the string `"1"`.
 
 #### Worked example
 
@@ -1902,9 +1902,9 @@ console.log(m.size);   // 2
 console.log(m.get(1)); // "a"
 ```
 
-1. A Map keeps each key as it is, so the number 1 and the string "1" are two separate keys.
-2. m.get(1) finds the entry stored under the number.
-3. A plain object would turn both keys into the string "1", and the second would overwrite the first.
+1. A `Map` keeps each key as it is, so the number `1` and the string `"1"` are two separate keys.
+2. `m.get(1)` finds the entry stored under the number.
+3. A plain object would turn both keys into the string `"1"`, and the second would overwrite the first.
 
 #### Your turn
 
@@ -1922,13 +1922,13 @@ console.log(m.size);
 - `0`
 - `It throws an error`
 
-**Explanation:** The boolean true and the string "true" are different keys, so the Map holds two entries.
+**Explanation:** The boolean `true` and the string `"true"` are different keys, so the `Map` holds two entries.
 
 #### Another look (after a miss)
 
 1. Object keys can only be strings or symbols. Any other key, like a number, is converted to a string.
-2. Map keys can be anything: numbers, booleans, even objects. They are compared as they are.
-3. That's the main reason to pick a Map when your keys aren't plain strings.
+2. `Map` keys can be anything: numbers, booleans, even objects. They are compared as they are.
+3. That's the main reason to pick a `Map` when your keys aren't plain strings.
 
 ```js
 const o = {};
@@ -1952,7 +1952,7 @@ console.log(o[2]);
 - `undefined`
 - `It throws an error`
 
-**Explanation:** The number 2 becomes the string "2", the same key as the second line, so "y" overwrites "x".
+**Explanation:** The number `2` becomes the string `"2"`, the same key as the second line, so `"y"` overwrites `"x"`.
 
 **Fresh question 2**
 
@@ -1970,7 +1970,7 @@ console.log(m.get(k));
 - `"[object Object]"`
 - `It throws an error`
 
-**Explanation:** A Map can use an object as a key and looks it up by that exact object, so it finds the entry.
+**Explanation:** A `Map` can use an object as a key and looks it up by that exact object, so it finds the entry.
 
 #### Say it
 
@@ -1979,14 +1979,14 @@ When would you pick a Map over a plain object?
 **Starter:** I'd pick a Map when my keys…
 
 **Model answer:**
-> I'd pick a Map when the keys aren't plain strings, or when I add and remove entries a lot. Object keys can only be strings or symbols, so numbers and other types get converted to strings: 1 and "1" end up as the same key, but a Map keeps keys as they are, so numbers, booleans and even objects work as keys. A Map also has a built-in size.
+> I'd pick a `Map` when the keys aren't plain strings, or when I add and remove entries a lot. Object keys can only be strings or symbols, so numbers and other types get converted to strings: `1` and `"1"` end up as the same key, but a `Map` keeps keys as they are, so numbers, booleans and even objects work as keys. A `Map` also has a built-in `size`.
 
 **Key points:**
 - Object keys are strings (or symbols), so other types get converted
-- A Map keeps keys as they are, of any type
-- A Map has .size and is built for frequent adds and removes
+- A `Map` keeps keys as they are, of any type
+- A `Map` has `.size` and is built for frequent adds and removes
 
-**Recap line:** Map keys can be any type and stay as they are. Object keys are strings (or symbols), so other types get converted.
+**Recap line:** `Map` keys can be any type and stay as they are. Object keys are strings (or symbols), so other types get converted.
 
 ### Idea 2: Working with a Map
 
@@ -2007,7 +2007,7 @@ console.log(counts.get("b") ?? 0);
 - `null`
 - `It throws an error`
 
-**Reveal:** get returns undefined for a key that isn't there. ?? replaces undefined (or null) with the fallback, so this prints 0.
+**Reveal:** `get` returns `undefined` for a key that isn't there. `??` replaces `undefined` (or `null`) with the fallback, so this prints `0`.
 
 #### Worked example
 
@@ -2020,9 +2020,9 @@ console.log(counts.get("a")); // 2
 console.log(counts.size);     // 2
 ```
 
-1. counts.get(w) returns undefined the first time, so ?? 0 starts the count at zero.
-2. counts.set(w, ...) stores the new count under that word.
-3. counts.size gives the number of keys directly. No Object.keys(...).length needed.
+1. `counts.get(w)` returns `undefined` the first time, so `?? 0` starts the count at zero.
+2. `counts.set(w, ...)` stores the new count under that word.
+3. `counts.size` gives the number of keys directly. No `Object.keys(...).length` needed.
 
 #### Your turn
 
@@ -2038,13 +2038,13 @@ counts.___("b")
 - `contains`
 - `exists`
 
-**Explanation:** Map has has(key). includes is for arrays and strings. contains and exists aren't Map methods.
+**Explanation:** `Map` has `has(key)`. `includes` is for arrays and strings. `contains` and `exists` aren't `Map` methods.
 
 #### Another look (after a miss)
 
-1. A Map has its own methods: set to add or change an entry, get to read one, has to check, delete to remove.
-2. includes belongs to arrays and strings, so a Map doesn't have it.
-3. size is a property, not a method: counts.size, with no parentheses.
+1. A `Map` has its own methods: `set` to add or change an entry, `get` to read one, `has` to check, `delete` to remove.
+2. `includes` belongs to arrays and strings, so a `Map` doesn't have it.
+3. `size` is a property, not a method: `counts.size`, with no parentheses.
 
 ```js
 const m = new Map([["a", 1]]);
@@ -2068,7 +2068,7 @@ counts.___("a");
 - `clear`
 - `pop`
 
-**Explanation:** delete(key) removes one entry. clear() removes everything. remove and pop aren't Map methods.
+**Explanation:** `delete(key)` removes one entry. `clear()` removes everything. `remove` and `pop` aren't `Map` methods.
 
 **Fresh question 2**
 
@@ -2083,7 +2083,7 @@ const counts = new Map([["a", 2], ["b", 1]]);
 - `counts.size()`
 - `counts.count`
 
-**Explanation:** size is a property on Maps, so there are no parentheses. length is for arrays.
+**Explanation:** `size` is a property on Maps, so there are no parentheses. `length` is for arrays.
 
 #### Say it
 
@@ -2092,14 +2092,14 @@ How would you count how many times each word appears in a list, using a Map?
 **Starter:** I'd loop over the words and, for each one…
 
 **Model answer:**
-> I'd create a Map and loop over the words. For each word I'd read the current count with counts.get(word), use ?? 0 to start at zero if it isn't there yet, add one, and store it with counts.set(word, newCount). At the end counts.get("a") gives the count for a word, and counts.size gives the number of different words.
+> I'd create a `Map` and loop over the words. For each word I'd read the current count with `counts.get(word)`, use `?? 0` to start at zero if it isn't there yet, add one, and store it with `counts.set(word, newCount)`. At the end `counts.get("a")` gives the count for a word, and `counts.size` gives the number of different words.
 
 **Key points:**
-- Loop over the items and keep the counts in a Map
-- get(word) ?? 0 handles a word that hasn't been seen yet
-- set(word, count + 1) stores the new count; size is the number of different words
+- Loop over the items and keep the counts in a `Map`
+- `get(word) ?? 0` handles a word that hasn't been seen yet
+- `set(word, count + 1)` stores the new count; `size` is the number of different words
 
-**Recap line:** Map has .size, .has(), .get(), .set() and .delete(), and is built for frequent adds and removes.
+**Recap line:** `Map` has `.size`, `.has()`, `.get()`, `.set()` and `.delete()`, and is built for frequent adds and removes.
 
 ### Idea 3: Set stores unique values
 
@@ -2118,7 +2118,7 @@ console.log(new Set([1, 2, 2, 3]).size);
 - `2`
 - `It throws an error`
 
-**Reveal:** A Set keeps each value once, so the extra 2 is dropped and the size is 3.
+**Reveal:** A `Set` keeps each value once, so the extra `2` is dropped and the size is 3.
 
 #### Worked example
 
@@ -2128,8 +2128,8 @@ const unique = [...new Set(tags)];
 console.log(unique); // ["a", "b", "c"]
 ```
 
-1. new Set(tags) keeps only the first copy of each value.
-2. A Set can be spread, so [...set] turns it back into an array.
+1. `new Set(tags)` keeps only the first copy of each value.
+2. A `Set` can be spread, so `[...set]` turns it back into an array.
 3. This is a common way to remove duplicates from an array.
 
 #### Your turn
@@ -2146,13 +2146,13 @@ const unique = [...new ___(nums)];
 - `Array`
 - `Object`
 
-**Explanation:** A Set stores each value only once. Spreading it back out gives an array without the repeats.
+**Explanation:** A `Set` stores each value only once. Spreading it back out gives an array without the repeats.
 
 #### Another look (after a miss)
 
-1. A Set is a collection with no repeats. Adding a value that's already there does nothing.
-2. That makes it a good fit for 'have I seen this before?', because has() is quick.
-3. You can build one from any list: new Set([1, 1, 2]) holds 1 and 2.
+1. A `Set` is a collection with no repeats. Adding a value that's already there does nothing.
+2. That makes it a good fit for 'have I seen this before?', because `has()` is quick.
+3. You can build one from any list: `new Set([1, 1, 2])` holds `1` and `2`.
 
 ```js
 const s = new Set();
@@ -2178,7 +2178,7 @@ console.log(s.size);
 - `1`
 - `0`
 
-**Explanation:** The second "a" is ignored, so the Set holds just "a" and "b".
+**Explanation:** The second `"a"` is ignored, so the `Set` holds just `"a"` and `"b"`.
 
 **Fresh question 2**
 
@@ -2193,7 +2193,7 @@ In JavaScript, what does this evaluate to?
 - `["a", "b", "n"]`
 - `"ban"`
 
-**Explanation:** A string can be looped over letter by letter. The Set keeps the first of each, in the order they first appeared: b, a, n.
+**Explanation:** A string can be looped over letter by letter. The `Set` keeps the first of each, in the order they first appeared: `b, a, n`.
 
 #### Say it
 
@@ -2202,14 +2202,14 @@ How do you remove duplicates from an array?
 **Starter:** I'd put the array into a Set, because…
 
 **Model answer:**
-> I'd put the array into a Set, because a Set only keeps each value once, and then spread it back into an array: [...new Set(arr)]. That drops the repeats and keeps the first occurrence of each value, in its original order. A Set is also a good fit when I just need to check whether I've seen a value before.
+> I'd put the array into a `Set`, because a `Set` only keeps each value once, and then spread it back into an array: `[...new Set(arr)]`. That drops the repeats and keeps the first occurrence of each value, in its original order. A `Set` is also a good fit when I just need to check whether I've seen a value before.
 
 **Key points:**
-- A Set stores each value only once
-- Spread the Set back into an array: [...new Set(arr)]
+- A `Set` stores each value only once
+- Spread the `Set` back into an array: `[...new Set(arr)]`
 - It keeps the first occurrence of each value, in order
 
-**Recap line:** Set stores unique values: new Set([1, 2, 2, 3]).size is 3.
+**Recap line:** `Set` stores unique values: `new Set([1, 2, 2, 3]).size` is 3.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -2225,13 +2225,13 @@ In a JavaScript app, you're tracking many keys that are added and removed often,
 - **✔ `A Map`**
 
 **Key points a good "why" covers:**
-- Map keys can be any type; object keys are strings (or symbols), so numbers get converted to strings
-- Map has a built-in .size and is designed for frequent adds and removes
+- `Map` keys can be any type; object keys are strings (or symbols), so numbers get converted to strings
+- `Map` has a built-in `.size` and is designed for frequent adds and removes
 
 **Hint:** Think about what types of keys an object can really hold.
 
 **How you could say it:**
-> I'd use a Map. Its keys can be any type, while object keys are limited to strings and symbols, so other types get converted to strings. A Map is also designed for frequent adds and removes, with a built-in size.
+> I'd use a `Map`. Its keys can be any type, while object keys are limited to strings and symbols, so other types get converted to strings. A `Map` is also designed for frequent adds and removes, with a built-in `size`.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -2254,13 +2254,13 @@ console.log(Object.keys(o).length);
 - `undefined`
 
 **Key points a good "why" covers:**
-- Object keys are converted to strings, so 1 and "1" are the same key
+- Object keys are converted to strings, so `1` and `"1"` are the same key
 - The second assignment overwrites the first, leaving one key
 
 **Hint:** What happens to the number 1 when it's used as an object key?
 
 **How you could say it:**
-> Object keys are converted to strings, so 1 and "1" are the same key. The second assignment overwrites the first, so there's only one key.
+> Object keys are converted to strings, so `1` and `"1"` are the same key. The second assignment overwrites the first, so there's only one key.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -2280,13 +2280,13 @@ new Set([1, 2, 2, 3]).size
 - `It throws an error`
 
 **Key points a good "why" covers:**
-- A Set stores each value only once
-- The duplicate 2 is dropped, leaving 1, 2, 3
+- A `Set` stores each value only once
+- The duplicate 2 is dropped, leaving `1, 2, 3`
 
 **Hint:** What does a Set do with duplicates?
 
 **How you could say it:**
-> A Set only keeps each value once, so the duplicate 2 is dropped and the size is 3.
+> A `Set` only keeps each value once, so the duplicate `2` is dropped and the size is 3.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -2304,13 +2304,13 @@ const m = new Map([["x", 1]]);
 - **✔ `m.has("x")`**
 
 **Key points a good "why" covers:**
-- has(key) is the Map method for checking a key
-- includes is for arrays and strings, not Maps
+- `has(key)` is the `Map` method for checking a key
+- `includes` is for arrays and strings, not Maps
 
 **Hint:** Which method name is actually on Map?
 
 **How you could say it:**
-> I'd use has: m.has("x"). includes is for arrays and strings, and a Map doesn't have it.
+> I'd use `has`: `m.has("x")`. `includes` is for arrays and strings, and a `Map` doesn't have it.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -2559,7 +2559,7 @@ console.log(child.greeting);
 - `undefined`
 - `It throws an error`
 
-**Reveal:** child has no greeting of its own, so JavaScript looks at its prototype, base, and finds it there.
+**Reveal:** `child` has no `greeting` of its own, so JavaScript looks at its prototype, `base`, and finds it there.
 
 #### Worked example
 
@@ -2572,8 +2572,8 @@ console.log(child.greeting); // yo
 console.log(base.greeting); // hi
 ```
 
-1. A read checks the object itself first, then its prototype, then that one's prototype, until it reaches null.
-2. A plain assignment doesn't change the prototype. It creates a property on child that hides (shadows) the inherited one.
+1. A read checks the object itself first, then its prototype, then that one's prototype, until it reaches `null`.
+2. A plain assignment doesn't change the prototype. It creates a property on `child` that hides (shadows) the inherited one.
 3. A setter or a read-only property higher up the chain changes what an assignment does.
 
 #### Your turn
@@ -2591,7 +2591,7 @@ console.log(defaults.size);
 - **✔ `"M"`**
 - `undefined`
 
-**Explanation:** The assignment created a size on order. defaults was not touched.
+**Explanation:** The assignment created a `size` on `order`. `defaults` was not touched.
 
 #### Another look (after a miss)
 
@@ -2620,7 +2620,7 @@ console.log(c.n);
 - `It throws an error`
 - **✔ `1`**
 
-**Explanation:** The lookup goes from c to b to a, where n is found.
+**Explanation:** The lookup goes from `c` to `b` to `a`, where `n` is found.
 
 **Fresh question 2**
 
@@ -2635,7 +2635,7 @@ console.log(point.y);
 - `null`
 - `It throws an error`
 
-**Explanation:** No object in the chain has y, so the result is undefined.
+**Explanation:** No object in the chain has `y`, so the result is `undefined`.
 
 #### Say it
 
@@ -2644,12 +2644,12 @@ What happens when you read a property that isn't on the object?
 **Starter:** JavaScript first checks the object itself, then …
 
 **Model answer:**
-> JavaScript checks the object's own properties first. If it isn't there, it follows the object's prototype and looks there, and keeps going up the chain until it reaches null. If nothing has it, the result is undefined. Assigning is different: it normally creates a property on the object itself.
+> JavaScript checks the object's own properties first. If it isn't there, it follows the object's prototype and looks there, and keeps going up the chain until it reaches `null`. If nothing has it, the result is `undefined`. Assigning is different: it normally creates a property on the object itself.
 
 **Key points:**
 - Own properties are checked first
-- Then the prototype chain, ending at null
-- Missing everywhere gives undefined
+- Then the prototype chain, ending at `null`
+- Missing everywhere gives `undefined`
 - Assignment normally creates an own property
 
 **Recap line:** Reads walk the prototype chain. Plain assignment creates an own property.
@@ -2670,7 +2670,7 @@ console.log("toString" in counts);
 - **✔ `true`**
 - `false`
 
-**Reveal:** in checks the whole chain, and an object written with {} inherits toString from Object.prototype.
+**Reveal:** `in` checks the whole chain, and an object written with `{}` inherits `toString` from `Object.prototype`.
 
 #### Worked example
 
@@ -2682,9 +2682,9 @@ const safe = new Map();
 console.log(safe.has("toString")); // false
 ```
 
-1. in asks “is it anywhere in the chain?”
-2. Object.hasOwn asks “is it on this object itself?”
-3. A Map has no inherited keys, which makes it a good fit when keys come from users.
+1. `in` asks “is it anywhere in the chain?”
+2. `Object.hasOwn` asks “is it on this object itself?”
+3. A `Map` has no inherited keys, which makes it a good fit when keys come from users.
 
 #### Your turn
 
@@ -2699,12 +2699,12 @@ const word = "constructor";
 - **✔ `Object.hasOwn(saved, word)`**
 - `saved[word] !== undefined`
 
-**Explanation:** The other two also find the inherited constructor, even though nobody saved it.
+**Explanation:** The other two also find the inherited `constructor`, even though nobody saved it.
 
 #### Another look (after a miss)
 
-1. A plain object arrives with inherited names such as toString and constructor.
-2. Use Object.hasOwn to ignore them, or a Map to avoid them.
+1. A plain object arrives with inherited names such as `toString` and `constructor`.
+2. Use `Object.hasOwn` to ignore them, or a `Map` to avoid them.
 
 **Fresh question 1**
 
@@ -2719,7 +2719,7 @@ console.log(Object.keys(tally).length);
 - `undefined`
 - **✔ `0`**
 
-**Explanation:** Object.keys lists own enumerable string keys only. Inherited ones aren't counted.
+**Explanation:** `Object.keys` lists own enumerable string keys only. Inherited ones aren't counted.
 
 **Fresh question 2**
 
@@ -2733,7 +2733,7 @@ console.log("toString" in bare);
 - `true`
 - **✔ `false`**
 
-**Explanation:** bare has no prototype, so there is nothing to inherit.
+**Explanation:** `bare` has no prototype, so there is nothing to inherit.
 
 #### Say it
 
@@ -2742,15 +2742,15 @@ When would you use a Map instead of a plain object?
 **Starter:** I'd use a Map when the keys …
 
 **Model answer:**
-> I use a plain object for a record with a known shape, like a product. I use a Map when keys are added at run time, especially from user input, because it has no inherited keys, accepts any type as a key and has a size. The catch is that it doesn't turn into JSON by itself.
+> I use a plain object for a record with a known shape, like a product. I use a `Map` when keys are added at run time, especially from user input, because it has no inherited keys, accepts any type as a key and has a size. The catch is that it doesn't turn into JSON by itself.
 
 **Key points:**
 - Object for a known shape
-- Map for keys added at run time
+- `Map` for keys added at run time
 - Plain objects inherit keys from their prototype
-- A Map needs converting for JSON
+- A `Map` needs converting for JSON
 
-**Recap line:** in includes inherited properties. Object.hasOwn does not.
+**Recap line:** `in` includes inherited properties. `Object.hasOwn` does not.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -2774,13 +2774,13 @@ console.log(mine.theme);
 - **✔ `"light"`**
 
 **Key points a good "why" covers:**
-- delete removes only the own property
+- `delete` removes only the own property
 - The lookup then finds the inherited one
 
 **Hint:** What is still on the prototype?
 
 **How you could say it:**
-> It prints light. Deleting removes my own theme, so the lookup falls through to the prototype again.
+> It prints `light`. Deleting removes my own `theme`, so the lookup falls through to the prototype again.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -2799,13 +2799,13 @@ console.log(typeof votes["constructor"]);
 - `undefined`
 
 **Key points a good "why" covers:**
-- constructor is inherited from Object.prototype
+- `constructor` is inherited from `Object.prototype`
 - User-chosen keys can collide with inherited names
 
 **Hint:** An empty object still has a prototype.
 
 **How you could say it:**
-> It prints function, because constructor is inherited. For keys that users choose, I'd use a Map or check own properties.
+> It prints `function`, because `constructor` is inherited. For keys that users choose, I'd use a `Map` or check own properties.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -2818,8 +2818,8 @@ id: `ts-precision` · track: typescript · topic: typescript · 6 min · reviewe
 Two common TypeScript questions, answered with what the compiler actually does.
 
 **By the end you'll be able to:**
-- Explain why unknown is safer than any
-- Say what interface can do that type can't, and the reverse
+- Explain why `unknown` is safer than `any`
+- Say what `interface` can do that `type` can't, and the reverse
 
 ### Idea 1: unknown makes you check
 
@@ -2839,7 +2839,7 @@ const careful: unknown = "hi";
 - `Both lines`
 - `Neither line`
 
-**Reveal:** any switches checking off. unknown accepts any value but won't let you use it until you've shown what it is.
+**Reveal:** `any` switches checking off. `unknown` accepts any value but won't let you use it until you've shown what it is.
 
 #### Worked example
 
@@ -2852,9 +2852,9 @@ function shout(input: unknown): string {
 }
 ```
 
-1. Anything can be passed in, because every type fits into unknown.
-2. Inside the if, TypeScript narrows input to string, so toUpperCase is allowed.
-3. Use unknown for data from outside: parsed JSON, responses, caught errors. These checks happen at run time. A type annotation alone checks nothing at run time.
+1. Anything can be passed in, because every type fits into `unknown`.
+2. Inside the `if`, TypeScript narrows `input` to `string`, so `toUpperCase` is allowed.
+3. Use `unknown` for data from outside: parsed JSON, responses, caught errors. These checks happen at run time. A type annotation alone checks nothing at run time.
 
 #### Your turn
 
@@ -2869,8 +2869,8 @@ In TypeScript, JSON.parse returns any. What is the safest way to hold its result
 
 #### Another look (after a miss)
 
-1. any says “trust me”.
-2. unknown says “prove it first”.
+1. `any` says “trust me”.
+2. `unknown` says “prove it first”.
 
 **Fresh question 1**
 
@@ -2881,7 +2881,7 @@ In TypeScript, which of these narrows a value typed as unknown?
 - **✔ `A typeof check`**
 - `Declaring it with const`
 
-**Explanation:** typeof is a run-time check that TypeScript understands.
+**Explanation:** `typeof` is a run-time check that TypeScript understands.
 
 **Fresh question 2**
 
@@ -2901,16 +2901,16 @@ What's the difference between unknown and any?
 **Starter:** Both accept any value, but …
 
 **Model answer:**
-> Both accept any value. With any, the compiler stops checking: I can call or index it however I like, and it spreads to whatever I assign it to. With unknown, I have to narrow it first, using typeof, instanceof, a type guard or a schema. I use unknown for anything coming from outside.
+> Both accept any value. With `any`, the compiler stops checking: I can call or index it however I like, and it spreads to whatever I assign it to. With `unknown`, I have to narrow it first, using `typeof`, `instanceof`, a type guard or a schema. I use `unknown` for anything coming from outside.
 
 **Key points:**
 - Both accept any value
-- any turns checking off and spreads
-- unknown must be narrowed before use
+- `any` turns checking off and spreads
+- `unknown` must be narrowed before use
 - Names a way to narrow
 - Gives a real source of unknown data
 
-**Recap line:** any turns checking off. unknown makes you narrow before you use the value.
+**Recap line:** `any` turns checking off. `unknown` makes you narrow before you use the value.
 
 ### Idea 2: interface or type
 
@@ -2941,9 +2941,9 @@ const mug: Product = { name: "Mug", price: 12 };
 type Size = "S" | "M" | "L";
 ```
 
-1. Both Product declarations count, so mug needs name and price. This is how you can add to a library's interface.
-2. Size is a union. An interface can't express that; type can, along with tuples, mapped and conditional types.
-3. Both can describe an object shape, be built on (extends for interface, & for type) and be used with implements. A class can't implement a union.
+1. Both `Product` declarations count, so `mug` needs `name` and `price`. This is how you can add to a library's interface.
+2. `Size` is a union. An interface can't express that; `type` can, along with tuples, mapped and conditional types.
+3. Both can describe an object shape, be built on (`extends` for `interface`, `&` for `type`) and be used with `implements`. A class can't implement a union.
 
 #### Your turn
 
@@ -2953,12 +2953,12 @@ In TypeScript, you need a status that is exactly “paid” or “refunded”. W
 - **✔ `A type alias with a union`**
 - `A value typed as any`
 
-**Explanation:** Unions need type.
+**Explanation:** Unions need `type`.
 
 #### Another look (after a miss)
 
-1. Merging is what interface has and type doesn't.
-2. Unions are what type has and interface doesn't.
+1. Merging is what `interface` has and `type` doesn't.
+2. Unions are what `type` has and `interface` doesn't.
 
 **Fresh question 1**
 
@@ -2986,15 +2986,15 @@ interface vs type: how do you choose?
 **Starter:** Both can describe an object. The differences are …
 
 **Model answer:**
-> Both can describe object shapes. Interfaces with the same name merge, which lets consumers add to a library's types. Type aliases can't merge, but they can name unions, tuples and computed types. I use interface for object contracts others may extend, and type for unions and composed types, and stay consistent with the codebase.
+> Both can describe object shapes. Interfaces with the same name merge, which lets consumers add to a library's types. Type aliases can't merge, but they can name unions, tuples and computed types. I use `interface` for object contracts others may extend, and `type` for unions and composed types, and stay consistent with the codebase.
 
 **Key points:**
 - Both describe object shapes
-- Interfaces merge, type aliases don't
-- type can express unions and tuples
+- Interfaces merge, `type` aliases don't
+- `type` can express unions and tuples
 - Gives a rule you actually follow
 
-**Recap line:** interface merges. type names unions, tuples and computed types.
+**Recap line:** `interface` merges. `type` names unions, tuples and computed types.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -3010,13 +3010,13 @@ In a TypeScript project with the strict setting on, you catch an error. Before r
 - **✔ `Check that it is an Error, for example with instanceof`**
 
 **Key points a good "why" covers:**
-- With strict on, the caught value is typed unknown
+- With `strict` on, the caught value is typed `unknown`
 - Anything can be thrown, so narrow first
 
 **Hint:** Can only Error objects be thrown?
 
 **How you could say it:**
-> With TypeScript's strict setting, a caught value is unknown, since anything can be thrown. I check it's an Error before reading the message.
+> With TypeScript's `strict` setting, a caught value is `unknown`, since anything can be thrown. I check it's an `Error` before reading the message.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -3041,7 +3041,7 @@ type User = { name: string };
 **Hint:** Which of the two kinds can merge?
 
 **How you could say it:**
-> No. A type alias can only be declared once. With two interfaces of the same name, they'd merge instead.
+> No. A `type` alias can only be declared once. With two interfaces of the same name, they'd merge instead.
 
 Review: - [ ] accurate  - [ ] clear  - [ ] encouraging
 
@@ -3170,9 +3170,9 @@ const schema = `
 `;
 ```
 
-1. not null and check refuse bad values.
-2. references refuses a line that points to an order that doesn't exist.
-3. unique stops the same product appearing twice in one order, even with requests arriving together.
+1. `not null` and `check` refuse bad values.
+2. `references` refuses a line that points to an order that doesn't exist.
+3. `unique` stops the same product appearing twice in one order, even with requests arriving together.
 4. The server should catch the error and reply with a clear message.
 
 #### Your turn
@@ -3217,7 +3217,7 @@ If the server already validates, why add database constraints?
 **Starter:** Because the server isn't the only …
 
 **Model answer:**
-> Because rules in one route only protect that route. Scripts, new endpoints and bugs can write too, and two requests can pass the same check at once. Constraints such as not null, check, foreign keys and unique apply to every write. I keep them for rules that must never break, and handle their errors kindly.
+> Because rules in one route only protect that route. Scripts, new endpoints and bugs can write too, and two requests can pass the same check at once. Constraints such as `not null`, `check`, foreign keys and `unique` apply to every write. I keep them for rules that must never break, and handle their errors kindly.
 
 **Key points:**
 - Other code can write to the database
@@ -3386,9 +3386,9 @@ test("places an order", async ({ page }) => {
 });
 ```
 
-1. getByRole finds the button the way a user would, so a styling change doesn't break the test.
-2. click waits until the button is ready to be clicked.
-3. This expect retries until the text shows or the time limit passes. No sleep is needed.
+1. `getByRole` finds the button the way a user would, so a styling change doesn't break the test.
+2. `click` waits until the button is ready to be clicked.
+3. This `expect` retries until the text shows or the time limit passes. No sleep is needed.
 4. For failures in CI, keep a trace so you can see what happened.
 
 #### Your turn

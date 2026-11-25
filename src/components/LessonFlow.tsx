@@ -22,7 +22,8 @@ import type { Lesson, LessonIdea, UnitInfo } from "@/lib/types";
 import { Bobbin } from "./Bobbin";
 import { ChoiceList } from "./ChoiceList";
 import { CodeBlock } from "./CodeBlock";
-import { Emphasis, LessonDiagram } from "./LessonDiagram";
+import { LessonDiagram } from "./LessonDiagram";
+import { RichText } from "./RichText";
 import { LessonIntro, UnitIntro } from "./LessonIntro";
 import { LessonSkeleton } from "./Skeleton";
 
@@ -157,7 +158,7 @@ function LessonRun({
             <>
               <p className="pixel-box bg-mint p-4 text-ink">
                 {picked === idea.guess.answerIndex ? "That's right. " : "Not quite, and it's a common one. "}
-                {idea.guess.reveal}
+                <RichText text={idea.guess.reveal} />
               </p>
               <button onClick={() => go(afterGuess(pos))} className="btn-primary">
                 Show me an example
@@ -178,7 +179,7 @@ function LessonRun({
           <ol className="list-decimal space-y-2 pl-5 text-ink">
             {idea.workedExample.walkthrough.map((w) => (
               <li key={w}>
-                <Emphasis text={w} />
+                <RichText text={w} />
               </li>
             ))}
           </ol>
@@ -193,7 +194,9 @@ function LessonRun({
           <h2 className="font-pixel text-xl font-bold text-ink">Another way to look at it</h2>
           <ol className="list-decimal space-y-2 pl-5 text-ink">
             {idea.reteach.steps.map((s) => (
-              <li key={s}>{s}</li>
+              <li key={s}>
+                <RichText text={s} />
+              </li>
             ))}
           </ol>
           {idea.reteach.code && <CodeBlock code={idea.reteach.code} />}
@@ -223,7 +226,7 @@ function LessonRun({
               <>
                 <p className="pixel-box bg-mint p-4 text-ink">
                   {right ? "That's it. " : "Not quite. This one is easy to mix up. "}
-                  {q.explanation}
+                  <RichText text={q.explanation} />
                   {!right && !more && " We'll bring this one back in practice."}
                 </p>
                 {right ? (
@@ -260,7 +263,9 @@ function LessonRun({
           <Bobbin mood="cheering" say="That's the lesson. Here's what to remember." />
           <ul className="list-disc space-y-2 pl-5 text-ink">
             {lesson.ideas.map((it) => (
-              <li key={it.id}>{it.recap}</li>
+              <li key={it.id}>
+                <RichText text={it.recap} />
+              </li>
             ))}
           </ul>
           {pos.missed.length > 0 && (
@@ -366,7 +371,9 @@ function ExplainStep({
         <>
           <div className="pixel-box bg-mint p-4 text-ink">
             <p className="font-pixel mb-1 text-sm font-bold">One way to say it</p>
-            <p>{explain.modelAnswer}</p>
+            <p>
+              <RichText text={explain.modelAnswer} />
+            </p>
           </div>
           <fieldset className="pixel-box p-4">
             <legend className="font-pixel px-1 text-sm font-bold text-ink">Tick what your answer covered</legend>
@@ -378,7 +385,7 @@ function ExplainStep({
                   onChange={() => setTicked((t) => t.map((v, j) => (j === i ? !v : v)))}
                   className="mt-1 h-5 w-5 accent-teal"
                 />
-                {k}
+                <RichText text={k} />
               </label>
             ))}
           </fieldset>

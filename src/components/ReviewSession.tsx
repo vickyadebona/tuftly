@@ -11,6 +11,8 @@ import { recordReview, useHydrated, useProgress } from "@/lib/store";
 import type { Drill, LessonIdea } from "@/lib/types";
 import { ChoiceList } from "./ChoiceList";
 import { CodeBlock } from "./CodeBlock";
+import { LessonDiagram } from "./LessonDiagram";
+import { RichText } from "./RichText";
 import { Bobbin } from "./Bobbin";
 import { CardSkeleton } from "./Skeleton";
 
@@ -29,9 +31,11 @@ interface Extra {
   asking: string[] | null;
   /** Show the lesson's other explanation above the question. */
   refresh: boolean;
+  /** Show the idea's diagram before the next question, after "Not yet". */
+  picture: boolean;
 }
 
-const NO_EXTRA: Extra = { seen: [], gap: "", asking: null, refresh: false };
+const NO_EXTRA: Extra = { seen: [], gap: "", asking: null, refresh: false, picture: false };
 
 function DrillCard({
   drill,
@@ -107,7 +111,9 @@ function DrillCard({
           </p>
           <div className="pixel-box bg-sky p-4 text-ink">
             <p className="font-pixel mb-1 text-sm font-bold">{drill.sayIt ? "One way to say it" : "Why"}</p>
-            <p>{drill.sayIt ?? drill.explanation}</p>
+            <p>
+              <RichText text={drill.sayIt ?? drill.explanation ?? ""} />
+            </p>
           </div>
           {drill.rubric.length > 0 && <fieldset className="pixel-box bg-mint p-4">
             <legend className="font-pixel px-1 text-sm font-bold text-ink">Key points. Tick the ones you had.</legend>
@@ -119,7 +125,7 @@ function DrillCard({
                   onChange={() => setCovered((c) => c.map((v, j) => (j === i ? !v : v)))}
                   className="mt-1 h-5 w-5 accent-teal"
                 />
-                {r}
+                <RichText text={r} />
               </label>
             ))}
           </fieldset>}
@@ -171,7 +177,7 @@ function GapStep({ missed, onPractice, onMoveOn }: { missed: string[]; onPractic
                 onChange={() => setChosen((c) => (c.includes(m) ? c.filter((x) => x !== m) : [...c, m]))}
                 className="mt-1 h-5 w-5 accent-teal"
               />
-              {m}
+              <RichText text={m} />
             </label>
           ))}
         </fieldset>
@@ -205,7 +211,9 @@ function Refresher({ reteach }: { reteach: LessonIdea["reteach"] }) {
       <p className="font-pixel mb-1 text-sm font-bold">Another way to look at it</p>
       <ul className="list-disc space-y-1 pl-5">
         {reteach.steps.map((step) => (
-          <li key={step}>{step}</li>
+          <li key={step}>
+            <RichText text={step} />
+          </li>
         ))}
       </ul>
       {reteach.code && (
@@ -214,6 +222,29 @@ function Refresher({ reteach }: { reteach: LessonIdea["reteach"] }) {
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * After "Not yet": the lesson's worked example and its diagram, on their own. The question comes
+ * after, so it's answered from memory and not read off the picture. The code gives the diagram's
+ * names their meaning.
+ */
+function PictureStep({ example, onNext, onMoveOn }: { example: LessonIdea["workedExample"]; onNext: () => void; onMoveOn: () => void }) {
+  return (
+    <section className="flex flex-col gap-4">
+      <h2 className="font-pixel text-xl font-bold text-ink">Picture it</h2>
+      {example.code && <CodeBlock code={example.code} />}
+      <LessonDiagram diagram={example.diagram!} />
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="button" onClick={onNext} className="btn-primary">
+          Try another question
+        </button>
+        <button type="button" onClick={onMoveOn} className="font-semibold text-teal-deep underline">
+          Move on for now
+        </button>
+      </div>
+    </section>
   );
 }
 
@@ -306,6 +337,7 @@ export function ReviewSession() {
       gap: extra.gap,
       asking: grade === "almost" ? missed : null,
       refresh: false,
+      picture: grade === "not-yet",
     });
   }
 
@@ -322,6 +354,8 @@ export function ReviewSession() {
           onPractice={(gap) => setExtra({ ...extra, gap, asking: null, refresh: true })}
           onMoveOn={moveOn}
         />
+      ) : extra.picture && idea?.workedExample.diagram ? (
+        <PictureStep example={idea.workedExample} onNext={() => setExtra({ ...extra, picture: false })} onMoveOn={moveOn} />
       ) : (
         <>
           {extra.refresh && idea && <Refresher reteach={idea.reteach} />}

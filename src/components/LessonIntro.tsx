@@ -4,6 +4,7 @@ import type { Lesson, UnitInfo } from "@/lib/types";
 import { lessonSummary } from "@/lib/units";
 import { Bobbin } from "./Bobbin";
 import { PixelIcon } from "./PixelIcon";
+import { RichText } from "./RichText";
 
 const HOW_LESSONS_WORK = [
   "Guess first, before you see the answer. A wrong guess is fine.",
@@ -107,7 +108,7 @@ export function LessonIntro({ lesson, onBegin }: { lesson: Lesson; onBegin: () =
               <span className="mt-1.5 shrink-0">
                 <PixelIcon name="check" size={16} color="#2f7f78" />
               </span>
-              {o}
+              <RichText text={o} />
             </li>
           ))}
         </ul>
