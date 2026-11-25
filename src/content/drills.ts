@@ -294,7 +294,7 @@ export const drills: Drill[] = [
     rubric: ["Names one strength", "Gives one real moment", "Says what changed for the work or team"],
     hint: "Which one could they ask a follow-up about?",
     sayIt: "I'd name one strength and show it with a real moment. For example: I test things the way people will use them. On our checkout rebuild, a screen reader check showed me that error messages weren't read out, and I fixed it before launch.",
-    reviewed: false,
+    reviewed: true,
   },
   {
     id: "d-str-2",
@@ -308,7 +308,7 @@ export const drills: Drill[] = [
     rubric: ["Names a specific behaviour", "Says what it cost", "Says what you do differently now"],
     hint: "Which one describes something you do, and something you changed?",
     sayIt: "I'd name a specific behaviour, what it cost and what I do now. For example: I've stayed stuck too long before asking, which once held up a teammate. Now I ask after an hour, with notes on what I've tried.",
-    reviewed: false,
+    reviewed: true,
   },
   {
     id: "d-str-3",
@@ -322,6 +322,6 @@ export const drills: Drill[] = [
     rubric: ["Replaces the label with something you did", "Says what followed or what it cost", "Says what you do now", "Adds nothing invented"],
     hint: "Which one could you picture happening?",
     sayIt: "I'd swap the label for a real moment. Instead of “I could be better at communication”, I'd say I once raised a delay on the due date, and that now I send an update as soon as a date looks at risk.",
-    reviewed: false,
+    reviewed: true,
   },
 ];

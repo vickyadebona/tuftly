@@ -516,7 +516,7 @@ export const communicationLessons: Lesson[] = [
     topic: "strengths",
     title: "Strengths and growth areas",
     minutes: 6,
-    reviewed: false,
+    reviewed: true,
     intro: {
       summary: "How to answer “what are your strengths and weaknesses?” with real moments from your own work.",
       outcomes: ["Back up a strength with one real moment and what it changed", "Describe a growth area, what it cost and what you do differently now", "Turn a vague answer into a specific one"],
