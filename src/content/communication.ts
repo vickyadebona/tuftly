@@ -35,9 +35,9 @@ export const communicationLessons: Lesson[] = [
           sample:
             "“I'm a front-end developer with three years of experience building React apps. Most recently I worked on a rebuild of our checkout form that cut abandoned checkouts by 18%, and I owned the payment fields. Before that, I helped move our component library to TypeScript, and the whole team still uses it. I'm looking for a team where I can work on accessibility at a bigger scale, which is why this role caught my eye.”",
           walkthrough: [
-            "Present: who you are and what you do now, in one sentence.",
-            "Past: one or two relevant things you've done, with a result.",
-            "Future: what you're looking for, and why it points at this role.",
+            "**Present:** who you are and what you do now, in one sentence.",
+            "**Past:** one or two relevant things you've done, with a result.",
+            "**Future:** what you're looking for, and why it points at this role.",
           ],
         },
         check: {
@@ -115,9 +115,9 @@ export const communicationLessons: Lesson[] = [
           sample:
             "“The role is about building accessible interfaces in React. At my last job I made our form components keyboard-friendly and tested them with a screen reader, and I fixed 40 issues from an accessibility audit. That's the kind of work I'd like to keep doing here.”",
           walkthrough: [
-            "Read the description and underline two or three things it asks for.",
-            "For each one, find something you really did that matches, and say what changed because of it.",
-            "Use the same words the description uses, so the interviewer can hear the match.",
+            "Read the description and underline **two or three things** it asks for.",
+            "For each one, find something you really did that matches, and say **what changed** because of it.",
+            "Use the **same words** the description uses, so the interviewer can hear the match.",
           ],
         },
         check: {
@@ -193,9 +193,9 @@ export const communicationLessons: Lesson[] = [
           sample:
             "Weaker: “I'm good at performance.”\n\nStronger: “I cut our page load from 4 seconds to 1.5 by compressing images and splitting the bundle, and our bounce rate dropped.”",
           walkthrough: [
-            "The weaker version is a claim. The stronger one is evidence.",
-            "Good evidence has three parts: what you did, how, and what changed.",
-            "If you don't have an exact number, say what changed instead, like “the support tickets about it stopped.” Don't invent a figure.",
+            "The weaker version is a **claim**. The stronger one is **evidence**.",
+            "Good evidence has three parts: **what you did**, **how**, and **what changed**.",
+            "If you don't have an exact number, say what changed instead, like “the support tickets about it stopped.” **Don't invent a figure.**",
           ],
         },
         check: {
@@ -289,9 +289,9 @@ export const communicationLessons: Lesson[] = [
           sample:
             "“Three of us rebuilt the checkout form. My part was the payment form: I wrote the validation, set up the error messages and tested it with a screen reader. Another developer owned the API, and a designer handled the layout.”",
           walkthrough: [
-            "Name the team size, so the scale is clear.",
-            "Say what you owned, using “I”.",
-            "Credit the rest with “we” or by role. It sounds confident and honest.",
+            "Name the **team size**, so the scale is clear.",
+            "Say **what you owned**, using “I”.",
+            "**Credit the rest** with “we” or by role. It sounds confident and honest.",
           ],
         },
         check: {
@@ -372,9 +372,11 @@ export const communicationLessons: Lesson[] = [
           sample:
             "“Our checkout form had a high drop-off rate, and I was one of three people asked to rebuild it. My job was the payment form. I watched session recordings, saw people getting stuck on the card fields, and rebuilt them with better validation and clearer errors. Drop-offs on the whole checkout fell by 18% over the next month.”",
           walkthrough: [
-            "Situation: the context, in a sentence.",
-            "Task: what you were responsible for.",
-            "Action: what you did, with the details that show your skill. Result: what changed.",
+            "**Situation:** the context, in a sentence.",
+            "**Task:** what you were responsible for.",
+            "**Action:** what you did, with the details that show your skill.",
+            "**Result:** what changed.",
+            "The first letters spell **STAR**, an easy way to remember the order.",
           ],
         },
         check: {
@@ -444,9 +446,9 @@ export const communicationLessons: Lesson[] = [
           sample:
             "“I haven't used GraphQL in a job yet. I've worked with REST APIs from React for three years, so I'm used to fetching and shaping data, and last year I picked up Redux on a deadline. I'd start with the official tutorial and build something small.”",
           walkthrough: [
-            "Say plainly that you haven't done it.",
-            "Mention the closest related thing you have done.",
-            "Say how you'd close the gap. Keep it short.",
+            "**Say plainly** that you haven't done it.",
+            "Mention the **closest related thing** you have done.",
+            "Say how you'd **close the gap**. Keep it short.",
           ],
         },
         check: {
@@ -541,9 +543,9 @@ export const communicationLessons: Lesson[] = [
           sample:
             "“One strength of mine is checking my work the way people will really use it. On our checkout rebuild, I tried the payment form with a keyboard and a screen reader and found that error messages weren't being read out. I fixed it before launch, and the team added that check to our code reviews.”",
           walkthrough: [
-            "Name it: one strength, in plain words.",
-            "Evidence: one real moment, including what you did.",
-            "Change: what was different for the work or the team afterward.",
+            "**Name it:** one strength, in plain words.",
+            "**Evidence:** one real moment, including what you did.",
+            "**Change:** what was different for the work or the team afterward.",
           ],
         },
         check: {
@@ -624,9 +626,9 @@ export const communicationLessons: Lesson[] = [
           sample:
             "“I've tended to stay stuck on a problem too long before asking for help. When we moved our component library to TypeScript, I spent most of two days on one type error, and a teammate waiting on that component couldn't start. Now, if I'm still stuck after an hour, I write down what I've tried and ask. I'm still practicing it.”",
           walkthrough: [
-            "Behavior: something you do, specific enough to picture.",
-            "Cost: what it led to, said plainly and without drama.",
-            "Now: what you do differently. It's fine to say you're still working on it.",
+            "**Behavior:** something you do, specific enough to picture.",
+            "**Cost:** what it led to, said plainly and without drama.",
+            "**Now:** what you do differently. It's fine to say you're still working on it.",
           ],
         },
         check: {
@@ -704,9 +706,9 @@ export const communicationLessons: Lesson[] = [
           sample:
             "Before: “I could be better at communication.”\n\nAfter: “I've tended to stay quiet when a task was running late. On a sales dashboard, I mentioned a delay only on the day it was due, and the sales team had to rearrange a meeting. Now I send a short update as soon as a date looks at risk.”",
           walkthrough: [
-            "A first try is often a label. That's a fine place to start.",
-            "Ask: when did it happen, what did I do, and what followed?",
-            "Swap the label for the behavior, then add the cost and what you do now. The same questions sharpen a strength.",
+            "A first try is often a **label**. That's a fine place to start.",
+            "Ask: **when did it happen, what did I do, and what followed?**",
+            "Swap the label for the **behavior**, then add the **cost** and **what you do now**. The same questions sharpen a strength.",
           ],
         },
         check: {

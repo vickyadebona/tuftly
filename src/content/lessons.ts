@@ -34,9 +34,9 @@ const codeLessons: Lesson[] = [
         workedExample: {
           code: `const scores = [30, 10, 20];\nconst sorted = [...scores].sort();\nconsole.log(scores); // [30, 10, 20]\nconsole.log(sorted); // [10, 20, 30]`,
           walkthrough: [
-            "`[...scores]` builds a new array with the same items (a shallow copy).",
-            "`sort()` reorders that copy and returns it.",
-            "`scores` is untouched, because only the copy was sorted. Calling `scores.sort()` directly would have reordered `scores` itself.",
+            "`[...scores]` builds a new array with the same items (a **shallow copy**).",
+            "`sort()` **reorders** that copy and returns it.",
+            "`scores` is untouched, because **only the copy was sorted**. Calling `scores.sort()` directly would have reordered `scores` itself.",
           ],
         },
         check: {
@@ -95,9 +95,9 @@ const codeLessons: Lesson[] = [
         workedExample: {
           code: `const nums = [5, 25, 100];\nnums.sort((a, b) => a - b);\nconsole.log(nums); // [5, 25, 100]`,
           walkthrough: [
-            "`sort()` can take a compare function. It gets two items, `a` and `b`, and answers: which goes first?",
-            "A negative result means `a` goes first. Positive means `b` goes first. Zero means leave them as they are.",
-            "`a - b` is negative when `a` is smaller, so smaller numbers come first. Use `b - a` for largest first.",
+            "`sort()` can take a **compare function**. It gets two items, `a` and `b`, and answers: which goes first?",
+            "A **negative** result means `a` goes first. **Positive** means `b` goes first. **Zero** means leave them as they are.",
+            "`a - b` is negative when `a` is smaller, so **smaller numbers come first**. Use `b - a` for largest first.",
           ],
         },
         check: {
@@ -161,9 +161,9 @@ const codeLessons: Lesson[] = [
         workedExample: {
           code: `const scores = [30, 10, 20];\nconst doubled = scores.map(n => n * 2);\nconst big = scores.filter(n => n > 15);\nconsole.log(doubled); // [60, 20, 40]\nconsole.log(big);     // [30, 20]`,
           walkthrough: [
-            "`map` runs the function on every item and collects the results: 60, 20, 40.",
-            "`filter` runs the function on every item too, but keeps only the items where it returns `true`.",
-            "Both return new arrays, and `scores` is unchanged.",
+            "`map` runs the function on every item and **collects the results**: 60, 20, 40.",
+            "`filter` runs the function on every item too, but **keeps only** the items where it returns `true`.",
+            "Both return **new arrays**, and `scores` is unchanged.",
           ],
         },
         check: {
@@ -242,7 +242,7 @@ const codeLessons: Lesson[] = [
             description: "The names a and b both point to the same object, where n is 2.",
           },
           walkthrough: [
-            "An object lives in one place. `a` and `b` are two names that point to it.",
+            "An object lives in one place. `a` and `b` are **two names** that point to it.",
             "`const b = a` **doesn't copy anything**. It gives the same object a second name.",
             "So changing `b.n` changes what `a` sees too, and `a === b` is `true`.",
           ],
@@ -312,8 +312,8 @@ const codeLessons: Lesson[] = [
             description: 'user and copy are different objects with names Sam and Alex. Both tags properties point to one array holding "a" and "b".',
           },
           walkthrough: [
-            "`{ ...user }` copies the top-level properties into a new object.",
-            '`name` is a string, so `copy.name = "Alex"` changes only the copy.',
+            "`{ ...user }` copies the **top-level** properties into a new object.",
+            '`name` is a string, so `copy.name = "Alex"` changes **only the copy**.',
             "`tags` is an array (an object), so both objects still **share the same array**. Pushing to it shows up in both.",
           ],
         },
@@ -383,9 +383,9 @@ const codeLessons: Lesson[] = [
             description: 'user and deep are different objects. user\'s tags array holds "a". deep has its own array holding "a" and "b".',
           },
           walkthrough: [
-            "`structuredClone(user)` copies `user` and everything nested inside it.",
+            "`structuredClone(user)` copies `user` and **everything nested** inside it.",
             "`deep.tags` is **its own array**, so pushing to it doesn't affect `user.tags`.",
-            "Use it when you need a fully independent copy. For a flat object with no nested data, spread is enough.",
+            "Use it when you need a **fully independent copy**. For a flat object with no nested data, spread is enough.",
           ],
         },
         check: {
@@ -457,9 +457,9 @@ const codeLessons: Lesson[] = [
         workedExample: {
           code: `const m = new Map();\nm.set(1, "a");\nm.set("1", "b");\nconsole.log(m.size);   // 2\nconsole.log(m.get(1)); // "a"`,
           walkthrough: [
-            'A `Map` keeps each key as it is, so the number `1` and the string `"1"` are two separate keys.',
+            'A `Map` keeps each key as it is, so the number `1` and the string `"1"` are **two separate keys**.',
             "`m.get(1)` finds the entry stored under the number.",
-            'A plain object would turn both keys into the string `"1"`, and the second would overwrite the first.',
+            'A **plain object** would turn both keys into the string `"1"`, and the second would overwrite the first.',
           ],
         },
         check: {
@@ -515,9 +515,9 @@ const codeLessons: Lesson[] = [
         workedExample: {
           code: `const counts = new Map();\nfor (const w of ["a", "b", "a"]) {\n  counts.set(w, (counts.get(w) ?? 0) + 1);\n}\nconsole.log(counts.get("a")); // 2\nconsole.log(counts.size);     // 2`,
           walkthrough: [
-            "`counts.get(w)` returns `undefined` the first time, so `?? 0` starts the count at zero.",
+            "`counts.get(w)` returns `undefined` the first time, so `?? 0` **starts the count at zero**.",
             "`counts.set(w, ...)` stores the new count under that word.",
-            "`counts.size` gives the number of keys directly. No `Object.keys(...).length` needed.",
+            "`counts.size` gives the **number of keys** directly. No `Object.keys(...).length` needed.",
           ],
         },
         check: {
@@ -572,9 +572,9 @@ const codeLessons: Lesson[] = [
         workedExample: {
           code: `const tags = ["a", "b", "a", "c", "b"];\nconst unique = [...new Set(tags)];\nconsole.log(unique); // ["a", "b", "c"]`,
           walkthrough: [
-            "`new Set(tags)` keeps only the first copy of each value.",
-            "A `Set` can be spread, so `[...set]` turns it back into an array.",
-            "This is a common way to remove duplicates from an array.",
+            "`new Set(tags)` keeps only the **first copy of each value**.",
+            "A `Set` can be spread, so `[...set]` turns it **back into an array**.",
+            "This is a common way to **remove duplicates** from an array.",
           ],
         },
         check: {

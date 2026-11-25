@@ -34,10 +34,10 @@ const answerDepth: Lesson = {
         sample:
           "“An index is a separate structure, usually sorted, that points back to the rows. So a lookup by email can go straight to the match instead of reading the whole table. I'd add one for columns we search often. The cost is extra storage and slower writes, so I wouldn't index everything.”",
         walkthrough: [
-          "What: one sentence that names the thing.",
-          "How: what actually happens when it's used.",
-          "When: the situation where you'd choose it.",
-          "What breaks or costs: the downside of using it, or of not using it.",
+          "**What:** one sentence that names the thing.",
+          "**How:** what actually happens when it's used.",
+          "**When:** the situation where you'd choose it.",
+          "**What breaks or costs:** the downside of using it, or of not using it.",
         ],
       },
       check: {
@@ -109,10 +109,10 @@ const answerDepth: Lesson = {
         sample:
           "“Shoppers moved between phone and laptop, so the cart had to follow them. I considered keeping it in the browser, which is simpler and needs no requests, but it stays on one device. I stored it in the database. If nobody signed in, I'd have kept it in the browser.”",
         walkthrough: [
-          "Problem: the need or limit that forced a choice.",
-          "Options: at least one real alternative, with what was good about it.",
-          "Choice and cost: what you picked and what you gave up.",
-          "What would change your mind: shows it was a decision, not a habit.",
+          "**Problem:** the need or limit that forced a choice.",
+          "**Options:** at least one real alternative, with what was good about it.",
+          "**Choice and cost:** what you picked and what you gave up.",
+          "**What would change your mind:** shows it was a decision, not a habit.",
         ],
       },
       check: {
@@ -188,9 +188,9 @@ const propertyLookup: Lesson = {
       workedExample: {
         code: `const base = { greeting: "hi" };\nconst child = Object.create(base);\nconsole.log(child.greeting); // hi\nchild.greeting = "yo";\nconsole.log(child.greeting); // yo\nconsole.log(base.greeting); // hi`,
         walkthrough: [
-          "A read checks the object itself first, then its prototype, then that one's prototype, until it reaches `null`.",
-          "A plain assignment doesn't change the prototype. It creates a property on `child` that hides (shadows) the inherited one.",
-          "A setter or a read-only property higher up the chain changes what an assignment does.",
+          "A read checks the object itself first, then its **prototype**, then that one's prototype, until it reaches `null`.",
+          "A plain assignment doesn't change the prototype. It creates a property on `child` that hides (**shadows**) the inherited one.",
+          "A **setter** or a **read-only** property higher up the chain changes what an assignment does.",
         ],
       },
       check: {
@@ -245,9 +245,9 @@ const propertyLookup: Lesson = {
       workedExample: {
         code: `const counts = {};\nconsole.log("toString" in counts); // true\nconsole.log(Object.hasOwn(counts, "toString")); // false\nconst safe = new Map();\nconsole.log(safe.has("toString")); // false`,
         walkthrough: [
-          "`in` asks “is it anywhere in the chain?”",
-          "`Object.hasOwn` asks “is it on this object itself?”",
-          "A `Map` has no inherited keys, which makes it a good fit when keys come from users.",
+          "`in` asks “is it **anywhere in the chain**?”",
+          "`Object.hasOwn` asks “is it **on this object itself**?”",
+          "A `Map` has **no inherited keys**, which makes it a good fit when keys come from users.",
         ],
       },
       check: {
@@ -316,9 +316,9 @@ const typePrecision: Lesson = {
       workedExample: {
         code: `function shout(input: unknown): string {\n  if (typeof input === "string") {\n    return input.toUpperCase();\n  }\n  return "not text";\n}`,
         walkthrough: [
-          "Anything can be passed in, because every type fits into `unknown`.",
-          "Inside the `if`, TypeScript narrows `input` to `string`, so `toUpperCase` is allowed.",
-          "Use `unknown` for data from outside: parsed JSON, responses, caught errors. These checks happen at run time. A type annotation alone checks nothing at run time.",
+          "Anything can be passed in, because **every type fits** into `unknown`.",
+          "Inside the `if`, TypeScript **narrows** `input` to `string`, so `toUpperCase` is allowed.",
+          "Use `unknown` for data from outside: parsed JSON, responses, caught errors. These checks happen at **run time**. A type annotation alone checks nothing at run time.",
         ],
       },
       check: {
@@ -371,9 +371,9 @@ const typePrecision: Lesson = {
       workedExample: {
         code: `interface Product { name: string }\ninterface Product { price: number }\nconst mug: Product = { name: "Mug", price: 12 };\n\ntype Size = "S" | "M" | "L";`,
         walkthrough: [
-          "Both `Product` declarations count, so `mug` needs `name` and `price`. This is how you can add to a library's interface.",
-          "`Size` is a union. An interface can't express that; `type` can, along with tuples, mapped and conditional types.",
-          "Both can describe an object shape, be built on (`extends` for `interface`, `&` for `type`) and be used with `implements`. A class can't implement a union.",
+          "Both `Product` declarations count, so `mug` needs `name` and `price`. This is how you can **add to a library's interface**.",
+          "`Size` is a **union**. An interface can't express that; `type` can, along with **tuples**, **mapped** and **conditional types**.",
+          "Both can describe an **object shape**, be built on (`extends` for `interface`, `&` for `type`) and be used with `implements`. A class can't implement a union.",
         ],
       },
       check: {
@@ -435,10 +435,10 @@ const whereRulesLive: Lesson = {
       workedExample: {
         code: `const prices: Record<string, number> = { mug: 1200, shirt: 2500 };\n\n// Runs on the server. Amounts are in cents.\nfunction priceFor(item: string, quantity: number): number {\n  if (!Object.hasOwn(prices, item)) throw new Error("unknown item");\n  if (!Number.isInteger(quantity) || quantity < 1) throw new Error("bad quantity");\n  return prices[item] * quantity;\n}`,
         walkthrough: [
-          "The browser sends only the item and quantity. The price comes from data the server controls.",
-          "The server checks both inputs, even if the page already did.",
-          "Browser checks are for quick feedback. Server checks are for safety.",
-          "A pure function like this is easy to unit test.",
+          "The browser sends only the item and quantity. The price comes from data **the server controls**.",
+          "The server **checks both inputs**, even if the page already did.",
+          "Browser checks are for **quick feedback**. Server checks are for **safety**.",
+          "A **pure function** like this is easy to **unit test**.",
         ],
       },
       check: {
@@ -492,7 +492,7 @@ const whereRulesLive: Lesson = {
           "`not null` and `check` refuse bad values.",
           "`references` refuses a line that points to an order that doesn't exist.",
           "`unique` stops the same product appearing twice in one order, even with requests arriving together.",
-          "The server should catch the error and reply with a clear message.",
+          "The server should catch the error and reply with a **clear message**.",
         ],
       },
       check: {
@@ -555,10 +555,10 @@ const stableTests: Lesson = {
         sample:
           "“Each test creates its own user and order through the API, so it never depends on another test. I fix the clock and time zone where dates matter, and stand in a fake response for outside services I don't control. Then tests can run in any order, in parallel.”",
         walkthrough: [
-          "Data: each test makes what it needs.",
-          "Time and place: fix the clock, time zone and locale when results depend on them.",
-          "Outside services: use their test mode or intercept the request.",
-          "Roles: sign in once per role, save the signed-in state and reuse it.",
+          "**Data:** each test makes what it needs.",
+          "**Time and place:** fix the clock, time zone and locale when results depend on them.",
+          "**Outside services:** use their test mode or intercept the request.",
+          "**Roles:** sign in once per role, save the signed-in state and reuse it.",
         ],
       },
       check: {
@@ -613,10 +613,10 @@ const stableTests: Lesson = {
       workedExample: {
         code: `import { test, expect } from "@playwright/test";\n\ntest("places an order", async ({ page }) => {\n  await page.goto("/checkout");\n  await page.getByRole("button", { name: "Pay" }).click();\n  await expect(page.getByText("Order placed")).toBeVisible();\n});`,
         walkthrough: [
-          "`getByRole` finds the button the way a user would, so a styling change doesn't break the test.",
-          "`click` waits until the button is ready to be clicked.",
-          "This `expect` retries until the text shows or the time limit passes. No sleep is needed.",
-          "For failures in CI, keep a trace so you can see what happened.",
+          "`getByRole` finds the button **the way a user would**, so a styling change doesn't break the test.",
+          "`click` **waits** until the button is ready to be clicked.",
+          "This `expect` **retries** until the text shows or the time limit passes. **No sleep** is needed.",
+          "For failures in **CI**, keep a **trace** so you can see what happened.",
         ],
       },
       check: {
