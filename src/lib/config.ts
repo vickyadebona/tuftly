@@ -42,3 +42,10 @@ export const SHOW_UNREVIEWED = process.env.NODE_ENV !== "production";
 
 export const PRESSURE_LEVELS = ["relaxed", "standard", "zara-like"] as const;
 export type PressureLevel = (typeof PRESSURE_LEVELS)[number];
+
+/**
+ * Offer "Share this to help improve lessons" after "Almost". Off until the privacy page is live
+ * and describes it. To turn on: also move supabase/pending/0003_lesson_feedback.sql into
+ * supabase/migrations/ so the table is created.
+ */
+export const SHARE_GAPS: boolean = false;
