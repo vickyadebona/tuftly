@@ -18,6 +18,7 @@ import { LessonDiagram } from "./LessonDiagram";
 import { RichText } from "./RichText";
 import { Bobbin } from "./Bobbin";
 import { CardSkeleton } from "./Skeleton";
+import { StreakCelebration } from "./StreakCelebration";
 
 const GRADES: { grade: Grade; label: string }[] = [
   { grade: "got", label: "Got it" },
@@ -313,6 +314,7 @@ export function ReviewSession() {
     if (total === 0) {
       return (
         <div className="flex flex-col gap-4">
+          <StreakCelebration />
           <Bobbin
             say={
               progress.lessonsDone.length === 0
@@ -347,6 +349,7 @@ export function ReviewSession() {
   if (!drill) {
     return (
       <div className="flex flex-col gap-4">
+        <StreakCelebration />
         <Bobbin mood="cheering" say="Good session. Anything you missed will come back in a later one." />
         <Link href="/home" className="btn-primary self-start">
           Back to the quest map

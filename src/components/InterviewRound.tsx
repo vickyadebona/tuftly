@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { getDrills, getLessons } from "@/content";
 import { COMPANION, type PressureLevel } from "@/lib/config";
 import { NAV_AGAIN } from "@/lib/events";
-import { useHydrated, useProgress } from "@/lib/store";
+import { recordPractice, useHydrated, useProgress } from "@/lib/store";
 import { interleave } from "@/lib/queue";
 import { lessonMix, minutesFor, SESSIONS, sessionQuestions, type RoundQuestion } from "@/lib/sessions";
 import { useSeason } from "@/lib/useSeason";
@@ -14,6 +14,7 @@ import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelIcon, TeaCup } from "./PixelIcon";
 import { TeaBreak } from "./TeaBreak";
 import { InterviewSkeleton } from "./Skeleton";
+import { StreakCelebration } from "./StreakCelebration";
 import { RichText } from "./RichText";
 
 // A practice round with the content we already have: a named session, or a mix from finished
@@ -74,13 +75,16 @@ function Round({ pressure, title, questions, onLeave }: { pressure: PressureLeve
     return () => window.clearInterval(id);
   }, [clockOn]);
 
+  // An interview answer counts toward the streak, typed here or said aloud and checked off.
   function send() {
+    if (answer.trim()) recordPractice();
     setPhase("checking");
     setTicked(q.rubric.map(() => false));
   }
 
   function next() {
     const hit = ticked.filter(Boolean).length;
+    if (hit > 0) recordPractice();
     setResults((r) => [...r, { topic: q.topic, hit, total: q.rubric.length }]);
     setIndex((i) => i + 1);
     setPhase("answering");
@@ -390,6 +394,7 @@ function Summary({
 
   return (
     <section className="pixel-box mx-auto flex max-w-2xl flex-col items-center gap-5 bg-teal-wash p-8 text-center">
+      <StreakCelebration />
       <PixelArtBobbin mood="cheering" outfit={season} size={150} />
       <h1 className="font-pixel text-3xl font-bold text-ink">That&apos;s a wrap!</h1>
       <p className="text-lg text-ink">You finished the round. Here is where each topic stands, plus a good next step.</p>

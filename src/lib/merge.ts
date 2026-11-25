@@ -1,4 +1,5 @@
 import { STREAK } from "./config.ts";
+import { mergeSettings } from "./streak.ts";
 import type { CardState } from "./scheduler.ts";
 import type { Progress, SavedPosition } from "./store.ts";
 
@@ -28,7 +29,9 @@ export function mergeProgress(a: Progress, b: Progress): Progress {
     lessonProgress[id] = !x ? y : !y ? x : x.updatedAt >= y.updatedAt ? x : y;
   }
   const tea = !a.tea || (b.tea && b.tea.at > a.tea.at) ? b.tea : a.tea;
+  const streakSettings = mergeSettings(a.streakSettings, b.streakSettings);
   return {
+    ...(streakSettings.length ? { streakSettings } : {}),
     ...(tea ? { tea } : {}),
     cards,
     lessonProgress,
