@@ -12,9 +12,9 @@ import { PixelArtBobbin } from "./PixelArtBobbin";
 import { Skeleton } from "./Skeleton";
 
 /** Passwordless sign-in: we email a one-time link. Shown only when Supabase is set up. */
-function EmailLinkForm({ name, intro }: { name?: string; intro: string }) {
+function EmailLinkForm({ name, intro, onSent }: { name?: string; intro: string; onSent: (email: string) => void }) {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
   const supabase = getSupabase();
   if (!supabase) return null;
 
@@ -32,16 +32,10 @@ function EmailLinkForm({ name, intro }: { name?: string; intro: string }) {
         data: name?.trim() ? { name: name.trim() } : undefined,
       },
     });
-    setStatus(error ? "error" : "sent");
+    if (error) setStatus("error");
+    else onSent(email.trim());
   }
 
-  if (status === "sent") {
-    return (
-      <p role="status" className="pixel-box bg-mint p-4 text-center text-ink">
-        Check your inbox! Open the link we sent to <strong>{email}</strong> to finish signing in.
-      </p>
-    );
-  }
   return (
     <form onSubmit={send} noValidate className="flex flex-col gap-3 border-t-[3px] border-line/25 pt-4">
       <p className="text-center text-ink-soft">{intro}</p>
@@ -85,6 +79,8 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
   const [error, setError] = useState<string | null>(null);
   // Between submitting and arriving on the quest map. Without this the screen flashes "Welcome back".
   const [leaving, setLeaving] = useState(false);
+  // Where a sign-in link was just sent. While set, the next step is in their inbox.
+  const [sentTo, setSentTo] = useState<string | null>(null);
 
   const shell = (children: React.ReactNode) => (
     <div className="flex min-h-screen flex-col bg-sky">
@@ -118,6 +114,23 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
     );
   }
 
+  // Replaces every other choice, so nothing here looks like a way to finish signing in.
+  if (sentTo && !auth.user) {
+    return shell(
+      <section role="status" className="pixel-box flex w-full max-w-md flex-col items-center gap-4 bg-paper p-8 text-center">
+        <PixelArtBobbin mood="happy" outfit={season} size={140} />
+        <h1 className="font-pixel text-3xl font-bold text-ink">Check your inbox!</h1>
+        <p className="text-lg text-ink-soft">
+          Open the link we sent to <strong className="break-words text-ink">{sentTo}</strong> in this browser to finish
+          signing in.
+        </p>
+        <button type="button" onClick={() => setSentTo(null)} className="font-semibold text-teal-deep underline">
+          Go back
+        </button>
+      </section>,
+    );
+  }
+
   // Someone already set up on this device.
   if (account) {
     return shell(
@@ -130,7 +143,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
         <Link href="/home" className="btn-primary">
           Continue
         </Link>
-        {!auth.user && <EmailLinkForm intro="Want your progress on every device? Sign in with email." />}
+        {!auth.user && <EmailLinkForm intro="Want your progress on every device? Sign in with email." onSent={setSentTo} />}
         <button
           type="button"
           onClick={() => {
@@ -191,6 +204,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
         )}
         <div className="w-full">
           <EmailLinkForm
+            onSent={setSentTo}
             intro={remembered ? "Or log in with your email, on any device. We'll send a link, no password needed." : "We'll email you a link. No password needed."}
           />
         </div>
@@ -275,6 +289,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
 
       <EmailLinkForm
         name={name}
+        onSent={setSentTo}
         intro="Already have an account, or want your progress on every device? We'll email you a link. No password needed."
       />
 
