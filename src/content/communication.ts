@@ -67,7 +67,7 @@ export const communicationLessons: Lesson[] = [
         reteach: {
           steps: [
             "Think of it as a few short sentences: who you are now, one or two things you've done, and what you want next.",
-            "It's a headline, not a biography. They can ask for more detail afterwards.",
+            "It's a headline, not a biography. They can ask for more detail afterward.",
             "Aim for about 30 to 60 seconds, which is roughly 70 to 150 words.",
           ],
         },
@@ -104,7 +104,7 @@ export const communicationLessons: Lesson[] = [
           options: [
             "All of them, in the order you did them",
             "The projects that show React and accessibility",
-            "Your favourite project, even if it's unrelated",
+            "Your favorite project, even if it's unrelated",
             "Only how many years you've worked",
           ],
           answerIndex: 1,
@@ -387,7 +387,7 @@ export const communicationLessons: Lesson[] = [
           ],
           answerIndex: 3,
           explanation:
-            "The result says what changed afterwards. The first is the situation, the second the task and the third the action.",
+            "The result says what changed afterward. The first is the situation, the second the task and the third the action.",
         },
         explain: {
           question: "Walk me through a project you're proud of.",
@@ -420,7 +420,7 @@ export const communicationLessons: Lesson[] = [
             options: ["The situation", "The task", "The action", "The result"],
             answerIndex: 3,
             explanation:
-              "It gives the problem and what you did, but not what changed afterwards. Add the result, such as how much faster it got.",
+              "It gives the problem and what you did, but not what changed afterward. Add the result, such as how much faster it got.",
           },
         ],
         recap: "Walk through a project as situation, task, action, result, and spend the most time on the action.",
@@ -528,7 +528,7 @@ export const communicationLessons: Lesson[] = [
         guess: {
           question: "An interviewer asks, “What's one of your strengths?” Which answer works best?",
           options: [
-            "I'm hard-working, organised, creative, friendly and a fast learner.",
+            "I'm hard-working, organized, creative, friendly and a fast learner.",
             "I check my work the way people will use it. On our checkout rebuild, a screen reader test showed me that error messages weren't being read out, and I fixed that before launch.",
             "I'm probably the best at React on any team I join.",
             "I don't really like talking about myself.",
@@ -543,7 +543,7 @@ export const communicationLessons: Lesson[] = [
           walkthrough: [
             "Name it: one strength, in plain words.",
             "Evidence: one real moment, including what you did.",
-            "Change: what was different for the work or the team afterwards.",
+            "Change: what was different for the work or the team afterward.",
           ],
         },
         check: {
@@ -579,7 +579,7 @@ export const communicationLessons: Lesson[] = [
         },
         retries: [
           {
-            prompt: "Which part is missing? “I'm very organised, and that has really helped my team.”",
+            prompt: "Which part is missing? “I'm very organized, and that has really helped my team.”",
             options: [
               "The name of the strength",
               "A real moment that shows it",
@@ -618,19 +618,19 @@ export const communicationLessons: Lesson[] = [
           ],
           answerIndex: 3,
           reveal:
-            "A specific behaviour, what it cost and what you do now shows that you notice things and act on them. A disguised strength, a broad gap or “nothing” tells the interviewer much less.",
+            "A specific behavior, what it cost and what you do now shows that you notice things and act on them. A disguised strength, a broad gap or “nothing” tells the interviewer much less.",
         },
         workedExample: {
           sample:
-            "“I've tended to stay stuck on a problem too long before asking for help. When we moved our component library to TypeScript, I spent most of two days on one type error, and a teammate waiting on that component couldn't start. Now, if I'm still stuck after an hour, I write down what I've tried and ask. I'm still practising it.”",
+            "“I've tended to stay stuck on a problem too long before asking for help. When we moved our component library to TypeScript, I spent most of two days on one type error, and a teammate waiting on that component couldn't start. Now, if I'm still stuck after an hour, I write down what I've tried and ask. I'm still practicing it.”",
           walkthrough: [
-            "Behaviour: something you do, specific enough to picture.",
+            "Behavior: something you do, specific enough to picture.",
             "Cost: what it led to, said plainly and without drama.",
             "Now: what you do differently. It's fine to say you're still working on it.",
           ],
         },
         check: {
-          prompt: "Which of these names a specific behaviour?",
+          prompt: "Which of these names a specific behavior?",
           options: [
             "I lack experience with testing.",
             "I'm not the best communicator.",
@@ -647,7 +647,7 @@ export const communicationLessons: Lesson[] = [
           modelAnswer:
             "I've tended to stay stuck too long before asking for help. While moving our component library to TypeScript, I spent most of two days on one type error, and a teammate couldn't start their work. Now, after an hour, I write down what I've tried and ask.",
           keyPoints: [
-            "Names a specific behaviour, not a broad gap",
+            "Names a specific behavior, not a broad gap",
             "Says what it cost",
             "Says what you do differently now",
             "Is real, with nothing invented",
@@ -664,10 +664,10 @@ export const communicationLessons: Lesson[] = [
           {
             prompt:
               "“I've sometimes skipped writing tests when I was rushing, and a bug reached our users.” What's missing?",
-            options: ["The behaviour", "The cost", "What you do differently now", "A strength to balance it"],
+            options: ["The behavior", "The cost", "What you do differently now", "A strength to balance it"],
             answerIndex: 2,
             explanation:
-              "It names the behaviour and what it cost. Adding what you do now shows what you took from it.",
+              "It names the behavior and what it cost. Adding what you do now shows what you took from it.",
           },
           {
             prompt: "Why is “I work too hard” a weak answer to this question?",
@@ -679,10 +679,10 @@ export const communicationLessons: Lesson[] = [
             ],
             answerIndex: 0,
             explanation:
-              "The question asks what you're improving. A dressed-up strength avoids it, and there's no behaviour or change to talk about.",
+              "The question asks what you're improving. A dressed-up strength avoids it, and there's no behavior or change to talk about.",
           },
         ],
-        recap: "For a growth area, name a specific behaviour, what it cost and what you do differently now.",
+        recap: "For a growth area, name a specific behavior, what it cost and what you do differently now.",
       },
       {
         id: "sharpen-answer",
@@ -698,7 +698,7 @@ export const communicationLessons: Lesson[] = [
           ],
           answerIndex: 1,
           reveal:
-            "A vague answer usually has a real moment behind it. Finding that moment gives you the behaviour, what it cost and what you changed.",
+            "A vague answer usually has a real moment behind it. Finding that moment gives you the behavior, what it cost and what you changed.",
         },
         workedExample: {
           sample:
@@ -706,7 +706,7 @@ export const communicationLessons: Lesson[] = [
           walkthrough: [
             "A first try is often a label. That's a fine place to start.",
             "Ask: when did it happen, what did I do, and what followed?",
-            "Swap the label for the behaviour, then add the cost and what you do now. The same questions sharpen a strength.",
+            "Swap the label for the behavior, then add the cost and what you do now. The same questions sharpen a strength.",
           ],
         },
         check: {
@@ -723,7 +723,7 @@ export const communicationLessons: Lesson[] = [
         },
         explain: {
           question:
-            "Take a vague line about yourself, such as “I could be better at organising”, and give the sharper answer you'd say out loud.",
+            "Take a vague line about yourself, such as “I could be better at organizing”, and give the sharper answer you'd say out loud.",
           starter: "A time this happened was … I … Now I …",
           modelAnswer:
             "I've tended to keep small tasks in my head. During one release I forgot to update an error message I'd promised to change, and a teammate had to catch it in review. Now I write each promise on the ticket as soon as I make it.",
@@ -752,7 +752,7 @@ export const communicationLessons: Lesson[] = [
             ],
             answerIndex: 2,
             explanation:
-              "It names a behaviour, what it cost and the change. The others stay at the level of the label or brush it aside.",
+              "It names a behavior, what it cost and the change. The others stay at the level of the label or brush it aside.",
           },
           {
             prompt: "While sharpening an answer, you can't remember how big the effect was. What should you do?",

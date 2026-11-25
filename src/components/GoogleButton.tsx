@@ -23,7 +23,7 @@ export function useGoogleEnabled(): boolean {
   return enabled;
 }
 
-/** Google's "G", in its own colours on white as their branding rules require. */
+/** Google's "G", in its own colors on white as their branding rules require. */
 function GoogleMark() {
   return (
     <span className="flex h-7 w-7 items-center justify-center bg-white" aria-hidden="true">

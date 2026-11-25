@@ -34,7 +34,7 @@ const STEPS: Step[] = [
   },
   {
     title: "Practice",
-    text: "After a lesson, short drills come back on a schedule so you remember it. One short practice unlocks your first interview.",
+    text: "After a lesson, short drills come back on a schedule so you remember it. One short practice also opens a mixed interview round.",
     mood: "happy",
     target: "nav-review",
     placement: "right",

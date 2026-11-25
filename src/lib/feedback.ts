@@ -1,5 +1,5 @@
 /**
- * Sharing a gap to improve lessons. Only ever sent when the learner ticks the box. The request
+ * Sharing a gap to improve lessons. Only ever sent when the learner checks the box. The request
  * carries the public key alone, never their sign-in, so a row can't be tied to an account.
  */
 export const MAX_GAP = 500;

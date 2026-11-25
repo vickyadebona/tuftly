@@ -18,7 +18,7 @@ Built from the Figma file "tuftly: layout explorations" (layout A). Pixel look: 
 - `/` landing page (`src/components/Landing.tsx`)
 - `/home` quest map: lessons as a path, today's quests, week strip with rest days (`QuestHome.tsx`)
 - `/review` practice, `/lessons/[id]` lesson flow (restyled)
-- `/interview` practice round: questions come from the drill bank and you tick key points yourself. Includes a tea break, pressure levels and a round map. The AI interviewer, voice and real scoring are not built yet.
+- `/interview` practice round: questions come from the drill bank and you check off key points yourself. Includes a tea break, pressure levels and a round map. The AI interviewer, voice and real scoring are not built yet.
 - Not built from the design: XP, levels, gems and the closet (the data model has none of them), and mobile-specific layouts beyond basic stacking.
 
 ## How learning is designed to stick
@@ -28,7 +28,7 @@ Based on the Dunlosky et al. (2013) review of study techniques, which rated prac
 - **Retrieval practice**: drills make you answer from memory, and "say why" is optional but encouraged.
 - **Spaced repetition** (`src/lib/scheduler.ts`): Leitner boxes with expanding gaps (1, 2, 4, 8, 16, 32, 64 days). "Not yet" resets to box 0 and re-queues once in the session.
 - **Interleaving** (`src/lib/queue.ts`): practice sessions mix topics instead of blocking them.
-- **Honest self-assessment**: a rubric of key points the learner ticks, instead of an AI that might be wrong.
+- **Honest self-assessment**: a rubric of key points the learner checks off, instead of an AI that might be wrong.
 - Known gaps: evidence for these techniques in beginner programmers is thinner than in general education research. The scheduler is simple (FSRS could replace it later).
 
 ## Content workflow
@@ -45,7 +45,7 @@ npm run dev
 
 ## Component docs (Storybook)
 
-A reference for the colours, type, pixel-art pieces and screens. Run it with `npm run storybook` (http://localhost:6006); `npm run build-storybook` makes a static site in `storybook-static/` (git-ignored).
+A reference for the colors, type, pixel-art pieces and screens. Run it with `npm run storybook` (http://localhost:6006); `npm run build-storybook` makes a static site in `storybook-static/` (git-ignored).
 
 - Stories live next to their component as `ComponentName.stories.tsx`. Foundations (palette, type, boxes and buttons) are in `src/stories/`.
 - Screens read progress, the profile and the pitch from `localStorage`. A story sets them with `parameters: { tuftly: { account, progress, pitch } }`; sample states are in `src/stories/seeds.ts`. Anything not given is cleared, so every story starts clean.

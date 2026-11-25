@@ -9,7 +9,7 @@ function Showcase() {
       <section className="flex flex-col gap-3">
         <h2 className="font-pixel text-xl font-bold text-ink">.pixel-box</h2>
         <div className="pixel-box p-5 text-ink">A chunky outlined box with a hard offset shadow. Used for cards, questions and feedback.</div>
-        <div className="pixel-box bg-mint p-5 text-ink">Tinted with a palette colour: bg-mint.</div>
+        <div className="pixel-box bg-mint p-5 text-ink">Tinted with a palette color: bg-mint.</div>
       </section>
       <section className="flex flex-col gap-3">
         <h2 className="font-pixel text-xl font-bold text-ink">.pixel-chip</h2>
