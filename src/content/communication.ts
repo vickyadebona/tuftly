@@ -510,4 +510,265 @@ export const communicationLessons: Lesson[] = [
       },
     ],
   },
+  {
+    id: "pitch-strengths",
+    track: "communication",
+    topic: "strengths",
+    title: "Strengths and growth areas",
+    minutes: 6,
+    reviewed: true,
+    intro: {
+      summary: "How to answer “what are your strengths and weaknesses?” with real moments from your own work.",
+      outcomes: ["Back up a strength with one real moment and what it changed", "Describe a growth area, what it cost and what you do differently now", "Turn a vague answer into a specific one"],
+    },
+    ideas: [
+      {
+        id: "strength-evidence",
+        title: "A strength, with a moment",
+        guess: {
+          question: "An interviewer asks, “What's one of your strengths?” Which answer works best?",
+          options: [
+            "I'm hard-working, organised, creative, friendly and a fast learner.",
+            "I check my work the way people will use it. On our checkout rebuild, a screen reader test showed me that error messages weren't being read out, and I fixed that before launch.",
+            "I'm probably the best at React on any team I join.",
+            "I don't really like talking about myself.",
+          ],
+          answerIndex: 1,
+          reveal:
+            "Name one strength, then show it with a real moment. A list of traits is hard to remember, and a big claim with nothing behind it is hard to believe.",
+        },
+        workedExample: {
+          sample:
+            "“One strength of mine is checking my work the way people will really use it. On our checkout rebuild, I tried the payment form with a keyboard and a screen reader and found that error messages weren't being read out. I fixed it before launch, and the team added that check to our code reviews.”",
+          walkthrough: [
+            "Name it: one strength, in plain words.",
+            "Evidence: one real moment, including what you did.",
+            "Change: what was different for the work or the team afterwards.",
+          ],
+        },
+        check: {
+          prompt: "“I'm good at explaining things. Last month a new teammate was stuck on how our forms handle errors, so I drew the flow and walked through it with them.” What would make this stronger?",
+          options: [
+            "Adding four more strengths",
+            "Saying “really good” instead of “good”",
+            "Saying what changed, for example what the teammate could then do",
+            "Removing the example",
+          ],
+          answerIndex: 2,
+          explanation:
+            "It names a strength and gives a moment, but stops before the effect. What changed for the work or the team is the missing part.",
+        },
+        explain: {
+          question: "What's one of your strengths? (Use a moment that really happened.)",
+          starter: "One strength of mine is … For example, …",
+          modelAnswer:
+            "One strength of mine is checking my work the way people will really use it. On our checkout rebuild, I tried the payment form with a screen reader and found that error messages weren't being read out. I fixed it before launch, and the team added that check to our code reviews.",
+          keyPoints: [
+            "Names one strength",
+            "Gives one real moment as evidence",
+            "Says what you did in that moment",
+            "Says what changed for the work or the team",
+          ],
+        },
+        reteach: {
+          steps: [
+            "Pick one strength that matters for this role. One with proof is easier to remember than a list.",
+            "Think of a time it showed. Work, a course, a personal project or a job outside tech can all count.",
+            "Finish with what changed. If you can't point to a number, describe the change. Never invent a number or a result.",
+          ],
+        },
+        retries: [
+          {
+            prompt: "Which part is missing? “I'm very organised, and that has really helped my team.”",
+            options: [
+              "The name of the strength",
+              "A real moment that shows it",
+              "A second strength",
+              "Nothing, it's complete",
+            ],
+            answerIndex: 1,
+            explanation:
+              "It names a strength and says it helped, but gives no moment the interviewer can picture or ask about.",
+          },
+          {
+            prompt: "You can't think of a measurable result for your example. What's the best thing to do?",
+            options: [
+              "Describe what changed, such as “the team started doing the same check”",
+              "Make up a percentage",
+              "Leave out the example and just name the strength",
+              "Say it saved the company a lot of money",
+            ],
+            answerIndex: 0,
+            explanation:
+              "A real change you can describe is enough. Only claim results that happened, because a follow-up question may ask how you know.",
+          },
+        ],
+        recap: "Name one strength, give one real moment that shows it, and say what changed for the work or the team.",
+      },
+      {
+        id: "growth-area",
+        title: "A growth area you're working on",
+        guess: {
+          question: "The interviewer asks, “What's something you're working on improving?” Which answer works best?",
+          options: [
+            "I'm a perfectionist. I just care too much.",
+            "I lack experience with back-end work.",
+            "Nothing comes to mind, to be honest.",
+            "I can stay stuck too long before asking for help. It once held up a teammate, so now I ask after an hour with notes on what I've tried.",
+          ],
+          answerIndex: 3,
+          reveal:
+            "A specific behaviour, what it cost and what you do now shows that you notice things and act on them. A disguised strength, a broad gap or “nothing” tells the interviewer much less.",
+        },
+        workedExample: {
+          sample:
+            "“I've tended to stay stuck on a problem too long before asking for help. When we moved our component library to TypeScript, I spent most of two days on one type error, and a teammate waiting on that component couldn't start. Now, if I'm still stuck after an hour, I write down what I've tried and ask. I'm still practising it.”",
+          walkthrough: [
+            "Behaviour: something you do, specific enough to picture.",
+            "Cost: what it led to, said plainly and without drama.",
+            "Now: what you do differently. It's fine to say you're still working on it.",
+          ],
+        },
+        check: {
+          prompt: "Which of these names a specific behaviour?",
+          options: [
+            "I lack experience with testing.",
+            "I'm not the best communicator.",
+            "I've started coding before checking I understood the request.",
+            "I'm too much of a perfectionist.",
+          ],
+          answerIndex: 2,
+          explanation:
+            "It's something you can picture happening, so you can also say what it cost and what you do instead. The others are broad labels.",
+        },
+        explain: {
+          question: "What's something you're working on improving?",
+          starter: "I've tended to … It meant … Now I …",
+          modelAnswer:
+            "I've tended to stay stuck too long before asking for help. While moving our component library to TypeScript, I spent most of two days on one type error, and a teammate couldn't start their work. Now, after an hour, I write down what I've tried and ask.",
+          keyPoints: [
+            "Names a specific behaviour, not a broad gap",
+            "Says what it cost",
+            "Says what you do differently now",
+            "Is real, with nothing invented",
+          ],
+        },
+        reteach: {
+          steps: [
+            "“I lack experience with something” describes a gap. A growth area is easier to discuss when it's something you do, like skipping questions at the start of a task.",
+            "Think of one time it caused a problem: a delay, some rework or a confused teammate.",
+            "Say what you do now. Only describe a habit you really have. If you've only just started, say so.",
+          ],
+        },
+        retries: [
+          {
+            prompt:
+              "“I've sometimes skipped writing tests when I was rushing, and a bug reached our users.” What's missing?",
+            options: ["The behaviour", "The cost", "What you do differently now", "A strength to balance it"],
+            answerIndex: 2,
+            explanation:
+              "It names the behaviour and what it cost. Adding what you do now shows what you took from it.",
+          },
+          {
+            prompt: "Why is “I work too hard” a weak answer to this question?",
+            options: [
+              "It sounds like a strength in disguise and shows nothing you're changing",
+              "It's too specific",
+              "It's too short to count",
+              "Interviewers don't want to hear about work",
+            ],
+            answerIndex: 0,
+            explanation:
+              "The question asks what you're improving. A dressed-up strength avoids it, and there's no behaviour or change to talk about.",
+          },
+        ],
+        recap: "For a growth area, name a specific behaviour, what it cost and what you do differently now.",
+      },
+      {
+        id: "sharpen-answer",
+        title: "Sharpen a vague first try",
+        guess: {
+          question:
+            "Your first try is “I could be better at communication.” What's the most useful thing to ask yourself next?",
+          options: [
+            "Which longer word could replace “communication”?",
+            "When did this happen, and what did I do or not do?",
+            "How can I make it sound like a strength?",
+            "What do other candidates usually say?",
+          ],
+          answerIndex: 1,
+          reveal:
+            "A vague answer usually has a real moment behind it. Finding that moment gives you the behaviour, what it cost and what you changed.",
+        },
+        workedExample: {
+          sample:
+            "Before: “I could be better at communication.”\n\nAfter: “I've tended to stay quiet when a task was running late. On a sales dashboard, I mentioned a delay only on the day it was due, and the sales team had to rearrange a meeting. Now I send a short update as soon as a date looks at risk.”",
+          walkthrough: [
+            "A first try is often a label. That's a fine place to start.",
+            "Ask: when did it happen, what did I do, and what followed?",
+            "Swap the label for the behaviour, then add the cost and what you do now. The same questions sharpen a strength.",
+          ],
+        },
+        check: {
+          prompt: "Which is the sharpest rewrite of “I'm a good teammate”?",
+          options: [
+            "I'm a really great teammate who loves working with people.",
+            "Everyone I've worked with would say I'm a team player.",
+            "I help my team in lots of different ways.",
+            "When a teammate was off sick, I picked up their review comments, and the release went out on the planned day.",
+          ],
+          answerIndex: 3,
+          explanation:
+            "It swaps the label for something you did and what came of it. The others repeat the claim in more words.",
+        },
+        explain: {
+          question:
+            "Take a vague line about yourself, such as “I could be better at organising”, and give the sharper answer you'd say out loud.",
+          starter: "A time this happened was … I … Now I …",
+          modelAnswer:
+            "I've tended to keep small tasks in my head. During one release I forgot to update an error message I'd promised to change, and a teammate had to catch it in review. Now I write each promise on the ticket as soon as I make it.",
+          keyPoints: [
+            "Replaces the label with something you did",
+            "Points to one real moment",
+            "Says what followed",
+            "For a growth area, says what you do now",
+          ],
+        },
+        reteach: {
+          steps: [
+            "Underline the vague words, such as “good”, “better” or “communication”.",
+            "For each one, ask “what did that look like on one particular day?”",
+            "Write what you remember, even roughly, then trim it to a few sentences. Keep it true: don't add a number or a result to make it sound bigger.",
+          ],
+        },
+        retries: [
+          {
+            prompt: "Which rewrite of “I need to work on time management” is the sharpest?",
+            options: [
+              "I really need to get much better with my time.",
+              "Time management is something everyone struggles with.",
+              "I've said yes to extra tasks without checking my deadline, and one feature slipped. Now I check what it would delay first.",
+              "I'm usually on time, so it isn't a big problem.",
+            ],
+            answerIndex: 2,
+            explanation:
+              "It names a behaviour, what it cost and the change. The others stay at the level of the label or brush it aside.",
+          },
+          {
+            prompt: "While sharpening an answer, you can't remember how big the effect was. What should you do?",
+            options: [
+              "Pick a number that seems about right",
+              "Say what you do remember, without a number",
+              "Say the effect was huge",
+              "Borrow a result from an example answer",
+            ],
+            answerIndex: 1,
+            explanation:
+              "Specific doesn't have to mean numbers. What happened, as you remember it, is enough and you can stand behind it.",
+          },
+        ],
+        recap: "Sharpen a vague line by finding the real moment behind it: what you did, what followed and, for a growth area, what you do now.",
+      },
+    ],
+  },
 ];

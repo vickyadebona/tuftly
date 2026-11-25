@@ -16,8 +16,9 @@ export const units: UnitInfo[] = [
       "Giving a clear one-minute pitch",
       "Matching your experience to a role",
       "Handling follow-up questions about your work, including gaps and mistakes",
+      "Talking about your strengths and growth areas",
     ],
-    format: "2 lessons of about 6 minutes each, plus a Pitch page where you work with your own experience.",
+    format: "3 lessons of about 6 minutes each, plus a Pitch page where you work with your own experience.",
   },
   {
     track: "javascript",
