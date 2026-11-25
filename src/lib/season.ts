@@ -5,7 +5,7 @@ export const SEASONS: Season[] = ["winter", "spring", "summer", "autumn"];
 
 /**
  * Northern-hemisphere season for each month (index 0 = January).
- * Cold-weather "scarf season" starts in November and runs through February.
+ * Autumn runs September through November; "scarf season" is December through February.
  */
 const NORTH: Season[] = [
   "winter", // Jan
@@ -18,7 +18,7 @@ const NORTH: Season[] = [
   "summer", // Aug
   "autumn", // Sep
   "autumn", // Oct
-  "winter", // Nov
+  "autumn", // Nov
   "winter", // Dec
 ];
 

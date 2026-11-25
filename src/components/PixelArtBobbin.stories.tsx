@@ -3,7 +3,7 @@ import { SEASONS } from "@/lib/season";
 import type { BobbinMood } from "./Bobbin";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 
-const MOODS: BobbinMood[] = ["sparkle", "happy", "thinking", "cheering", "sleepy", "determined", "nervous", "teary"];
+const MOODS: BobbinMood[] = ["sparkle", "wink", "happy", "thinking", "cheering", "sleepy", "determined", "nervous", "teary"];
 
 const meta = {
   title: "Pixel art/PixelArtBobbin",

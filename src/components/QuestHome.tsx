@@ -104,7 +104,11 @@ export function QuestHome() {
 
   const welcome = (
       <section data-tour="welcome" className="pixel-box flex flex-col items-center gap-3 bg-peach p-4 sm:flex-row sm:gap-6 sm:px-6">
-        <PixelArtBobbin mood={restDay ? "sleepy" : "sparkle"} outfit={season} size={88} />
+        <PixelArtBobbin
+          mood={restDay ? "sleepy" : doneCount > 0 && waiting > 0 ? "wink" : "sparkle"}
+          outfit={season}
+          size={88}
+        />
         <p className="pixel-box w-full flex-1 px-4 py-3 text-center text-base text-ink sm:text-left sm:text-lg">{say}</p>
         {doneCount === 0 ? (
           <Link href={currentId ? `/lessons/${currentId}` : "/home"} className="btn-primary w-full shrink-0 sm:w-auto">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { APP_NAME, FIRST_LESSON_MINUTES } from "@/lib/config";
 import { SEASONS, type Season } from "@/lib/season";
 import { PixelArtBobbin } from "./PixelArtBobbin";
+import { SeasonHeadline } from "./SeasonHeadline";
 import { PixelCloud, PixelIcon, type PixelIconName } from "./PixelIcon";
 
 export const SECTION = "px-5 py-14 sm:px-6 sm:py-20";
@@ -32,7 +33,7 @@ export function Nav({ current }: { current?: "about" }) {
     <header className="bg-cream">
       <div className={`${INNER} flex items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:px-6 sm:py-4`}>
         <Link href="/" className="flex items-center gap-2" aria-label={`${APP_NAME} home`}>
-          <PixelArtBobbin mood="sparkle" outfit="winter" size={36} />
+          <PixelArtBobbin mood="sparkle" size={36} />
           <span className="font-pixel text-2xl font-bold text-ink sm:text-3xl">
             tuft<span className="text-teal">ly</span>
           </span>
@@ -79,7 +80,7 @@ function Island() {
 
       {/* The image has a little empty space under the feet, so pull it down onto the grass. */}
       <div className="relative z-10 -mb-[9%] [&_img]:h-[200px] [&_img]:w-[200px] sm:[&_img]:h-[300px] sm:[&_img]:w-[300px]">
-        <PixelArtBobbin mood="sparkle" outfit="winter" size={300} priority />
+        <PixelArtBobbin mood="sparkle" size={300} priority />
       </div>
 
       <div className="relative w-[calc(100%-32px)] sm:w-[calc(100%-64px)]">
@@ -106,7 +107,7 @@ function Hero() {
             Free practice, with tea breaks
           </span>
           <h1 className="font-pixel text-4xl font-bold leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
-            Warm up for your next coding interview
+            <SeasonHeadline />
           </h1>
           <p className="max-w-xl text-lg text-ink-soft sm:text-xl">
             {APP_NAME} is a friendly practice space. Take short lessons, play through game-like
@@ -240,7 +241,7 @@ function MeetBobbin() {
         <ul className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {MOODS.map((m) => (
             <li key={m.mood} className="pixel-box flex flex-col items-center gap-1 p-3">
-              <PixelArtBobbin mood={m.mood} outfit="winter" size={104} />
+              <PixelArtBobbin mood={m.mood} size={104} />
               <span className="font-pixel text-sm font-semibold text-ink">{m.label}</span>
             </li>
           ))}
@@ -264,7 +265,7 @@ function Pressure() {
         <ul className="grid gap-6 md:grid-cols-3">
           {LEVELS.map((l) => (
             <li key={l.name} className={`pixel-box flex flex-col items-center gap-3 p-8 text-center ${l.bg}`}>
-              <PixelArtBobbin mood={l.mood} outfit="winter" size={140} />
+              <PixelArtBobbin mood={l.mood} size={140} />
               <h3 className="font-pixel text-xl font-bold text-ink">{l.name}</h3>
               <p className="text-ink-soft">{l.text}</p>
             </li>
@@ -308,7 +309,7 @@ function FinalCall() {
   return (
     <section id="free" className={`${SECTION} bg-teal-wash`}>
       <div className={`${INNER} flex flex-col items-center gap-8 sm:flex-row sm:justify-center`}>
-        <PixelArtBobbin mood="cheering" outfit="winter" size={180} />
+        <PixelArtBobbin mood="cheering" size={180} />
         <div className="flex max-w-xl flex-col items-start gap-4">
           <Title>Ready when you are</Title>
           <p className="text-lg text-ink-soft">

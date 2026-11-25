@@ -6,6 +6,7 @@ import { useSeason } from "@/lib/useSeason";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 
 export type BobbinMood =
+  | "wink"
   | "sparkle"
   | "calm"
   | "happy"
