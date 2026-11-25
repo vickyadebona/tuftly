@@ -61,6 +61,7 @@ Everything works on this device without it. With Supabase set up, people can sig
 5. Restart the dev server.
 The built-in email sender only mails addresses on the project's own team, a couple per hour, so add custom SMTP before anyone else signs in.
 Google sign-in (optional): in Google Cloud, create an OAuth client of type "Web application" with the authorized redirect URI `https://<project-ref>.supabase.co/auth/v1/callback`, then paste its client ID and secret into Supabase under Authentication > Sign In / Providers > Google. The button appears by itself once the provider is on.
+Shared gaps (switched off, `SHARE_GAPS` in `src/lib/config.ts`): after "Almost", learners will be able to choose to share what's still fuzzy. Rows land in `lesson_feedback` (Table Editor), hold no account details, and should be deleted after 12 months (the SQL is at the top of `supabase/pending/0003_lesson_feedback.sql`). Before turning it on, publish the privacy page describing it and move that file into `supabase/migrations/`.
 Next: a server-side counter for the 2 interviews a day cap.
 
 ## Deploy

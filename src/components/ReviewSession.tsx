@@ -3,11 +3,14 @@
 import Link from "next/link";
 import { useState } from "react";
 import { getDrills, getLessons } from "@/content";
+import { SHARE_GAPS } from "@/lib/config";
 import { todayStr } from "@/lib/dates";
+import { gapFeedback, MAX_GAP, shareGap } from "@/lib/feedback";
 import { nextCard, practicePool, type PracticeCard } from "@/lib/practice";
 import { buildQueue, summarize } from "@/lib/queue";
 import type { Grade } from "@/lib/scheduler";
 import { recordReview, useHydrated, useProgress } from "@/lib/store";
+import { SUPABASE_KEY, SUPABASE_URL, supabaseConfigured } from "@/lib/supabase/config";
 import type { Drill, LessonIdea } from "@/lib/types";
 import { ChoiceList } from "./ChoiceList";
 import { CodeBlock } from "./CodeBlock";
@@ -158,10 +161,21 @@ function DrillCard({
   );
 }
 
-/** After "Almost": ask what's still fuzzy, so the next question can aim at it. Nothing is saved. */
-function GapStep({ missed, onPractice, onMoveOn }: { missed: string[]; onPractice: (gap: string) => void; onMoveOn: () => void }) {
+const canShare = SHARE_GAPS && supabaseConfigured;
+
+/**
+ * After "Almost": ask what's still fuzzy, so the next question can aim at it. Nothing leaves the
+ * device unless the learner ticks the box to share it.
+ */
+function GapStep({ drillId, missed, onPractice, onMoveOn }: { drillId: string; missed: string[]; onPractice: (gap: string) => void; onMoveOn: () => void }) {
   const [text, setText] = useState("");
   const [chosen, setChosen] = useState<string[]>([]);
+  const [share, setShare] = useState(false);
+
+  function shareIfAsked() {
+    const feedback = share && canShare ? gapFeedback(drillId, text, chosen) : null;
+    if (feedback) shareGap(SUPABASE_URL!, SUPABASE_KEY!, feedback);
+  }
 
   return (
     <section className="flex flex-col gap-4">
@@ -187,16 +201,45 @@ function GapStep({ missed, onPractice, onMoveOn }: { missed: string[]; onPractic
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
+          maxLength={MAX_GAP}
           rows={3}
           className="border-[3px] border-line bg-paper p-2 text-ink"
         />
       </label>
+      {canShare && (
+        <label className="flex items-start gap-2 text-ink">
+          <input type="checkbox" checked={share} onChange={() => setShare((v) => !v)} className="mt-1 h-5 w-5 shrink-0 accent-teal" />
+          <span>
+            Share this to help improve lessons.
+            <span className="block text-sm text-ink-soft">
+              What you typed and picked above is saved without your name or account. Leave out personal details.{" "}
+              <Link href="/privacy" className="font-semibold text-teal-deep underline">
+                Privacy
+              </Link>
+            </span>
+          </span>
+        </label>
+      )}
       <div className="flex flex-wrap items-center gap-3">
         {/* Typed words and picked points aim the next question. With neither, the unticked points do. */}
-        <button type="button" onClick={() => onPractice([text, ...chosen].join(" ").trim() || missed.join(" "))} className="btn-primary">
+        <button
+          type="button"
+          onClick={() => {
+            shareIfAsked();
+            onPractice([text, ...chosen].join(" ").trim() || missed.join(" "));
+          }}
+          className="btn-primary"
+        >
           Practice this part
         </button>
-        <button type="button" onClick={onMoveOn} className="font-semibold text-teal-deep underline">
+        <button
+          type="button"
+          onClick={() => {
+            shareIfAsked();
+            onMoveOn();
+          }}
+          className="font-semibold text-teal-deep underline"
+        >
           Move on for now
         </button>
       </div>
@@ -350,6 +393,7 @@ export function ReviewSession() {
       {extra.asking ? (
         <GapStep
           key={turn}
+          drillId={card.id}
           missed={extra.asking}
           onPractice={(gap) => setExtra({ ...extra, gap, asking: null, refresh: true })}
           onMoveOn={moveOn}
