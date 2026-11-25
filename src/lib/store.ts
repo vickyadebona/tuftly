@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import type { TeaId } from "@/components/PixelIcon";
 import { todayStr } from "./dates";
 import type { LessonPosition } from "./lessonFlow";
 import { newCard, review, type CardState, type Grade } from "./scheduler";
@@ -18,6 +19,8 @@ export interface Progress {
   struggled: string[];
   /** Unit tracks whose introduction has been seen, so it only shows once. */
   unitsSeen: string[];
+  /** The tea last chosen for a tea break, and when, so the latest choice wins across devices. */
+  tea?: { id: TeaId; at: number };
 }
 
 export type SavedPosition = LessonPosition & { updatedAt: number };
@@ -109,6 +112,10 @@ export function saveLessonPosition(lessonId: string, pos: LessonPosition) {
 
 export function markUnitSeen(track: string) {
   update((p) => (p.unitsSeen.includes(track) ? p : { ...p, unitsSeen: [...p.unitsSeen, track] }));
+}
+
+export function chooseTea(id: TeaId) {
+  update((p) => ({ ...p, tea: { id, at: Date.now() } }));
 }
 
 /** Wipe progress on this device (used when someone else takes over the device). */

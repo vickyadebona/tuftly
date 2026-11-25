@@ -8,6 +8,7 @@ import { getSupabase } from "@/lib/supabase/client";
 import { useAuthUser } from "@/lib/useAuthUser";
 import { STREAK } from "@/lib/config";
 import { todayStr } from "@/lib/dates";
+import { NAV_AGAIN } from "@/lib/events";
 import { useHydrated, useProgress } from "@/lib/store";
 import { computeStreak } from "@/lib/streak";
 import { PixelArtBobbin } from "./PixelArtBobbin";
@@ -104,6 +105,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 href={item.href}
                 data-tour={item.tour}
                 aria-current={active ? "page" : undefined}
+                onClick={() => {
+                  if (pathname === item.href) window.dispatchEvent(new Event(NAV_AGAIN));
+                }}
                 className={`font-pixel flex flex-col items-center justify-center gap-1 border-[3px] px-0.5 py-2.5 text-xs font-bold min-[400px]:px-2 min-[400px]:text-sm md:flex-row md:justify-start md:gap-3 md:px-4 md:py-3 md:text-lg ${
                   active ? "border-line bg-butter text-ink" : "border-transparent text-ink hover:bg-cream-deep"
                 }`}

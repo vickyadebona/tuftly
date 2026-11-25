@@ -18,7 +18,7 @@ Built from the Figma file "tuftly: layout explorations" (layout A). Pixel look: 
 - `/` landing page (`src/components/Landing.tsx`)
 - `/home` quest map: lessons as a path, today's quests, week strip with rest days (`QuestHome.tsx`)
 - `/review` practice, `/lessons/[id]` lesson flow (restyled)
-- `/interview` practice round: questions come from the drill bank and you check off key points yourself. Includes a tea break, pressure levels and a round map. The AI interviewer, voice and real scoring are not built yet.
+- `/interview` practice round: questions come from the drill bank and you check off key points yourself. Includes a tea break, pressure levels, a round map and a way to leave, which ends the round. The AI interviewer, voice and real scoring are not built yet.
 - Not built from the design: XP, levels, gems and the closet (the data model has none of them), and mobile-specific layouts beyond basic stacking.
 
 ## How learning is designed to stick

@@ -200,33 +200,29 @@ export function TeaCup({
   level = 1,
   size = 72,
   steam = true,
+  compact = false,
 }: {
   tea: TeaId;
   level?: number;
   size?: number;
   steam?: boolean;
+  /** Just the cup, with no steam or blank rows above it, for sitting beside text. */
+  compact?: boolean;
 }) {
   const { rows, palette } = TEAS[tea];
   const liquid = rows.map((r, y) => (r.includes("L") ? y : -1)).filter((y) => y >= 0);
   const emptyRows = new Set(liquid.slice(0, Math.round(liquid.length * (1 - level))));
   const shown = rows.map((r, y) => {
     let row = emptyRows.has(y) ? r.replace(/[Lm]/g, "G") : r;
-    if (level <= 0 || !steam) row = row.replace(/s/g, ".");
+    if (level <= 0 || !steam || compact) row = row.replace(/s/g, ".");
     if (level <= 0) row = row.replace(/[gfk]/g, "w");
     return row;
   });
-  return <Sprite size={size} rows={shown} palette={{ G: "#e1f3f8", ...palette }} />;
+  const drawn = compact ? shown.filter((row) => /[^.]/.test(row)) : shown;
+  return <Sprite size={size} rows={drawn} palette={{ G: "#e1f3f8", ...palette }} />;
 }
 
 type Point = [number, number];
-
-/** Points along a curve from `a` to `c`, bending toward `b`. */
-const curve = (a: Point, b: Point, c: Point): Point[] =>
-  Array.from({ length: 9 }, (_, i) => {
-    const t = i / 8;
-    const at = (n: 0 | 1) => (1 - t) ** 2 * a[n] + 2 * (1 - t) * t * b[n] + t ** 2 * c[n];
-    return [at(0), at(1)];
-  });
 
 function inside([px, py]: Point, shape: Point[]): boolean {
   let hit = false;
@@ -239,8 +235,19 @@ function inside([px, py]: Point, shape: Point[]): boolean {
 }
 
 /**
- * Bobbin's wings reaching from the sides of the body round to a cup, drawn in blocks the size of
- * Bobbin's own pixels. All positions are screen pixels inside a `size` square.
+ * The wing from Bobbin's thinking pose, traced off that drawing. Points are measured from where
+ * the hand meets what it holds: across as a share of the wing's length, down in drawing pixels.
+ */
+const WING_TOP: Point[] = [[-0.67, 4.5], [-0.06, -9.5]];
+/** The two feathered tips of the hand, then the long curve underneath. */
+const WING_EDGE: Point[] = [
+  [-0.06, -9.5], [0, -6], [0, -0.5], [-0.12, 4], [0, 5], [0, 9.5], [-0.13, 17], [-0.34, 24], [-0.56, 27], [-0.84, 27.5], [-1, 25],
+];
+
+/**
+ * Bobbin's wings folded round a cup, in the same shape and thin line as the thinking pose: no
+ * line at the back, so each one is part of the body. All positions are screen pixels inside a
+ * `size` square.
  */
 export function HoldingWings({
   size,
@@ -250,46 +257,47 @@ export function HoldingWings({
 }: {
   size: number;
   block: number;
-  /**
-   * Where each arm leaves the body: the two sides, the height of the shoulders, and the least the
-   * hands sit below them.
-   */
-  shoulders: { left: number; right: number; y: number; drop?: number };
+  /** Where the body's sides are, which is as far back as a wing can start. */
+  shoulders: { left: number; right: number };
   /** The cup's sides, and the height the wings take hold. */
   cup: { left: number; right: number; y: number };
 }) {
-  // Each wing is a slim flipper: it leaves the body's own outline at the shoulder and narrows
-  // smoothly to a rounded tip at the cup. The hands sit well below the shoulders, so
-  // the arms always slope down to the cup.
-  const top = shoulders.y;
-  const hand = Math.max(cup.y, top + (shoulders.drop ?? 18));
-  const wing = (side: number, to: number, toward: 1 | -1) => {
-    const tip = to + toward * 2;
-    const reach = tip - side;
-    const upper = curve([side, top], [side + reach * 0.7, top + (hand - top) * 0.25], [tip, hand - 4]);
-    const lower = curve([tip, hand + 4], [side + reach * 0.25, hand + 3], [side, top + 13]);
-    const shape: Point[] = [...upper, [tip + toward * 3, hand - 1], [tip + toward * 3, hand + 2], ...lower];
-    return { root: side + toward * block, shape, toward };
+  // The thinking pose is drawn 200 pixels square.
+  const scale = size / 200;
+  const wing = (side: number, hand: number, toward: 1 | -1) => {
+    const length = Math.abs(hand - side) - block;
+    const place = ([across, down]: Point): Point => [hand + toward * across * length, cup.y + down * scale];
+    const top = WING_TOP.map(place);
+    const edge = WING_EDGE.map(place);
+    return { lines: [top, edge], fill: [...edge, top[0]] };
   };
   const wings = [wing(shoulders.left, cup.left, 1), wing(shoulders.right, cup.right, -1)];
   const cells = Math.ceil(size / block);
-  const rects: React.ReactNode[] = [];
-  wings.forEach(({ root, shape, toward }, n) => {
-    const filled = (x: number, y: number) => inside([(x + 0.5) * block, (y + 0.5) * block], shape);
-    // No line where the wing joins the body, so it reads as part of Bobbin.
-    const joined = (x: number, y: number) =>
-      filled(x, y) || (((x + 0.5) * block - root) * toward < 0 && filled(x + toward, y));
+  const colors = new Map<string, string>();
+  for (const { lines, fill } of wings) {
     for (let y = 0; y < cells; y++) {
       for (let x = 0; x < cells; x++) {
-        if (!filled(x, y)) continue;
-        const edge = !joined(x - 1, y) || !joined(x + 1, y) || !joined(x, y - 1) || !joined(x, y + 1);
-        rects.push(<rect key={`${n}-${x}-${y}`} x={x * block} y={y * block} width={block + 0.2} height={block + 0.2} fill={edge ? "#2a1200" : "#fddb76"} />);
+        if (inside([(x + 0.5) * block, (y + 0.5) * block], fill)) colors.set(`${x},${y}`, "#fddb76");
       }
     }
-  });
+    for (const line of lines) {
+      line.slice(1).forEach(([bx, by], i) => {
+        const [ax, ay] = line[i];
+        const steps = Math.ceil(Math.max(Math.abs(bx - ax), Math.abs(by - ay)) / block) || 1;
+        for (let n = 0; n <= steps; n++) {
+          const x = Math.floor((ax + ((bx - ax) * n) / steps) / block);
+          const y = Math.floor((ay + ((by - ay) * n) / steps) / block);
+          colors.set(`${x},${y}`, "#2a1200");
+        }
+      });
+    }
+  }
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} shapeRendering="crispEdges" aria-hidden="true">
-      {rects}
+      {[...colors].map(([cell, color]) => {
+        const [x, y] = cell.split(",").map(Number);
+        return <rect key={cell} x={x * block} y={y * block} width={block + 0.2} height={block + 0.2} fill={color} />;
+      })}
     </svg>
   );
 }

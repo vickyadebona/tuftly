@@ -27,7 +27,9 @@ export function mergeProgress(a: Progress, b: Progress): Progress {
     const y = theirs[id];
     lessonProgress[id] = !x ? y : !y ? x : x.updatedAt >= y.updatedAt ? x : y;
   }
+  const tea = !a.tea || (b.tea && b.tea.at > a.tea.at) ? b.tea : a.tea;
   return {
+    ...(tea ? { tea } : {}),
     cards,
     lessonProgress,
     struggled: union(a.struggled ?? [], b.struggled ?? []),

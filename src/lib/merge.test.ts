@@ -67,3 +67,12 @@ test("units seen on either side stay seen", () => {
   const m = mergeProgress({ ...empty, unitsSeen: ["javascript"] }, { ...empty, unitsSeen: ["communication", "javascript"] });
   assert.deepEqual(m.unitsSeen.sort(), ["communication", "javascript"]);
 });
+
+test("the tea chosen most recently wins, whichever device it is on", () => {
+  const older: Progress = { ...empty, tea: { id: "chai", at: 100 } };
+  const newer: Progress = { ...empty, tea: { id: "bubble", at: 200 } };
+  assert.equal(mergeProgress(older, newer).tea?.id, "bubble");
+  assert.equal(mergeProgress(newer, older).tea?.id, "bubble");
+  assert.equal(mergeProgress(empty, older).tea?.id, "chai");
+  assert.equal(mergeProgress(older, empty).tea?.id, "chai");
+});

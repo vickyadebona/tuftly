@@ -70,20 +70,5 @@ for (const [season, sides] of Object.entries(SIDES)) {
   }
 
   await sharp(img, { raw: { width: SIZE, height: SIZE, channels: 4 } }).webp({ lossless: true }).toFile(`${dir}/sip.webp`);
-  // The two ends of the winter scarf on their own, for drawing over the tops of the arms.
-  if (season === "winter") {
-    const scarf = Buffer.alloc(img.length);
-    const nearTeal = (x, y) => {
-      for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) if (isTeal(px(x + dx, y + dy))) return true;
-      return false;
-    };
-    for (let y = 80; y <= 126; y++) {
-      for (let x = 10; x < SIZE - 10; x++) {
-        if (x > 56 && x < 150) continue;
-        if (isTeal(px(x, y)) || (isDark(px(x, y)) && nearTeal(x, y))) scarf.set(px(x, y), (y * SIZE + x) * 4);
-      }
-    }
-    await sharp(scarf, { raw: { width: SIZE, height: SIZE, channels: 4 } }).webp({ lossless: true }).toFile(`${dir}/sip-scarf.webp`);
-  }
   console.log(season, "done");
 }
