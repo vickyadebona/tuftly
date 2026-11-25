@@ -10,7 +10,7 @@ export const communicationLessons: Lesson[] = [
     topic: "pitch",
     title: "Tell me about yourself",
     minutes: 6,
-    reviewed: false,
+    reviewed: true,
     intro: {
       summary: "How to answer “tell me about yourself” in about a minute, using your own experience.",
       outcomes: ["Open with who you are, one recent highlight and what you want next", "Match your answer to what the role asks for", "Back up claims with what you did and what changed"],
