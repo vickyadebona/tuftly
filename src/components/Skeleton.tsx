@@ -18,24 +18,26 @@ function Frame({ label, children, className = "" }: { label: string; children: R
   );
 }
 
-/** Quest map: welcome strip, then the unit track and side panel. */
+/** Quest map: welcome strip, then a unit banner with its lessons in a straight list, and the side panel. */
 export function QuestSkeleton() {
   return (
     <Frame label="Loading your quest map" className="flex flex-col gap-8">
-      <Skeleton className="h-28 w-full" />
+      <Skeleton className="h-64 w-full sm:h-32" />
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_340px]">
-        <div className="flex flex-col gap-6">
-          <Skeleton className="h-24 w-full" />
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="flex items-center gap-3" style={{ marginLeft: i * 32 }}>
-              <Skeleton className="h-[68px] w-[68px] shrink-0" />
-              <Skeleton className="h-[68px] w-64 max-w-full" />
-            </div>
-          ))}
+        <div className="flex min-w-0 flex-col gap-6">
+          <Skeleton className="h-[102px] w-full" />
+          <div className="flex flex-col gap-5 pl-1">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="flex items-center gap-3">
+                <Skeleton className="h-14 w-14 shrink-0 sm:h-[68px] sm:w-[68px]" />
+                <Skeleton className="h-[86px] min-w-0 flex-1" />
+              </div>
+            ))}
+          </div>
         </div>
         <div className="flex flex-col gap-6">
+          <Skeleton className="h-44 w-full" />
           <Skeleton className="h-40 w-full" />
-          <Skeleton className="h-32 w-full" />
         </div>
       </div>
     </Frame>

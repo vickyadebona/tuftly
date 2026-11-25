@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { COMPANION } from "@/lib/config";
+import { chooseTea, useProgress } from "@/lib/store";
 import type { Season } from "@/lib/season";
 import { useSeason } from "@/lib/useSeason";
 import { PixelArtBobbin } from "./PixelArtBobbin";
@@ -43,49 +44,43 @@ const GRIP: Record<TeaId, { left: number; right: number; y: number }> = {
   breakfast: { left: 1, right: 11, y: 8 },
   chai: { left: 1, right: 12, y: 8 },
 };
-/**
- * Where the arms leave the body in each outfit's sipping pose. Winter's start under the scarf,
- * which is drawn again on top of them.
- */
-const SHOULDERS: Record<Season, { left: number; right: number; y: number; drop?: number }> = {
-  // Winter's arms start low, so they slope less to still reach the middle of the cup.
-  winter: { left: 36, right: 135, y: 95, drop: 15 },
-  spring: { left: 34, right: 135, y: 90 },
-  summer: { left: 35, right: 135, y: 92 },
-  autumn: { left: 34, right: 135, y: 93 },
+/** Where the body's sides are at wing height in each outfit's sipping pose. */
+const SHOULDERS: Record<Season, { left: number; right: number }> = {
+  winter: { left: 39, right: 134 },
+  spring: { left: 38, right: 134 },
+  summer: { left: 39, right: 134 },
+  autumn: { left: 38, right: 134 },
 };
-/** Half of one of Bobbin's pixels on screen, so the arms' outline matches the body's. */
+/** How far each hand reaches over the cup's side. */
+const HOLD = 4;
+/** Half of one of Bobbin's pixels on screen, so the wings' outline matches the body's. */
 const BLOCK = (BIRD / 200) * 2;
 /** The ground a cup stands on when it's put down, just in front of Bobbin's feet. */
 const GROUND = 162;
 
 const SIPS = 3;
 const SIP_MS = 1400;
-const KEY = "tuftly-tea-v1";
+/** How long the cup takes to reach the beak. Matches its `duration-500`. */
+const LIFT_MS = 500;
 const BREATHS = [
   "Breathe in for 4 seconds as you take your first sip.",
   "Nice. Hold your breath for 4 seconds.",
   "Breathe out for 4 seconds and let your shoulders drop.",
 ];
 
-/** The tea last chosen on this device, so the next break starts with it. */
-function savedTea(): TeaId {
-  try {
-    const saved = window.localStorage.getItem(KEY);
-    return TEA_MENU.find((t) => t.id === saved)?.id ?? "matcha";
-  } catch {
-    return "matcha";
-  }
-}
-
 /** A pause in the middle of a round: pick a tea and drink it with Bobbin. The clock is stopped. */
 export function TeaBreak({ onReady }: { onReady: () => void }) {
-  const [tea, setTea] = useState<TeaId>(savedTea);
+  // The last tea chosen is saved with the account. `chosen` keeps today's pick even if storage is blocked.
+  const saved = useProgress().tea?.id;
+  const [chosen, setChosen] = useState<TeaId | null>(null);
+  const tea = TEA_MENU.find((t) => t.id === (chosen ?? saved))?.id ?? "matcha";
   const [taken, setTaken] = useState(0);
   const [sipping, setSipping] = useState(false);
-  const timer = useRef<number | undefined>(undefined);
+  // True once the cup has arrived. Until then Bobbin keeps their wings at their sides.
+  const [holding, setHolding] = useState(false);
+  const timers = useRef<number[]>([]);
   const season = useSeason();
-  useEffect(() => () => window.clearTimeout(timer.current), []);
+  useEffect(() => () => timers.current.forEach(window.clearTimeout), []);
 
   const picked = TEA_MENU.find((t) => t.id === tea)!;
   const level = 1 - taken / SIPS;
@@ -102,25 +97,28 @@ export function TeaBreak({ onReady }: { onReady: () => void }) {
     transform: `rotate(${sipping && mouth.y > 0 ? -7 : 0}deg)`,
   };
   const mouthAt = { x: BEAK[season].x, y: BEAK[season].y + mouth.drop };
+  const origin = `${at.x}px ${at.y}px`;
   // Winter sips sit higher, where cups drunk from the rim taper, so the hands reach further round.
-  const wrap = season === "winter" && mouth.y > 0 ? 7 : 0;
+  const wrap = season === "winter" && mouth.y > 0 ? 2 : 0;
 
   function choose(id: TeaId) {
-    setTea(id);
+    setChosen(id);
     setTaken(0);
-    try {
-      window.localStorage.setItem(KEY, id);
-    } catch {
-      // Storage blocked: the choice just lasts for this break.
-    }
+    chooseTea(id);
   }
 
   function sip() {
     setSipping(true);
-    timer.current = window.setTimeout(() => {
-      setSipping(false);
-      setTaken((n) => n + 1);
-    }, SIP_MS);
+    // With reduced motion the cup jumps straight there, so the wings take it at once.
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    timers.current = [
+      window.setTimeout(() => setHolding(true), still ? 0 : LIFT_MS),
+      window.setTimeout(() => {
+        setSipping(false);
+        setHolding(false);
+        setTaken((n) => n + 1);
+      }, SIP_MS),
+    ];
   }
 
   const says = sipping
@@ -157,39 +155,43 @@ export function TeaBreak({ onReady }: { onReady: () => void }) {
       {/* Bobbin picks the cup up for a sip and puts it down again, and yours tips alongside. */}
       <div className="flex items-end justify-center gap-2 sm:gap-6">
         <div className="relative h-[176px] w-[192px] shrink-0">
-          {/* Both poses stay loaded so the swap doesn't flicker. The sipping one has no side wings. */}
-          <span className={`absolute left-0 top-0 ${sipping ? "invisible" : ""}`}>
-            <PixelArtBobbin mood={finished ? "happy" : "sparkle"} size={BIRD} />
-          </span>
-          <span className={`absolute left-0 top-0 ${sipping ? "" : "invisible"}`}>
-            <PixelArtBobbin mood="sip" size={BIRD} priority />
-          </span>
+          {/* Everything that is part of Bobbin floats as one, so held wings and cup stay put on the body. */}
+          <div className="bobbin-idle bobbin-still absolute inset-0">
+            {/* Both poses stay loaded so the swap doesn't flicker. The sipping one has no side wings. */}
+            <span className={`absolute left-0 top-0 ${holding ? "invisible" : ""}`}>
+              <PixelArtBobbin mood={finished ? "happy" : "sparkle"} size={BIRD} />
+            </span>
+            <span className={`absolute left-0 top-0 ${holding ? "" : "invisible"}`}>
+              <PixelArtBobbin mood="sip" size={BIRD} priority />
+            </span>
+            {holding && (
+              <>
+                <span className="absolute" style={{ ...held, transformOrigin: origin }}>
+                  <TeaCup tea={tea} level={level} size={CUP} steam={false} />
+                </span>
+                <span className="absolute left-0 top-0">
+                  <HoldingWings
+                    size={BIRD}
+                    block={BLOCK}
+                    shoulders={SHOULDERS[season]}
+                    cup={{
+                      left: mouthAt.x - at.x + grip.left * PX + HOLD + wrap,
+                      right: mouthAt.x - at.x + grip.right * PX - HOLD - wrap,
+                      y: mouthAt.y - at.y + grip.y * PX,
+                    }}
+                  />
+                </span>
+              </>
+            )}
+          </div>
+          {/* The cup on its way up or down, or standing on the ground, where it doesn't float. */}
           <span
-            className="absolute transition-all duration-500 motion-reduce:transition-none"
-            style={{ ...held, transformOrigin: `${at.x}px ${at.y}px` }}
+            className={`absolute transition-[top,transform] duration-500 motion-reduce:transition-none ${holding ? "invisible" : ""}`}
+            style={{ ...held, transformOrigin: origin }}
           >
-            {/* No steam at the beak, where it would cover Bobbin's face. */}
+            {/* No steam on the way to the beak, where it would cover Bobbin's face. */}
             <TeaCup tea={tea} level={level} size={CUP} steam={!sipping} />
           </span>
-          {sipping && (
-            <span className="tea-wings absolute left-0 top-0">
-              <HoldingWings
-                size={BIRD}
-                block={BLOCK}
-                shoulders={SHOULDERS[season]}
-                cup={{
-                  left: mouthAt.x - at.x + grip.left * PX + wrap,
-                  right: mouthAt.x - at.x + grip.right * PX - wrap,
-                  y: mouthAt.y - at.y + grip.y * PX,
-                }}
-              />
-            </span>
-          )}
-          {sipping && season === "winter" && (
-            // The ends of the scarf, over the tops of the arms so they come out from under it.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src="/bobbin/pixel/winter/sip-scarf.webp" alt="" width={BIRD} height={BIRD} className="pointer-events-none absolute left-0 top-0 [image-rendering:pixelated]" />
-          )}
         </div>
         <div className="flex flex-col items-center gap-1 pb-2">
           <span className={`transition-transform duration-500 motion-reduce:transition-none ${sipping ? "-translate-y-6 -rotate-12" : ""}`}>

@@ -1,16 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getDrills, getLessons } from "@/content";
 import { COMPANION, type PressureLevel } from "@/lib/config";
+import { NAV_AGAIN } from "@/lib/events";
 import { useHydrated, useProgress } from "@/lib/store";
 import { interleave } from "@/lib/queue";
 import { lessonMix, minutesFor, SESSIONS, sessionQuestions, type RoundQuestion } from "@/lib/sessions";
 import { useSeason } from "@/lib/useSeason";
 import { CodeBlock } from "./CodeBlock";
 import { PixelArtBobbin } from "./PixelArtBobbin";
-import { PixelIcon } from "./PixelIcon";
+import { PixelIcon, TeaCup } from "./PixelIcon";
 import { TeaBreak } from "./TeaBreak";
 import { InterviewSkeleton } from "./Skeleton";
 import { RichText } from "./RichText";
@@ -24,6 +25,9 @@ const PRESSURE: { id: PressureLevel; label: string; seconds: number | null; hint
   { id: "standard", label: "Standard", seconds: 300, hints: true, note: "Hints on · Gentle timer" },
   { id: "zara-like", label: "Interview day", seconds: 180, hints: false, note: "Hints off · Strict timer" },
 ];
+
+/** Each pace keeps its color from the picker into the round. */
+const LEVEL_BG = { relaxed: "bg-mint", standard: "bg-peach", "zara-like": "bg-lilac" } as const;
 
 function fmt(total: number) {
   const m = Math.floor(total / 60);
@@ -43,12 +47,27 @@ function Round({ pressure, title, questions, onLeave }: { pressure: PressureLeve
   const [results, setResults] = useState<{ topic: string; hit: number; total: number }[]>([]);
   const [onBreak, setOnBreak] = useState(false);
   const [left, setLeft] = useState<number | null>(level.seconds);
+  const [leaving, setLeaving] = useState(false);
 
   const finished = index >= questions.length;
   const q = questions[index];
 
-  // Gentle clock: only runs while you are answering and not on a tea break.
-  const clockOn = left !== null && phase === "answering" && !onBreak && !finished;
+  // Leaving ends the round (a tea break is the way to pause). Ask first only if there is
+  // something to lose.
+  const started = index > 0 || phase === "checking" || answer.trim() !== "";
+  const leave = useCallback(() => {
+    if (started && !finished) setLeaving(true);
+    else onLeave();
+  }, [started, finished, onLeave]);
+
+  // Tapping "Interviews" in the menu during a round means leaving it too.
+  useEffect(() => {
+    window.addEventListener(NAV_AGAIN, leave);
+    return () => window.removeEventListener(NAV_AGAIN, leave);
+  }, [leave]);
+
+  // Gentle clock: only runs while you are answering, not on a tea break or deciding to leave.
+  const clockOn = left !== null && phase === "answering" && !onBreak && !leaving && !finished;
   useEffect(() => {
     if (!clockOn) return;
     const id = window.setInterval(() => setLeft((s) => (s === null ? s : Math.max(0, s - 1))), 1000);
@@ -86,7 +105,7 @@ function Round({ pressure, title, questions, onLeave }: { pressure: PressureLeve
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="font-pixel text-2xl font-bold text-ink">Interview with Bobbin</h1>
           <span className="pixel-chip bg-butter">{title}</span>
-          <span className="pixel-chip bg-peach">{level.label}</span>
+          <span className={`pixel-chip ${LEVEL_BG[pressure]}`}>{level.label}</span>
           <span className="pixel-chip bg-sky">
             Question <span className="font-sans">{index + 1}</span> of <span className="font-sans">{questions.length}</span>
           </span>
@@ -99,18 +118,26 @@ function Round({ pressure, title, questions, onLeave }: { pressure: PressureLeve
             ))}
           </span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {left !== null && (
             <span className="pixel-chip" aria-live="off">
               <PixelIcon name="coin" size={16} color="#f2b93b" />
               <span className="font-sans font-bold">{timeUp ? "Time's up" : `${fmt(left)} left`}</span>
             </span>
           )}
-          {!onBreak && (
-            <button type="button" className="btn-secondary" onClick={() => setOnBreak(true)}>
-              Tea break
+          <div className="flex gap-3">
+            {!onBreak && (
+              <button type="button" className="btn-accent whitespace-nowrap max-sm:px-3 max-sm:text-sm" onClick={() => setOnBreak(true)}>
+                Take a tea break
+                <span className="ml-2">
+                  <TeaCup tea="matcha" size={32} compact />
+                </span>
+              </button>
+            )}
+            <button type="button" className="btn-secondary whitespace-nowrap max-sm:px-3 max-sm:text-sm" onClick={leave}>
+              Leave interview
             </button>
-          )}
+          </div>
         </div>
       </div>
 
@@ -204,12 +231,45 @@ function Round({ pressure, title, questions, onLeave }: { pressure: PressureLeve
         </div>
       )}
 
+      {leaving && <LeaveDialog onStay={() => setLeaving(false)} onLeave={onLeave} />}
     </div>
   );
 }
 
+/** Check before throwing away a round that has answers in it. Escape keeps going. */
+function LeaveDialog({ onStay, onLeave }: { onStay: () => void; onLeave: () => void }) {
+  const ref = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const dialog = ref.current;
+    if (dialog && !dialog.open) dialog.showModal();
+  }, []);
+
+  return (
+    <dialog
+      ref={ref}
+      onClose={onStay}
+      aria-labelledby="leave-title"
+      className="pixel-box m-auto w-[min(26rem,calc(100%-2rem))] p-6 text-center backdrop:bg-ink/40"
+    >
+      <h2 id="leave-title" className="font-pixel text-2xl font-bold text-ink">
+        Leave this interview?
+      </h2>
+      <p className="mt-2 text-ink">
+        It ends here and your answers aren&apos;t saved. To pause instead, take a tea break.
+      </p>
+      <div className="mt-5 flex flex-wrap justify-center gap-3">
+        <button type="button" className="btn-primary" onClick={onStay}>
+          Keep going
+        </button>
+        <button type="button" className="btn-secondary" onClick={onLeave}>
+          Leave interview
+        </button>
+      </div>
+    </dialog>
+  );
+}
+
 const LEVEL_MOOD = { relaxed: "happy", standard: "sparkle", "zara-like": "determined" } as const;
-const LEVEL_BG = { relaxed: "bg-mint", standard: "bg-peach", "zara-like": "bg-lilac" } as const;
 
 const MIX = "mix";
 
@@ -222,6 +282,8 @@ export function InterviewRound() {
   const [picked, setPicked] = useState<string | null>(null);
   // The questions are fixed when the round starts, so finishing a lesson elsewhere can't change them.
   const [round, setRound] = useState<{ title: string; questions: RoundQuestion[] } | null>(null);
+
+  const endRound = useCallback(() => setRound(null), []);
 
   if (!hydrated) return <InterviewSkeleton />;
 
@@ -241,7 +303,7 @@ export function InterviewRound() {
     );
   }
 
-  if (round) return <Round pressure={pressure} title={round.title} questions={round.questions} onLeave={() => setRound(null)} />;
+  if (round) return <Round pressure={pressure} title={round.title} questions={round.questions} onLeave={endRound} />;
 
   const card = (id: string, name: string, about: string, note: string, disabled = false) => (
     <button
