@@ -154,6 +154,11 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
         <Link href="/home" className="btn-primary">
           Continue
         </Link>
+        {linkError && !auth.user && (
+          <p role="alert" className="font-semibold text-orange">
+            That sign-in didn&apos;t finish. Please try again below.
+          </p>
+        )}
         {!auth.user && <SignInOptions intro="Want your progress on every device? Sign in." onSent={setSentTo} />}
         <button
           type="button"
