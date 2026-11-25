@@ -334,3 +334,13 @@ test("explanations only name variables that the idea's code defines", () => {
   }
   assert.deepEqual(problems, []);
 });
+
+test("diagrams are described in words and bold markers come in pairs", () => {
+  for (const l of lessons) {
+    for (const i of l.ideas) {
+      const { diagram, walkthrough } = i.workedExample;
+      if (diagram) assert.ok(diagram.caption && diagram.description, `${i.id}: diagram needs a caption and a description`);
+      for (const w of walkthrough) assert.equal(w.split("**").length % 2, 1, `${i.id}: unpaired ** in the walkthrough`);
+    }
+  }
+});

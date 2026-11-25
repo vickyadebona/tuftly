@@ -17,6 +17,23 @@ export interface Question {
  * the check re-teaches this same idea (`reteach`) and asks fresh questions (`retries`) before the
  * lesson moves on, so a learner never skips past something they haven't got yet.
  */
+/** Boxes and arrows showing what names point to. `description` says it all in words, for screen readers. */
+export type Diagram = { caption: string; description: string } & (
+  | { kind: "one-object"; names: string[]; rows: string[] }
+  | {
+      kind: "two-objects";
+      /** Both objects hold the very same array, not two that look alike. */
+      shared: boolean;
+      objects: [DiagramObject, DiagramObject];
+    }
+);
+
+export interface DiagramObject {
+  name: string;
+  field: string;
+  tags: string;
+}
+
 export interface LessonIdea {
   id: string;
   title: string;
@@ -33,6 +50,9 @@ export interface LessonIdea {
     code?: string;
     /** A spoken example, shown as a quote. Used by communication lessons. */
     sample?: string;
+    /** A picture of what the code does, shown under it. */
+    diagram?: Diagram;
+    /** Wrap the one phrase to remember in **double asterisks** to show it bold. */
     walkthrough: string[];
   };
   /** The "your turn" check. A wrong answer sends the learner to `reteach`. */

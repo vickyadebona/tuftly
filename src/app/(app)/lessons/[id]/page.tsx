@@ -18,7 +18,7 @@ async function LessonContent({ params }: { params: Promise<{ id: string }> }) {
 
 export default function LessonPage({ params }: { params: Promise<{ id: string }> }) {
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6">
+    <div className="mx-auto flex w-full min-w-0 max-w-2xl flex-col gap-6">
       <Suspense fallback={<LessonSkeleton />}>
         <LessonContent params={params} />
       </Suspense>

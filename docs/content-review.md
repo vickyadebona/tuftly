@@ -1431,8 +1431,10 @@ console.log(a.n);     // 2
 console.log(a === b); // true
 ```
 
+**Diagram:** Two names, one object. The names a and b both point to the same object, where n is 2.
+
 1. An object lives in one place. a and b are two names that point to it.
-2. const b = a doesn't copy anything. It gives the same object a second name.
+2. const b = a **doesn't copy anything**. It gives the same object a second name.
 3. So changing b.n changes what a sees too, and a === b is true.
 
 #### Your turn
@@ -1547,9 +1549,11 @@ console.log(user.name); // "Sam"
 console.log(user.tags); // ["a", "b"]
 ```
 
+**Diagram:** Two separate objects, but their tags are the same array. user and copy are different objects with names Sam and Alex. Both tags properties point to one array holding "a" and "b".
+
 1. { ...user } copies the top-level properties into a new object.
 2. name is a string, so copy.name = "Alex" changes only the copy.
-3. tags is an array (an object), so both objects still share the same array. Pushing to it shows up in both.
+3. tags is an array (an object), so both objects still **share the same array**. Pushing to it shows up in both.
 
 #### Your turn
 
@@ -1663,8 +1667,10 @@ console.log(user.tags); // ["a"]
 console.log(deep.tags); // ["a", "b"]
 ```
 
+**Diagram:** Two separate objects, each with its own tags array. user and deep are different objects. user's tags array holds "a". deep has its own array holding "a" and "b".
+
 1. structuredClone(user) copies user and everything nested inside it.
-2. deep.tags is its own array, so pushing to it doesn't affect user.tags.
+2. deep.tags is **its own array**, so pushing to it doesn't affect user.tags.
 3. Use it when you need a fully independent copy. For a flat object with no nested data, spread is enough.
 
 #### Your turn

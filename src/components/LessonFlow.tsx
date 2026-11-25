@@ -22,6 +22,7 @@ import type { Lesson, LessonIdea, UnitInfo } from "@/lib/types";
 import { Bobbin } from "./Bobbin";
 import { ChoiceList } from "./ChoiceList";
 import { CodeBlock } from "./CodeBlock";
+import { Emphasis, LessonDiagram } from "./LessonDiagram";
 import { LessonIntro, UnitIntro } from "./LessonIntro";
 import { LessonSkeleton } from "./Skeleton";
 
@@ -173,9 +174,12 @@ function LessonRun({
           {idea.workedExample.sample && (
             <blockquote className="pixel-box whitespace-pre-line bg-teal-wash p-4 text-ink">{idea.workedExample.sample}</blockquote>
           )}
+          {idea.workedExample.diagram && <LessonDiagram diagram={idea.workedExample.diagram} />}
           <ol className="list-decimal space-y-2 pl-5 text-ink">
             {idea.workedExample.walkthrough.map((w) => (
-              <li key={w}>{w}</li>
+              <li key={w}>
+                <Emphasis text={w} />
+              </li>
             ))}
           </ol>
           <button onClick={() => go(afterExample(pos))} className="btn-primary">
