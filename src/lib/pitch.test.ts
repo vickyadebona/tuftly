@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { buildDraft, estimateSeconds, extractRequirements, wordCount } from "./pitch.ts";
+import { buildDraft, EMPTY_PITCH, estimateSeconds, extractRequirements, newerPitch, wordCount } from "./pitch.ts";
 
 test("pulls bullet lines out of a pasted description and drops headings and boilerplate", () => {
   const text = `About the role:
@@ -60,4 +60,14 @@ test("acronyms keep their capitals mid-sentence", () => {
   const draft = buildDraft({ role: "UX engineer", who: "a UX engineer", why: "", picked: ["Design systems"], matches: {} });
   assert.match(draft, /The UX engineer role asks for/);
   assert.match(draft, /I'm a UX engineer\./);
+});
+
+test("the most recently edited pitch wins, including a deliberate start-over", () => {
+  const old = { ...EMPTY_PITCH, role: "Old", updatedAt: 1 };
+  const recent = { ...EMPTY_PITCH, role: "New", updatedAt: 2 };
+  assert.equal(newerPitch(old, recent).role, "New");
+  assert.equal(newerPitch(recent, old).role, "New");
+  assert.equal(newerPitch(EMPTY_PITCH, old).role, "Old");
+  assert.equal(newerPitch(old, null).role, "Old");
+  assert.equal(newerPitch({ ...EMPTY_PITCH, updatedAt: 3 }, recent).role, "");
 });

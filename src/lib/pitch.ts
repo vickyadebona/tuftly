@@ -2,8 +2,9 @@ import { useSyncExternalStore } from "react";
 
 /**
  * The pitch builder: the learner pastes a role, picks what it asks for, matches each to their own
- * real experience, and gets a first draft of "tell me about yourself". Everything stays on this
- * device (it's personal), and nothing here writes claims for them: it only arranges what they type.
+ * real experience, and gets a first draft of "tell me about yourself". Saved on this device, and
+ * with their account when signed in (it's personal: only they can read it). Nothing here writes
+ * claims for them: it only arranges what they type.
  */
 export interface PitchMatch {
   did: string;
@@ -111,7 +112,12 @@ export const PITCH_CHECKS = [
   "Everything in it is something I could talk about for two more minutes",
 ];
 
-// ---- storage (this device only)
+/** Of this device's pitch and the saved one, the one edited most recently. */
+export function newerPitch(local: PitchData, saved: PitchData | null): PitchData {
+  return saved && saved.updatedAt > local.updatedAt ? { ...EMPTY_PITCH, ...saved } : local;
+}
+
+// ---- storage (this device; SyncManager copies it to the account)
 
 const KEY = "tuftly-pitch-v1";
 let cache: { raw: string | null; value: PitchData } = { raw: null, value: EMPTY_PITCH };
@@ -141,21 +147,53 @@ export function usePitch(): PitchData {
   return useSyncExternalStore(subscribe, read, () => EMPTY_PITCH);
 }
 
-export function savePitch(patch: Partial<PitchData>) {
-  const next = { ...read(), ...patch, updatedAt: Date.now() };
+function write(next: PitchData | null) {
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(next));
+    if (next) window.localStorage.setItem(KEY, JSON.stringify(next));
+    else window.localStorage.removeItem(KEY);
   } catch {
     // Storage blocked: the pitch just won't persist this session.
   }
   listeners.forEach((l) => l());
 }
 
+/** Current pitch, outside React. Used by sync. */
+export function getPitch(): PitchData {
+  return read();
+}
+
+export function subscribePitch(cb: () => void) {
+  return subscribe(cb);
+}
+
+/** Overwrite this device's pitch with the saved one, keeping its edit time. */
+export function replacePitch(next: PitchData) {
+  write(next);
+}
+
+export function savePitch(patch: Partial<PitchData>) {
+  write({ ...read(), ...patch, updatedAt: Date.now() });
+}
+
+/** The learner starts over. Dated, so the empty pitch also replaces the saved copy. */
 export function clearPitch() {
+  write({ ...EMPTY_PITCH, updatedAt: Date.now() });
+}
+
+/** Drop this device's copy without touching anyone's account (someone else is using it). */
+export function forgetPitch() {
+  write(null);
+}
+
+const OWNER_KEY = "tuftly-pitch-owner-v1";
+
+/** Call on sign-in: a pitch left here by a different account is never copied into this one. */
+export function claimPitch(userId: string) {
   try {
-    window.localStorage.removeItem(KEY);
+    const owner = window.localStorage.getItem(OWNER_KEY);
+    if (owner && owner !== userId) forgetPitch();
+    window.localStorage.setItem(OWNER_KEY, userId);
   } catch {
-    // ignore
+    // Storage blocked: there is nothing kept here to leak.
   }
-  listeners.forEach((l) => l());
 }

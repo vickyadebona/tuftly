@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { continueAsGuest, createAccount, forgetProfile, restoreProfile, signOut, useAccount, useRememberedProfile } from "@/lib/account";
+import { forgetPitch } from "@/lib/pitch";
 import { resetProgress, useHydrated } from "@/lib/store";
 import { useSeason } from "@/lib/useSeason";
 import { getSupabase } from "@/lib/supabase/client";
@@ -172,6 +173,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
     if (!window.confirm("This clears the progress saved on this device, so the next person starts fresh. Continue?")) return;
     forgetProfile();
     resetProgress();
+    forgetPitch();
     setMode("new");
   }
 
