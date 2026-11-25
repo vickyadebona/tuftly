@@ -10,6 +10,10 @@ create table if not exists public.user_data (
 
 alter table public.user_data enable row level security;
 
+-- New Supabase projects don't expose new tables to the API on their own. Signed-in users only;
+-- the policies below still limit each of them to their own row.
+grant select, insert, update on public.user_data to authenticated;
+
 create policy "Users read their own data"
   on public.user_data for select
   using (auth.uid() = user_id);
