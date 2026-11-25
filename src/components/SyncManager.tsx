@@ -5,6 +5,7 @@ import { adoptAccount, getAccount, subscribeAccount } from "@/lib/account";
 import { mergeProgress } from "@/lib/merge";
 import { getProgress, replaceProgress, subscribeProgress, type Progress } from "@/lib/store";
 import { getSupabase } from "@/lib/supabase/client";
+import { startSync } from "@/lib/sync";
 import { useAuthUser } from "@/lib/useAuthUser";
 
 interface Remote {
@@ -27,8 +28,6 @@ export function SyncManager() {
   useEffect(() => {
     const supabase = getSupabase();
     if (!supabase || !userId) return;
-    let cancelled = false;
-    let timer: number | undefined;
     let lastPushed = "";
 
     async function push() {
@@ -46,33 +45,24 @@ export function SyncManager() {
       if (!error) lastPushed = snapshot;
     }
 
-    function schedulePush() {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(push, 1500);
-    }
-
-    async function start() {
-      const { data } = await supabase!
-        .from("user_data")
-        .select("name, tour_done, progress")
-        .eq("user_id", userId!)
-        .maybeSingle<Remote>();
-      if (cancelled) return;
-      // Same person on a new device: set up the profile from what is saved online.
-      adoptAccount(data?.name || metaName || (email ? email.split("@")[0] : "Friend"), email, data?.tour_done ?? false);
-      if (data?.progress) replaceProgress(mergeProgress(getProgress(), data.progress));
-      await push();
-    }
-
-    start();
-    const offProgress = subscribeProgress(schedulePush);
-    const offAccount = subscribeAccount(schedulePush);
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timer);
-      offProgress();
-      offAccount();
-    };
+    return startSync<Remote>({
+      load: async () =>
+        supabase.from("user_data").select("name, tour_done, progress").eq("user_id", userId).maybeSingle<Remote>(),
+      apply: (data) => {
+        // Same person on a new device: set up the profile from what is saved online.
+        adoptAccount(data?.name || metaName || (email ? email.split("@")[0] : "Friend"), email, data?.tour_done ?? false);
+        if (data?.progress) replaceProgress(mergeProgress(getProgress(), data.progress));
+      },
+      push,
+      watch: (onChange) => {
+        const offProgress = subscribeProgress(onChange);
+        const offAccount = subscribeAccount(onChange);
+        return () => {
+          offProgress();
+          offAccount();
+        };
+      },
+    });
   }, [userId, email, metaName]);
 
   return null;
