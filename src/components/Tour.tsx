@@ -48,7 +48,7 @@ const STEPS: Step[] = [
   },
   {
     title: "Gentle streaks",
-    text: "Pick up to two rest days a week and miss a day now and then. Your streak stays safe. No leaderboards, ever.",
+    text: "Rest days and one grace day a week keep your streak safe. Tap the flame for your calendar. No leaderboards, ever.",
     mood: "sleepy",
     target: "streak",
     placement: "below",

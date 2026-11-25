@@ -3,6 +3,7 @@ import type { TeaId } from "@/components/PixelIcon";
 import { todayStr } from "./dates";
 import type { LessonPosition } from "./lessonFlow";
 import { newCard, review, type CardState, type Grade } from "./scheduler";
+import { settingsOn, withSettings, type StreakSettings, type WeekStart } from "./streak";
 
 /**
  * Local-only progress for now (browser localStorage). Swap for Supabase later:
@@ -13,6 +14,8 @@ export interface Progress {
   activeDays: string[];
   lessonsDone: string[];
   restWeekdays: number[];
+  /** Rest days and week start from each date they changed. Replaces `restWeekdays` from then on. */
+  streakSettings?: StreakSettings[];
   /** Lessons started but not finished: where to pick up. Cleared when the lesson is completed. */
   lessonProgress: Record<string, SavedPosition>;
   /** Lesson ideas that needed a second try. Their drills come up first in practice. */
@@ -143,12 +146,23 @@ export function completeLesson(lessonId: string, missed: string[] = []) {
   });
 }
 
+/** Counts today toward the streak without changing anything else, for interview answers. */
+export function recordPractice() {
+  const today = todayStr();
+  update((p) => (p.activeDays.includes(today) ? p : { ...p, activeDays: withToday(p.activeDays, today) }));
+}
+
 export function toggleRestWeekday(day: number, max: number) {
+  const today = todayStr();
   update((p) => {
-    if (p.restWeekdays.includes(day)) {
-      return { ...p, restWeekdays: p.restWeekdays.filter((d) => d !== day) };
-    }
-    if (p.restWeekdays.length >= max) return p;
-    return { ...p, restWeekdays: [...p.restWeekdays, day] };
+    const { rest } = settingsOn(p, today);
+    if (!rest.includes(day) && rest.length >= max) return p;
+    const next = rest.includes(day) ? rest.filter((d) => d !== day) : [...rest, day];
+    return { ...p, streakSettings: withSettings(p, today, { rest: next }, Date.now()) };
   });
+}
+
+export function setWeekStart(weekStart: WeekStart) {
+  const today = todayStr();
+  update((p) => ({ ...p, streakSettings: withSettings(p, today, { weekStart }, Date.now()) }));
 }

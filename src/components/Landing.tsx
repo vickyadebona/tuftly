@@ -190,7 +190,7 @@ const FEATURES: { icon: PixelIconName; color: string; title: string; text: strin
   { icon: "gem", color: "#9fd5ea", title: "Practice that sticks", text: "Questions come back on a schedule and mix across topics, so what you learn stays with you." },
   { icon: "heart", color: "#ff9e80", title: "Practice rounds with Bobbin", text: "Answer, compare with a strong answer, check off the key points you covered and see what to practice next." },
   { icon: "flame", color: "#f08a24", title: "Pick your pressure", text: "Start relaxed, then work up to a strict, timed round that feels like interview day." },
-  { icon: "check", color: "#2f7f78", title: "Gentle streaks", text: "Rest days and a grace day keep your streak safe. There are no leaderboards." },
+  { icon: "check", color: "#2f7f78", title: "Gentle streaks", text: "Rest days and a weekly grace day keep your streak safe. There are no leaderboards." },
   { icon: "coin", color: "#f2b93b", title: "Seasonal outfits", text: "A scarf in winter, a flower crown in spring, a sun hat in summer and a beret in autumn." },
 ];
 

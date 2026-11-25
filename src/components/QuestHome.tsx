@@ -3,17 +3,19 @@
 import Link from "next/link";
 import { getDrills, getLessons } from "@/content";
 import { useAccount } from "@/lib/account";
-import { COMPANION, STREAK } from "@/lib/config";
-import { addDays, todayStr, weekday } from "@/lib/dates";
+import { COMPANION } from "@/lib/config";
+import { todayStr, weekday } from "@/lib/dates";
 import { summarize } from "@/lib/queue";
-import { toggleRestWeekday, useHydrated, useProgress } from "@/lib/store";
+import { useHydrated, useProgress } from "@/lib/store";
+import { streakSummary, weekStartOf } from "@/lib/streak";
 import type { Track } from "@/lib/types";
 import { useSeason } from "@/lib/useSeason";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelIcon } from "./PixelIcon";
 import { QuestSkeleton } from "./Skeleton";
+import { StreakCelebration } from "./StreakCelebration";
+import { StreakWeek, WEEKDAYS } from "./StreakDays";
 
-const DAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
 const COMING_SOON = ["Async basics", "Closures"];
 
 type NodeState = "done" | "current" | "locked";
@@ -72,24 +74,33 @@ export function QuestHome() {
   let waiting = 0;
   let restDay = false;
   let activeToday = false;
+  const streak = hydrated ? streakSummary(progress, today) : null;
   if (hydrated) {
     const { due, fresh } = summarize(progress, getDrills(), today);
     waiting = due.length + fresh.length;
-    restDay = progress.restWeekdays.includes(weekday(today));
+    restDay = streak!.rest.includes(weekday(today));
     activeToday = progress.activeDays.includes(today);
   }
+
+  // A streak that ended, with nothing done yet today: welcome them back, with no guilt.
+  const startingOver = !!streak && streak.current === 0 && streak.longest > 0;
+  const covered = streak?.justCovered ? streak.graceUsed : null;
+  // The grace day returns when the next week begins.
+  const weekBegins = streak ? WEEKDAYS[weekday(weekStartOf(today, streak.weekStart))] : "";
 
   const say = !hydrated
     ? `Hi, I'm ${COMPANION.name}!`
     : restDay
       ? "Rest day. Take a tea break, your streak is safe."
-      : doneCount === 0
-        ? `${hello} Want to start with a quick lesson?`
+      : covered
+        ? `${COMPANION.name} covered ${WEEKDAYS[weekday(covered)]}. Your ${streak!.current} day streak is safe.`
+        : startingOver
+          ? "Good to see you! One practice starts a new streak."
+          : doneCount === 0
+            ? `${hello} Want to start with a quick lesson?`
         : waiting > 0
           ? `${waiting} short practice${waiting === 1 ? "" : "s"} ready when you are.`
           : "You're all caught up for today.";
-
-  const weekStart = hydrated ? addDays(today, -weekday(today)) : "";
 
   const quests: { label: string; done: boolean; note: string; href?: string }[] = [
     { label: "Practice today", done: activeToday, note: activeToday ? "Done" : "Not yet" },
@@ -105,7 +116,7 @@ export function QuestHome() {
   const welcome = (
       <section data-tour="welcome" className="pixel-box flex flex-col items-center gap-3 bg-peach p-4 sm:flex-row sm:gap-6 sm:px-6">
         <PixelArtBobbin
-          mood={restDay ? "sleepy" : doneCount > 0 && waiting > 0 ? "wink" : "sparkle"}
+          mood={restDay ? "sleepy" : covered ? "sparkle" : startingOver || (doneCount > 0 && waiting > 0) ? "wink" : "sparkle"}
           outfit={season}
           size={88}
         />
@@ -130,6 +141,7 @@ export function QuestHome() {
   if (doneCount === 0) {
     return (
       <div className="flex flex-1 items-center justify-center">
+        <StreakCelebration />
         <div className="w-full max-w-2xl">{welcome}</div>
       </div>
     );
@@ -137,6 +149,7 @@ export function QuestHome() {
 
   return (
     <div className="flex flex-col gap-8">
+      <StreakCelebration />
       {welcome}
 
     <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_340px]">
@@ -285,37 +298,17 @@ export function QuestHome() {
 
         <section className="pixel-box flex flex-col gap-3 p-5">
           <h2 className="font-pixel text-xl font-bold text-ink">This week</h2>
-          <div className="flex gap-1.5" role="group" aria-label="Rest days: tap a day to rest">
-            {DAY_LABELS.map((label, day) => {
-              const date = hydrated ? addDays(weekStart, day) : "";
-              const active = hydrated && progress.activeDays.includes(date);
-              const rest = progress.restWeekdays.includes(day);
-              const isToday = hydrated && date === today;
-              return (
-                <button
-                  key={day}
-                  type="button"
-                  onClick={() => toggleRestWeekday(day, STREAK.restDaysPerWeek)}
-                  aria-pressed={rest}
-                  title={rest ? "Rest day (tap to undo)" : "Tap to make this a rest day"}
-                  className={`h-9 flex-1 border-[3px] border-line font-bold ${
-                    active
-                      ? "bg-teal text-ink"
-                      : rest
-                        ? "bg-lilac-deep text-ink"
-                        : isToday
-                          ? "bg-butter text-ink"
-                          : "bg-paper text-ink"
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
+          <StreakWeek today={today} start={streak!.weekStart} statusOf={streak!.statusOf} />
           <p className="text-sm text-ink-soft">
-            Rest days (pick up to {STREAK.restDaysPerWeek}) never hurt your streak.
+            {streak!.graceUsed
+              ? `You've used this week's grace day. It comes back ${weekBegins}.`
+              : startingOver
+                ? `Your longest streak is ${streak!.longest} ${streak!.longest === 1 ? "day" : "days"}. It's saved.`
+                : "Rest days and one grace day a week keep your streak safe."}
           </p>
+          <Link href="/streak" className="self-start font-semibold text-teal-deep underline">
+            Calendar and rest days
+          </Link>
         </section>
       </aside>
     </div>

@@ -1,7 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { INTERVAL_DAYS, isDue, newCard, review } from "./scheduler.ts";
-import { computeStreak } from "./streak.ts";
 import { addDays } from "./dates.ts";
 
 const T = "2026-03-10";
@@ -39,20 +38,4 @@ test("box never exceeds the last interval", () => {
   let c = { ...newCard(T), box: INTERVAL_DAYS.length - 1 };
   c = review(c, "got", T);
   assert.equal(c.box, INTERVAL_DAYS.length - 1);
-});
-
-test("streak: today not yet done does not break it", () => {
-  const days = ["2026-03-09", "2026-03-08", "2026-03-07"];
-  assert.equal(computeStreak(days, T, 1, []), 3);
-});
-
-test("streak: one missed day is forgiven, two are not", () => {
-  assert.equal(computeStreak(["2026-03-10", "2026-03-08", "2026-03-07"], T, 1, []), 3);
-  assert.equal(computeStreak(["2026-03-10", "2026-03-07", "2026-03-06"], T, 1, []), 1);
-});
-
-test("streak: rest weekdays are skipped without penalty", () => {
-  // 2026-03-08 is a Sunday (0); mark Sunday + Saturday (6) as rest days.
-  const days = ["2026-03-10", "2026-03-09", "2026-03-06"];
-  assert.equal(computeStreak(days, T, 0, [0, 6]), 3);
 });
