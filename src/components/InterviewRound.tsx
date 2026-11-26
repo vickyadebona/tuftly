@@ -283,7 +283,7 @@ const LEVEL_MOOD = { relaxed: "happy", standard: "sparkle", "zara-like": "determ
 
 const MIX = "mix";
 
-/** Pick what to practice and how it should feel, then the round starts. */
+/** Pick what to practice, then how it should feel, then the round starts. */
 export function InterviewRound() {
   const hydrated = useHydrated();
   const progress = useProgress();
@@ -293,7 +293,21 @@ export function InterviewRound() {
   // The questions are fixed when the round starts, so finishing a lesson elsewhere can't change them.
   const [round, setRound] = useState<{ title: string; questions: RoundQuestion[] } | null>(null);
 
-  const endRound = useCallback(() => setRound(null), []);
+  const endRound = useCallback(() => {
+    setRound(null);
+    setPicked(null);
+  }, []);
+  const paceHeading = useRef<HTMLHeadingElement>(null);
+
+  // Picking a session opens the pace step: move focus there, and let the "Interviews" menu go back.
+  const choosingPace = picked !== null && round === null;
+  useEffect(() => {
+    if (!choosingPace) return;
+    paceHeading.current?.focus();
+    const back = () => setPicked(null);
+    window.addEventListener(NAV_AGAIN, back);
+    return () => window.removeEventListener(NAV_AGAIN, back);
+  }, [choosingPace]);
 
   if (!hydrated) return <InterviewSkeleton />;
 
@@ -302,10 +316,10 @@ export function InterviewRound() {
   const mixReady = practiced && getDrills().some((d) => progress.lessonsDone.includes(d.lessonId));
   const lessons = getLessons();
   const named = SESSIONS.map((s) => ({ ...s, count: sessionQuestions(s, lessons).length })).filter((s) => s.count > 0);
-  const chosen = picked ?? (mixReady ? MIX : named[0]?.id);
+  const pickedTitle = picked === MIX ? "Mix from your lessons" : named.find((s) => s.id === picked)?.title;
 
   function start() {
-    const session = named.find((s) => s.id === chosen);
+    const session = named.find((s) => s.id === picked);
     setRound(
       session
         ? { title: session.title, questions: sessionQuestions(session, lessons) }
@@ -319,19 +333,58 @@ export function InterviewRound() {
     <button
       key={id}
       type="button"
-      role="radio"
-      aria-checked={chosen === id}
       disabled={disabled}
       onClick={() => setPicked(id)}
-      className={`pixel-box flex flex-col px-3 py-2 text-left sm:p-4 disabled:cursor-not-allowed disabled:bg-cream-deep ${
-        chosen === id ? "bg-butter outline outline-4 outline-offset-2 outline-teal-deep" : "bg-paper"
-      }`}
+      className="pixel-box flex flex-col bg-paper px-3 py-2 text-left hover:bg-butter disabled:cursor-not-allowed disabled:bg-cream-deep sm:p-4"
     >
       <span className="font-pixel text-lg font-bold text-ink">{name}</span>
       <span className="text-sm text-ink-soft sm:text-base">{about}</span>
       <span className="text-sm font-semibold text-ink">{note}</span>
     </button>
   );
+
+  if (pickedTitle) {
+    return (
+      <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 text-center">
+        <button type="button" className="btn-secondary self-start" onClick={() => setPicked(null)}>
+          Back to sessions
+        </button>
+        <span className="pixel-chip bg-butter">{pickedTitle}</span>
+        <h1 ref={paceHeading} tabIndex={-1} className="font-pixel text-3xl font-bold text-ink outline-none">
+          How should it feel today?
+        </h1>
+        <p className="text-ink-soft">Pick a pace. You can change it next time.</p>
+        <div role="radiogroup" aria-label="How it feels" className="grid w-full gap-5 md:grid-cols-3">
+          {PRESSURE.map((p) => {
+            const chosen = pressure === p.id;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                role="radio"
+                aria-checked={chosen}
+                onClick={() => setPressure(p.id)}
+                className={`pixel-box flex items-center gap-4 p-4 text-left md:flex-col md:gap-2 md:p-6 md:text-center ${LEVEL_BG[p.id]} ${
+                  chosen ? "outline outline-4 outline-offset-2 outline-teal-deep" : ""
+                }`}
+              >
+                <span className="shrink-0 [&_img]:h-16 [&_img]:w-16 md:[&_img]:h-[110px] md:[&_img]:w-[110px]">
+                  <PixelArtBobbin mood={LEVEL_MOOD[p.id]} outfit={season} size={110} />
+                </span>
+                <span className="flex flex-col md:items-center">
+                  <span className="font-pixel text-xl font-bold text-ink">{p.label}</span>
+                  <span className="text-ink-soft">{p.note}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <button type="button" className="btn-primary" onClick={start}>
+          Start round
+        </button>
+      </section>
+    );
+  }
 
   return (
     <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 text-center">
@@ -342,7 +395,7 @@ export function InterviewRound() {
         </strong>{" "}
         Say each answer out loud, then type it or check it off. Pick any session, in any order.
       </p>
-      <div role="radiogroup" aria-label="Session" className="grid w-full gap-3 sm:grid-cols-2 sm:gap-4">
+      <div role="group" aria-label="Session" className="grid w-full gap-3 sm:grid-cols-2 sm:gap-4">
         {card(
           MIX,
           "Mix from your lessons",
@@ -352,36 +405,6 @@ export function InterviewRound() {
         )}
         {named.map((s) => card(s.id, s.title, s.about, `${s.count} questions · about ${minutesFor(s.count)} minutes`))}
       </div>
-      <h2 className="font-pixel text-2xl font-bold text-ink">How should it feel today?</h2>
-      <p className="text-ink-soft">Pick a pace. You can change it next time.</p>
-      <div role="radiogroup" aria-label="How it feels" className="grid w-full gap-5 md:grid-cols-3">
-        {PRESSURE.map((p) => {
-          const chosen = pressure === p.id;
-          return (
-            <button
-              key={p.id}
-              type="button"
-              role="radio"
-              aria-checked={chosen}
-              onClick={() => setPressure(p.id)}
-              className={`pixel-box flex items-center gap-4 p-4 text-left md:flex-col md:gap-2 md:p-6 md:text-center ${LEVEL_BG[p.id]} ${
-                chosen ? "outline outline-4 outline-offset-2 outline-teal-deep" : ""
-              }`}
-            >
-              <span className="shrink-0 [&_img]:h-16 [&_img]:w-16 md:[&_img]:h-[110px] md:[&_img]:w-[110px]">
-                <PixelArtBobbin mood={LEVEL_MOOD[p.id]} outfit={season} size={110} />
-              </span>
-              <span className="flex flex-col md:items-center">
-                <span className="font-pixel text-xl font-bold text-ink">{p.label}</span>
-                <span className="text-ink-soft">{p.note}</span>
-              </span>
-            </button>
-          );
-        })}
-      </div>
-      <button type="button" className="btn-primary" onClick={start}>
-        Start round
-      </button>
     </section>
   );
 }
