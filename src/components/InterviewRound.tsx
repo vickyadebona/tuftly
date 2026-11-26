@@ -101,7 +101,10 @@ function Round({ pressure, title, questions, onLeave }: { pressure: PressureLeve
     ? "Breathe in, breathe out. I'll hold your place."
     : phase === "checking"
       ? "Check off the key points your answer covered. This is only for you."
-      : "Answer in your own words. A rough answer is a fine start.";
+      : index === 0
+        ? // Said as each round starts, so nobody expects this to prepare them for a person.
+          "This is practice for an AI-powered voice interview, not for an interview with a real person. A rough answer is a fine start."
+        : "Answer in your own words. A rough answer is a fine start.";
   const timeUp = pressure === "zara-like" && left === 0;
 
   return (
@@ -334,7 +337,10 @@ export function InterviewRound() {
     <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 text-center">
       <h1 className="font-pixel text-3xl font-bold text-ink">What do you want to practice?</h1>
       <p className="text-lg text-ink-soft">
-        Practice for an AI voice interview: say each answer out loud, then type it or check it off. Pick any session, in any order.
+        <strong className="font-extrabold text-ink">
+          This is practice for AI-powered voice interviews, not for interviews with real people.
+        </strong>{" "}
+        Say each answer out loud, then type it or check it off. Pick any session, in any order.
       </p>
       <div role="radiogroup" aria-label="Session" className="grid w-full gap-3 sm:grid-cols-2 sm:gap-4">
         {card(
