@@ -29,7 +29,38 @@ function recognitionClass(): (new () => Recognition) | null {
 
 export const canListen = () => recognitionClass() !== null;
 
-export type ListenError = "blocked" | "unsupported" | "failed";
+export type ListenError = "blocked" | "nomic" | "service" | "unsupported" | "failed";
+
+/** What to tell someone for each way listening can fail. */
+export const LISTEN_PROBLEM: Record<ListenError, string> = {
+  blocked: "Your microphone isn't allowed yet. Allow it from the icon by the address bar, then try again.",
+  nomic: "I couldn't find a microphone. Plug one in or check your settings, then try again.",
+  service: "This browser couldn't turn speech into text. Chrome or Safari usually can.",
+  unsupported: "This browser can't listen.",
+  failed: "I couldn't use the microphone. Try again.",
+};
+
+// Set once the browser has let us use the microphone, so later starts happen right away.
+let allowed = false;
+
+/**
+ * Asks for the microphone and waits for the answer, however long that takes. Listening itself
+ * gives up if the browser's prompt is still open, so ask first.
+ */
+async function askForMicrophone(): Promise<ListenError | null> {
+  if (allowed || !navigator.mediaDevices?.getUserMedia) return null;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream.getTracks().forEach((t) => t.stop());
+    allowed = true;
+    return null;
+  } catch (e) {
+    const name = e instanceof Error ? e.name : "";
+    if (name === "NotAllowedError" || name === "SecurityError") return "blocked";
+    if (name === "NotFoundError") return "nomic";
+    return "failed";
+  }
+}
 
 const join = (a: string, b: string) => [a.trim(), b.trim()].filter(Boolean).join(" ");
 
@@ -38,10 +69,16 @@ export function useDictation() {
   const [text, setText] = useState("");
   const [interim, setInterim] = useState("");
   const [error, setError] = useState<ListenError | null>(null);
+  // True while the browser is asking whether we may use the microphone.
+  const [waiting, setWaiting] = useState(false);
   const active = useRef<Recognition | null>(null);
+  // Goes up on every start and stop, so a late answer to an old request is ignored.
+  const attempt = useRef(0);
   const finalText = useRef("");
 
   const stop = useCallback(() => {
+    attempt.current++;
+    setWaiting(false);
     const r = active.current;
     active.current = null;
     if (r) {
@@ -82,7 +119,16 @@ export function useDictation() {
       r.onerror = (e) => {
         // Silence and our own stops are normal. Anything else ends listening.
         if (e.error === "no-speech" || e.error === "aborted") return;
-        setError(e.error === "not-allowed" || e.error === "service-not-allowed" ? "blocked" : "failed");
+        if (e.error === "not-allowed" || e.error === "audio-capture") allowed = false;
+        setError(
+          e.error === "not-allowed"
+            ? "blocked"
+            : e.error === "audio-capture"
+              ? "nomic"
+              : e.error === "network" || e.error === "service-not-allowed"
+                ? "service"
+                : "failed",
+        );
         active.current = null;
       };
       // Browsers stop on their own after a quiet spell, so start again while we still want to hear.
@@ -95,18 +141,31 @@ export function useDictation() {
         }
       };
       active.current = r;
-      try {
-        r.start();
-      } catch {
-        setError("failed");
-      }
+      const mine = attempt.current;
+      const begin = () => {
+        try {
+          r.start();
+        } catch {
+          setError("failed");
+        }
+      };
+      if (allowed) return begin();
+      setWaiting(true);
+      askForMicrophone().then((problem) => {
+        if (attempt.current !== mine) return;
+        setWaiting(false);
+        if (problem) {
+          active.current = null;
+          setError(problem);
+        } else begin();
+      });
     },
     [stop],
   );
 
   useEffect(() => stop, [stop]);
 
-  return { heard: join(text, interim), error, start, stop };
+  return { heard: join(text, interim), error, waiting, start, stop };
 }
 
 /** Says a line out loud in the browser's voice, if it has one. */

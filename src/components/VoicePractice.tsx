@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { COMPANION, DAILY_INTERVIEW_CAP } from "@/lib/config";
 import { todayStr } from "@/lib/dates";
 import { NAV_AGAIN } from "@/lib/events";
-import { canListen, hush, speak, useDictation } from "@/lib/speech";
+import { canListen, hush, LISTEN_PROBLEM, speak, useDictation } from "@/lib/speech";
 import { recordPractice, useHydrated } from "@/lib/store";
 import { supabaseConfigured } from "@/lib/supabase/config";
 import { useAuthUser } from "@/lib/useAuthUser";
@@ -130,7 +130,7 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
   const counted = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
 
-  const { heard, error, start: listen, stop: stopListening } = useDictation();
+  const { heard, error, waiting, start: listen, stop: stopListening } = useDictation();
   const question = questions[index];
   const inRound = IN_ROUND.includes(step);
   const timeUp = left === 0;
@@ -154,7 +154,7 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
   }, [timeUp, stopListening]);
 
   // The seven minutes only run while you are answering.
-  const clockOn = step === "answer" && !onBreak && !leaving && left > 0;
+  const clockOn = step === "answer" && !onBreak && !leaving && !waiting && left > 0;
   useEffect(() => {
     if (!clockOn) return;
     const id = window.setInterval(() => {
@@ -472,10 +472,10 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
           {!supported && <p className="text-ink">This browser can&apos;t listen, so you&apos;ll type your answers. Say them out loud first.</p>}
           {testing && (
             <p className="text-ink" aria-live="polite">
-              {error === "blocked"
-                ? "Your microphone is blocked. Allow it in the browser, or type your answers."
+              {waiting
+                ? "Waiting for you to allow the microphone. Take your time."
                 : error
-                  ? "I couldn't use the microphone. You can type your answers instead."
+                  ? `${LISTEN_PROBLEM[error]} You can also type your answers.`
                   : heard
                     ? `I heard: “${heard}”`
                     : "Say a few words…"}
@@ -487,12 +487,17 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
                 type="button"
                 className="btn-secondary"
                 onClick={() => {
-                  if (testing) stopListening();
-                  else listen();
-                  setTesting(!testing);
+                  // After a problem the same button tries again.
+                  if (testing && !error) {
+                    stopListening();
+                    setTesting(false);
+                  } else {
+                    listen();
+                    setTesting(true);
+                  }
                 }}
               >
-                {testing ? "Stop the test" : "Test my microphone"}
+                {testing ? (error ? "Try the microphone again" : "Stop the test") : "Test my microphone"}
               </button>
             )}
             <button type="button" className="btn-primary" disabled={!adult} onClick={begin}>
@@ -522,11 +527,11 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
         <section className={SCREEN}>
           {title(question.prompt, "text-2xl")}
           <p className="pixel-chip bg-peach" role="status">
-            {timeUp ? "That's all 7 minutes" : mustType ? "Typing" : "● Listening…"} <span className="font-sans">{fmtClock(spent)}</span>
+            {timeUp ? "That's all 7 minutes" : waiting ? "Waiting for the microphone" : mustType ? "Typing" : "● Listening…"} <span className="font-sans">{fmtClock(spent)}</span>
           </p>
           {error && (
             <p className="text-ink" role="alert">
-              {error === "blocked" ? "Your microphone is blocked, so type your answer here." : "I can't hear you in this browser right now, so type your answer here."}
+              {LISTEN_PROBLEM[error]} Or type your answer here.
             </p>
           )}
           {mustType ? (
@@ -541,7 +546,11 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
             />
           ) : (
             <p className="pixel-box min-h-32 w-full bg-paper p-4 text-left text-lg text-ink" aria-label="What Bobbin hears">
-              {heard || <span className="text-ink-soft">Start speaking. Your words show up here.</span>}
+              {heard || (
+                <span className="text-ink-soft">
+                  {waiting ? "Allow the microphone in your browser. Take your time; the clock is waiting too." : "Start speaking. Your words show up here."}
+                </span>
+              )}
             </p>
           )}
           <p className="text-sm text-ink-soft">Take your time. Pauses are fine.</p>
@@ -557,6 +566,20 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
             >
               I&apos;m not sure
             </button>
+            {mustType && supported && !timeUp && (
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => {
+                  // Carry on from whatever has been typed or heard.
+                  setTyping(false);
+                  setDraft("");
+                  listen(typed);
+                }}
+              >
+                {error ? "Try the microphone again" : "Use the microphone"}
+              </button>
+            )}
             {!mustType && (
               <button
                 type="button"
