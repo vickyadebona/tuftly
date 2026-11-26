@@ -2,7 +2,7 @@ import Link from "next/link";
 import { APP_NAME, FIRST_LESSON_MINUTES } from "@/lib/config";
 import { SEASONS, type Season } from "@/lib/season";
 import { PixelArtBobbin } from "./PixelArtBobbin";
-import { SeasonHeadline } from "./SeasonHeadline";
+import { SeasonBadgeTea, SeasonHeadline } from "./SeasonHeadline";
 import { PixelCloud, PixelIcon, type PixelIconName } from "./PixelIcon";
 
 export const SECTION = "px-5 py-14 sm:px-6 sm:py-20";
@@ -105,6 +105,7 @@ function Hero() {
           <span className="pixel-chip">
             <PixelIcon name="star" size={18} color="#f2b93b" />
             Free practice, with tea breaks
+            <SeasonBadgeTea />
           </span>
           <h1 className="font-pixel text-4xl font-bold leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
             <SeasonHeadline />
