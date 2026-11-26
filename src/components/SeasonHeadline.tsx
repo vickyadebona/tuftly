@@ -20,7 +20,7 @@ export const SEASON_TEA: Record<Season, TeaId> = {
   autumn: "chai",
 };
 
-/** The same tea for the note above the headline. */
+/** The season's tea beside a line of small text: the landing note and the tea break button. */
 export function SeasonBadgeTea() {
   const tea = SEASON_TEA[useSeason()];
   // Bubble tea is tall, so it's drawn narrower to keep the note the same height.

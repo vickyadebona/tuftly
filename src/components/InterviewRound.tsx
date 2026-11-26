@@ -11,8 +11,9 @@ import { lessonMix, minutesFor, SESSIONS, sessionQuestions, type RoundQuestion }
 import { useSeason } from "@/lib/useSeason";
 import { CodeBlock } from "./CodeBlock";
 import { PixelArtBobbin } from "./PixelArtBobbin";
-import { PixelIcon, TeaCup } from "./PixelIcon";
+import { PixelIcon } from "./PixelIcon";
 import { TeaBreak } from "./TeaBreak";
+import { SeasonBadgeTea } from "./SeasonHeadline";
 import { InterviewSkeleton } from "./Skeleton";
 import { StreakCelebration } from "./StreakCelebration";
 import { RichText } from "./RichText";
@@ -129,16 +130,17 @@ function Round({ pressure, title, questions, onLeave }: { pressure: PressureLeve
               <span className="font-sans font-bold">{timeUp ? "Time's up" : `${fmt(left)} left`}</span>
             </span>
           )}
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             {!onBreak && (
-              <button type="button" className="btn-accent whitespace-nowrap max-sm:px-3 max-sm:text-sm" onClick={() => setOnBreak(true)}>
+              <button type="button" className="btn-accent whitespace-nowrap max-sm:px-2 max-sm:text-[13px]" onClick={() => setOnBreak(true)}>
                 Take a tea break
-                <span className="ml-2">
-                  <TeaCup tea="matcha" size={32} compact />
+                <span className="ml-1.5 sm:ml-2">
+                  <SeasonBadgeTea />
                 </span>
               </button>
             )}
-            <button type="button" className="btn-secondary whitespace-nowrap max-sm:px-3 max-sm:text-sm" onClick={leave}>
+            <button type="button" className="btn-secondary gap-1.5 whitespace-nowrap max-sm:px-2 max-sm:text-[13px] sm:gap-2" onClick={leave}>
+              <PixelIcon name="exit" size={18} color="#4a3326" />
               Leave interview
             </button>
           </div>
@@ -265,7 +267,8 @@ function LeaveDialog({ onStay, onLeave }: { onStay: () => void; onLeave: () => v
         <button type="button" className="btn-primary" onClick={onStay}>
           Keep going
         </button>
-        <button type="button" className="btn-secondary" onClick={onLeave}>
+        <button type="button" className="btn-secondary gap-2" onClick={onLeave}>
+          <PixelIcon name="exit" size={18} color="#4a3326" />
           Leave interview
         </button>
       </div>
