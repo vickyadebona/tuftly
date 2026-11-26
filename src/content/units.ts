@@ -10,7 +10,7 @@ export const units: UnitInfo[] = [
     track: "communication",
     title: "Telling your story",
     blurb:
-      "Most interviews open with “tell me about yourself” and then dig into what you've done. This unit is about answering those questions clearly and honestly.",
+      "Most interviews open with “tell me about yourself” and then dig into what you've done. This unit is about answering those questions clearly and honestly. The tips are aimed at AI voice interviews, so they lean on specific details. A person may enjoy a looser conversation.",
     forWho: "Anyone, whatever your background. You don't need a long work history.",
     learn: [
       "Giving a clear one-minute pitch",

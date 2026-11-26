@@ -13,9 +13,9 @@ const pixelify = Pixelify_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "tuftly: gentle interview practice",
+  title: "tuftly: gentle practice for AI interviews",
   description:
-    "Short lessons, spaced practice and a friendly bird to help you warm up for web-dev interviews.",
+    "Short lessons, spaced practice and a friendly bird to help you get ready for web developer interviews run by AI voice agents.",
   // Winter until the browser knows the date; SeasonFavicon then swaps in the current season.
   icons: {
     icon: [{ url: faviconFor("winter").icon, type: "image/png" }],

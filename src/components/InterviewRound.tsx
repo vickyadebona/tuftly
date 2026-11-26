@@ -333,7 +333,9 @@ export function InterviewRound() {
   return (
     <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 text-center">
       <h1 className="font-pixel text-3xl font-bold text-ink">What do you want to practice?</h1>
-      <p className="text-lg text-ink-soft">Pick a session. You can try any of them, in any order.</p>
+      <p className="text-lg text-ink-soft">
+        Practice for an AI voice interview: say each answer out loud, then type it or check it off. Pick any session, in any order.
+      </p>
       <div role="radiogroup" aria-label="Session" className="grid w-full gap-3 sm:grid-cols-2 sm:gap-4">
         {card(
           MIX,

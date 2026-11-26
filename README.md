@@ -2,7 +2,7 @@
 
 (Product name is always lowercase. It comes from the little tuft on top of Bobbin's head. The companion bird is Bobbin. Earlier names dropped: "Pip" (`pip install`), "fledge" (an existing interview-prep startup with the same name). Not yet trademark-cleared; the preferred short URL idea is tuft.ly.)
 
-A free-first, gentle practice space for web-dev interviews: short lessons, game-like drills, and a friendly AI interviewer that gives forward-looking feedback.
+A free-first, gentle practice space for web developer interviews run by AI voice agents (the app itself doesn't do voice yet): short lessons, game-like drills, and a friendly AI interviewer that gives forward-looking feedback.
 
 ## Decisions so far
 - **Audience:** all levels, including people returning after time away. Starts with JavaScript, then TypeScript; backend and system design later.

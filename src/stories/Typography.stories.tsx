@@ -5,7 +5,7 @@ function Type() {
     <div className="flex max-w-3xl flex-col gap-8 p-6">
       <section className="flex flex-col gap-3">
         <h2 className="font-pixel text-sm font-bold uppercase tracking-wide text-teal-deep">Pixelify Sans: headings, buttons, labels</h2>
-        <p className="font-pixel text-6xl font-bold leading-[1.05] text-ink">Warm up for your next coding interview</p>
+        <p className="font-pixel text-6xl font-bold leading-[1.05] text-ink">Warm up for your next AI interview</p>
         <p className="font-pixel text-4xl font-bold text-ink">Unit heading, 36px</p>
         <p className="font-pixel text-3xl font-bold text-ink">Page title, 30px</p>
         <p className="font-pixel text-xl font-bold text-ink">Card title and question, 20px</p>

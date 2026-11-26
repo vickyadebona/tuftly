@@ -56,7 +56,7 @@ export function About() {
             <div className="flex max-w-2xl flex-col gap-4">
               <Eyebrow>About {APP_NAME}</Eyebrow>
               <h1 className="font-pixel text-4xl font-bold leading-[1.05] text-ink sm:text-6xl">
-                Interview practice that stays kind
+                AI interview practice that stays kind
               </h1>
               <p className="text-lg text-ink-soft sm:text-xl">
                 {APP_NAME} started with one hard interview and one word. This is the story, and the
@@ -71,7 +71,7 @@ export function About() {
 
         <Block eyebrow="Where it started" title="One word: “Understood.”">
           <p>
-            I sat an AI interview for a web developer job. The invite said I didn&apos;t need to
+            I sat <strong className="font-extrabold">an AI interview</strong> for a web developer job. The invite said I didn&apos;t need to
             prepare anything. The questions were hard anyway, and I did badly.
           </p>
           <p>
@@ -124,7 +124,7 @@ export function About() {
           </p>
           <p>
             Lessons, drills and practice rounds cost almost nothing to run, so they&apos;re free.
-            I&apos;d like to add an AI interviewer later. That would cost real money every time, so it
+            I&apos;d like to add <strong className="font-extrabold">an AI interviewer</strong> later. That would cost real money every time, so it
             would likely come with a daily limit while it&apos;s free.
           </p>
           <p>
