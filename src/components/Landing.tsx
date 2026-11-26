@@ -2,6 +2,7 @@ import Link from "next/link";
 import { APP_NAME, FIRST_LESSON_MINUTES } from "@/lib/config";
 import { SEASONS, type Season } from "@/lib/season";
 import { PixelArtBobbin } from "./PixelArtBobbin";
+import { RichText } from "./RichText";
 import { SeasonBadgeTea, SeasonHeadline } from "./SeasonHeadline";
 import { PixelCloud, PixelIcon, type PixelIconName } from "./PixelIcon";
 
@@ -23,7 +24,7 @@ function SectionHead({ eyebrow, title, sub }: { eyebrow: string; title: string; 
     <div className="mx-auto flex max-w-3xl flex-col items-center gap-3 text-center">
       <Eyebrow>{eyebrow}</Eyebrow>
       <Title>{title}</Title>
-      <p className="text-lg text-ink-soft">{sub}</p>
+      <p className="text-lg text-ink-soft"><RichText text={sub} /></p>
     </div>
   );
 }
@@ -103,7 +104,6 @@ function Hero() {
       <div className={`${INNER} grid items-center gap-10 lg:grid-cols-2`}>
         <div className="flex flex-col items-start gap-6">
           <span className="pixel-chip">
-            <PixelIcon name="star" size={18} color="#f2b93b" />
             Free practice, with tea breaks
             <SeasonBadgeTea />
           </span>
@@ -111,12 +111,16 @@ function Hero() {
             <SeasonHeadline />
           </h1>
           <p className="max-w-xl text-lg text-ink-soft sm:text-xl">
-            {APP_NAME} is a friendly practice space. Take short lessons, play through game-like
-            drills and rehearse interview questions with Bobbin, a pixel bird who keeps you
-            company while you work out what to practice next.
+            {APP_NAME} helps you get ready for web developer{" "}
+            <strong className="font-extrabold">
+              interviews where an AI voice agent asks the questions
+            </strong>
+            , not a person. Take short lessons, play through game-like drills and
+            rehearse your answers with Bobbin, a pixel bird who keeps you company.
           </p>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-4">
-            <Link href="/login?mode=new" className="btn-primary">
+            <Link href="/login?mode=new" className="btn-primary gap-2">
+              <PixelIcon name="star" size={18} color="#ffd966" />
               Start your quest for free
             </Link>
             <a href="#how" className="btn-secondary">
@@ -154,7 +158,7 @@ const STEPS: { icon: PixelIconName; bg: string; fg: string; title: string; text:
     bg: "bg-lilac-deep",
     fg: "#fffdf4",
     title: "Rehearse with Bobbin",
-    text: "Answer interview questions in your own words, then check yourself against the key points.",
+    text: "Answer the kind of questions **an AI interviewer** asks, then check yourself against the key points.",
   },
 ];
 
@@ -164,7 +168,7 @@ function HowItWorks() {
       <div className={`${INNER} flex flex-col gap-12`}>
         <SectionHead
           eyebrow="How it works"
-          title="Three steps to interview ready"
+          title="Three steps to AI interview ready"
           sub="Short sessions that fit between everything else."
         />
         <ol className="grid gap-10 md:grid-cols-3">
@@ -176,7 +180,7 @@ function HowItWorks() {
               <div className="pixel-box flex w-full flex-1 flex-col items-center gap-2 p-6 text-center">
                 <span className="text-sm font-bold text-teal-deep">Step {i + 1}</span>
                 <h3 className="font-pixel text-xl font-bold text-ink">{s.title}</h3>
-                <p className="text-ink-soft">{s.text}</p>
+                <p className="text-ink-soft"><RichText text={s.text} /></p>
               </div>
             </li>
           ))}
@@ -189,7 +193,7 @@ function HowItWorks() {
 const FEATURES: { icon: PixelIconName; color: string; title: string; text: string }[] = [
   { icon: "star", color: "#f2b93b", title: "Bite-size lessons", text: "A few minutes each. Guess first, study a worked example, then try it yourself." },
   { icon: "gem", color: "#9fd5ea", title: "Practice that sticks", text: "Questions come back on a schedule and mix across topics, so what you learn stays with you." },
-  { icon: "heart", color: "#ff9e80", title: "Practice rounds with Bobbin", text: "Answer, compare with a strong answer, check off the key points you covered and see what to practice next." },
+  { icon: "heart", color: "#ff9e80", title: "Practice rounds with Bobbin", text: "Say or type your answer, then check off the key points you covered. Bobbin doesn't talk back yet; **voice practice** is coming." },
   { icon: "flame", color: "#f08a24", title: "Pick your pressure", text: "Start relaxed, then work up to a strict, timed round that feels like interview day." },
   { icon: "check", color: "#2f7f78", title: "Gentle streaks", text: "Rest days and a weekly grace day keep your streak safe. There are no leaderboards." },
   { icon: "coin", color: "#f2b93b", title: "Seasonal outfits", text: "A scarf in winter, a flower crown in spring, a sun hat in summer and a beret in autumn." },
@@ -202,7 +206,7 @@ function Features() {
         <SectionHead
           eyebrow="What you get"
           title="Everything you need to feel ready"
-          sub={`Small wins every day add up. Here is how ${APP_NAME} keeps practice friendly.`}
+          sub={`Small wins every day add up. Here is how ${APP_NAME} gets you ready for **an AI interview**.`}
         />
         <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
@@ -211,7 +215,7 @@ function Features() {
                 <PixelIcon name={f.icon} size={32} color={f.color} />
               </span>
               <h3 className="font-pixel text-xl font-bold text-ink">{f.title}</h3>
-              <p className="text-ink-soft">{f.text}</p>
+              <p className="text-ink-soft"><RichText text={f.text} /></p>
             </li>
           ))}
         </ul>
@@ -255,7 +259,7 @@ function MeetBobbin() {
 const LEVELS = [
   { mood: "happy", bg: "bg-mint", name: "Relaxed", text: "Hints are on and there is no timer. Take all the time you need." },
   { mood: "sparkle", bg: "bg-peach", name: "Standard", text: "Hints are on, with a gentle timer for each question." },
-  { mood: "determined", bg: "bg-lilac", name: "Interview day", text: "No hints and a shorter timer, so the real thing feels familiar." },
+  { mood: "determined", bg: "bg-lilac", name: "Interview day", text: "No hints and a shorter timer, so a **timed AI interview** feels familiar." },
 ] as const;
 
 function Pressure() {
@@ -268,7 +272,7 @@ function Pressure() {
             <li key={l.name} className={`pixel-box flex flex-col items-center gap-3 p-8 text-center ${l.bg}`}>
               <PixelArtBobbin mood={l.mood} size={140} />
               <h3 className="font-pixel text-xl font-bold text-ink">{l.name}</h3>
-              <p className="text-ink-soft">{l.text}</p>
+              <p className="text-ink-soft"><RichText text={l.text} /></p>
             </li>
           ))}
         </ul>
@@ -337,7 +341,7 @@ export function Footer() {
         <span className="font-pixel text-lg font-bold text-ink">
           tuft<span className="text-teal">ly</span>
         </span>
-        <span>Made for people who get nervous before interviews.</span>
+        <span>Made for people who get nervous before <strong className="font-extrabold">AI interviews</strong>.</span>
         <nav aria-label="Footer" className="flex gap-5 font-semibold text-ink">
           <Link href="/about">About</Link>
           <Link href="/login">Log in</Link>

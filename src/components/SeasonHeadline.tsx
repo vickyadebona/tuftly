@@ -6,10 +6,10 @@ import { TeaCup, type TeaId } from "./PixelIcon";
 
 /** The landing page's headline, one for each of Bobbin's outfits. */
 export const HEADLINES: Record<Season, string> = {
-  winter: "Warm up for your next coding interview",
-  spring: "Spring into your next coding interview",
-  summer: "Dive into your next coding interview",
-  autumn: "Fall into step for your next coding interview",
+  winter: "Warm up for your next AI interview",
+  spring: "Spring into your next AI interview",
+  summer: "Dive into your next AI interview",
+  autumn: "Fall into step for your next AI interview",
 };
 
 /** The tea of the season, poured at the end of the headline. */
@@ -30,11 +30,11 @@ export function SeasonBadgeTea() {
 export function SeasonHeadline() {
   const season = useSeason();
   const words = HEADLINES[season].split(" ");
-  const last = words.pop();
+  const last = words.splice(-2).join(" ");
   return (
     <>
       {words.join(" ")}{" "}
-      {/* Kept together, so the cup never wraps onto a line of its own. */}
+      {/* "AI interview" and its cup stay on one line. */}
       <span className="whitespace-nowrap">
         {last}
         <span className="ml-[0.25em] inline-block [&_svg]:!h-auto [&_svg]:!w-[1.1em]">
