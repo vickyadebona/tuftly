@@ -181,7 +181,8 @@ function LessonRun({
             <blockquote className="pixel-box whitespace-pre-line bg-teal-wash p-4 text-ink">{idea.workedExample.sample}</blockquote>
           )}
           {idea.workedExample.diagram && <LessonDiagram diagram={idea.workedExample.diagram} />}
-          <ol className="list-decimal space-y-2 pl-5 text-ink">
+          {/* Words to say out loud also get a highlighter mark. For code concepts, bold is enough. */}
+          <ol className={`list-decimal space-y-2 pl-5 text-ink ${idea.workedExample.sample ? "[&_strong]:bg-butter [&_strong]:px-0.5" : ""}`}>
             {idea.workedExample.walkthrough.map((w) => (
               <li key={w}>
                 <RichText text={w} />
