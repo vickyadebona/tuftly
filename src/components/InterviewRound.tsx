@@ -10,6 +10,8 @@ import { interleave } from "@/lib/queue";
 import { lessonMix, minutesFor, SESSIONS, sessionQuestions, type RoundQuestion } from "@/lib/sessions";
 import { useSeason } from "@/lib/useSeason";
 import { CodeBlock } from "./CodeBlock";
+import { LeaveDialog } from "./LeaveDialog";
+import { VoicePractice } from "./VoicePractice";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelIcon } from "./PixelIcon";
 import { TeaBreak } from "./TeaBreak";
@@ -20,7 +22,7 @@ import { RichText } from "./RichText";
 
 // A practice round with the content we already have: a named session, or a mix from finished
 // lessons. You check your own answer against key points. The AI interviewer (follow-ups,
-// scoring) comes later.
+// scoring) comes later. Voice practice is in VoicePractice.tsx.
 
 const PRESSURE: { id: PressureLevel; label: string; seconds: number | null; hints: boolean; note: string }[] = [
   { id: "relaxed", label: "Relaxed", seconds: null, hints: true, note: "Hints on · No timer" },
@@ -198,9 +200,6 @@ function Round({ pressure, title, questions, onLeave }: { pressure: PressureLeve
               {nudge && <p className="rounded bg-butter/40 p-3 text-ink">Nudge: {q.hint}</p>}
               {phase === "answering" ? (
                 <div className="flex flex-wrap gap-3">
-                  <button type="button" className="btn-secondary" disabled title="Voice answers are coming later">
-                    Answer by voice (soon)
-                  </button>
                   {level.hints && (
                     <button type="button" className="btn-accent" onClick={() => setNudge(true)}>
                       Need a nudge?
@@ -245,40 +244,6 @@ function Round({ pressure, title, questions, onLeave }: { pressure: PressureLeve
   );
 }
 
-/** Check before throwing away a round that has answers in it. Escape keeps going. */
-function LeaveDialog({ onStay, onLeave }: { onStay: () => void; onLeave: () => void }) {
-  const ref = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    const dialog = ref.current;
-    if (dialog && !dialog.open) dialog.showModal();
-  }, []);
-
-  return (
-    <dialog
-      ref={ref}
-      onClose={onStay}
-      aria-labelledby="leave-title"
-      className="pixel-box m-auto w-[min(26rem,calc(100%-2rem))] p-6 text-center backdrop:bg-ink/40"
-    >
-      <h2 id="leave-title" className="font-pixel text-2xl font-bold text-ink">
-        Leave this interview?
-      </h2>
-      <p className="mt-2 text-ink">
-        It ends here and your answers aren&apos;t saved. To pause instead, take a tea break.
-      </p>
-      <div className="mt-5 flex flex-wrap justify-center gap-3">
-        <button type="button" className="btn-primary" onClick={onStay}>
-          Keep going
-        </button>
-        <button type="button" className="btn-secondary gap-2" onClick={onLeave}>
-          <PixelIcon name="exit" size={18} color="#4a3326" />
-          Leave interview
-        </button>
-      </div>
-    </dialog>
-  );
-}
-
 const LEVEL_MOOD = { relaxed: "happy", standard: "sparkle", "zara-like": "determined" } as const;
 
 const MIX = "mix";
@@ -292,11 +257,14 @@ export function InterviewRound() {
   const [picked, setPicked] = useState<string | null>(null);
   // The questions are fixed when the round starts, so finishing a lesson elsewhere can't change them.
   const [round, setRound] = useState<{ title: string; questions: RoundQuestion[] } | null>(null);
+  // Voice practice lives on this page, so tapping "Interviews" in the menu asks before leaving.
+  const [voice, setVoice] = useState(false);
 
   const endRound = useCallback(() => {
     setRound(null);
     setPicked(null);
   }, []);
+  const endVoice = useCallback(() => setVoice(false), []);
   const paceHeading = useRef<HTMLHeadingElement>(null);
 
   // Picking a session opens the pace step: move focus there, and let the "Interviews" menu go back.
@@ -326,6 +294,8 @@ export function InterviewRound() {
         : { title: "Mix from your lessons", questions: lessonMix(getDrills(), progress.lessonsDone, interleave) },
     );
   }
+
+  if (voice) return <VoicePractice onExit={endVoice} />;
 
   if (round) return <Round pressure={pressure} title={round.title} questions={round.questions} onLeave={endRound} />;
 
@@ -395,6 +365,16 @@ export function InterviewRound() {
         </strong>{" "}
         Say each answer out loud, then type it or check it off. Pick any session, in any order.
       </p>
+      <button
+        type="button"
+        onClick={() => setVoice(true)}
+        className="pixel-box flex w-full flex-col items-center gap-1 bg-teal-wash p-5"
+      >
+        <span className="pixel-chip bg-butter">New</span>
+        <span className="font-pixel text-2xl font-bold text-ink">Your story, out loud</span>
+        <span className="text-ink">Bobbin asks “Tell me about yourself” and you answer by voice. Laptop works best.</span>
+      </button>
+      <h2 className="font-pixel text-2xl font-bold text-ink">Or practice by typing</h2>
       <div role="group" aria-label="Session" className="grid w-full gap-3 sm:grid-cols-2 sm:gap-4">
         {card(
           MIX,
