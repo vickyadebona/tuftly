@@ -11,8 +11,9 @@ import { lessonMix, minutesFor, SESSIONS, sessionQuestions, type RoundQuestion }
 import { useSeason } from "@/lib/useSeason";
 import { CodeBlock } from "./CodeBlock";
 import { PixelArtBobbin } from "./PixelArtBobbin";
-import { PixelIcon, TeaCup } from "./PixelIcon";
+import { PixelIcon } from "./PixelIcon";
 import { TeaBreak } from "./TeaBreak";
+import { SeasonBadgeTea } from "./SeasonHeadline";
 import { InterviewSkeleton } from "./Skeleton";
 import { StreakCelebration } from "./StreakCelebration";
 import { RichText } from "./RichText";
@@ -100,7 +101,10 @@ function Round({ pressure, title, questions, onLeave }: { pressure: PressureLeve
     ? "Breathe in, breathe out. I'll hold your place."
     : phase === "checking"
       ? "Check off the key points your answer covered. This is only for you."
-      : "Answer in your own words. A rough answer is a fine start.";
+      : index === 0
+        ? // Said as each round starts, so nobody expects this to prepare them for a person.
+          "This is practice for an AI-powered voice interview, not for an interview with a real person. A rough answer is a fine start."
+        : "Answer in your own words. A rough answer is a fine start.";
   const timeUp = pressure === "zara-like" && left === 0;
 
   return (
@@ -129,16 +133,17 @@ function Round({ pressure, title, questions, onLeave }: { pressure: PressureLeve
               <span className="font-sans font-bold">{timeUp ? "Time's up" : `${fmt(left)} left`}</span>
             </span>
           )}
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             {!onBreak && (
-              <button type="button" className="btn-accent whitespace-nowrap max-sm:px-3 max-sm:text-sm" onClick={() => setOnBreak(true)}>
+              <button type="button" className="btn-accent whitespace-nowrap max-sm:px-2 max-sm:text-[13px]" onClick={() => setOnBreak(true)}>
                 Take a tea break
-                <span className="ml-2">
-                  <TeaCup tea="matcha" size={32} compact />
+                <span className="ml-1.5 sm:ml-2">
+                  <SeasonBadgeTea />
                 </span>
               </button>
             )}
-            <button type="button" className="btn-secondary whitespace-nowrap max-sm:px-3 max-sm:text-sm" onClick={leave}>
+            <button type="button" className="btn-secondary gap-1.5 whitespace-nowrap max-sm:px-2 max-sm:text-[13px] sm:gap-2" onClick={leave}>
+              <PixelIcon name="exit" size={18} color="#4a3326" />
               Leave interview
             </button>
           </div>
@@ -265,7 +270,8 @@ function LeaveDialog({ onStay, onLeave }: { onStay: () => void; onLeave: () => v
         <button type="button" className="btn-primary" onClick={onStay}>
           Keep going
         </button>
-        <button type="button" className="btn-secondary" onClick={onLeave}>
+        <button type="button" className="btn-secondary gap-2" onClick={onLeave}>
+          <PixelIcon name="exit" size={18} color="#4a3326" />
           Leave interview
         </button>
       </div>
@@ -330,7 +336,12 @@ export function InterviewRound() {
   return (
     <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 text-center">
       <h1 className="font-pixel text-3xl font-bold text-ink">What do you want to practice?</h1>
-      <p className="text-lg text-ink-soft">Pick a session. You can try any of them, in any order.</p>
+      <p className="text-lg text-ink-soft">
+        <strong className="font-extrabold text-ink">
+          This is practice for AI-powered voice interviews, not for interviews with real people.
+        </strong>{" "}
+        Say each answer out loud, then type it or check it off. Pick any session, in any order.
+      </p>
       <div role="radiogroup" aria-label="Session" className="grid w-full gap-3 sm:grid-cols-2 sm:gap-4">
         {card(
           MIX,

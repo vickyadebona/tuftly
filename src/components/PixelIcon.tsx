@@ -55,6 +55,7 @@ const ICONS = {
   gem: ["..xxxxx..", ".xxxxxxx.", "xxxxxxxxx", ".xxxxxxx.", "..xxxxx..", "...xxx...", "....x...."],
   coin: ["..xxxx..", ".xxxxxx.", "xxx..xxx", "xx....xx", "xx....xx", "xxx..xxx", ".xxxxxx.", "..xxxx.."],
   speech: [".xxxxxx.", "xxxxxxxx", "xxxxxxxx", "xxxxxxxx", "xxxxxxxx", "xxxxxxxx", ".xxxxxx.", "..xxx...", "..xx....", "..x....."],
+  exit: ["xxxxxx....", "x....x....", "x....x.x..", "x......xx.", "x..xxxxxxx", "x..xxxxxxx", "x......xx.", "x....x.x..", "x....x....", "xxxxxx...."],
   arrow: ["....x....", "....xx...", "xxxxxxx..", "xxxxxxxx.", "xxxxxxx..", "....xx...", "....x...."],
 } as const;
 

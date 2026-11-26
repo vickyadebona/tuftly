@@ -41,7 +41,7 @@ const STEPS: Step[] = [
   },
   {
     title: "Interviews with me",
-    text: "Pick how it feels: relaxed, standard or interview day. Need a breather? Take a tea break and the clock waits for you.",
+    text: "Practice for AI voice interviews here. Pick how it feels: relaxed, standard or interview day. Need a breather? Take a tea break and the clock waits for you.",
     mood: "determined",
     target: "nav-interview",
     placement: "right",
