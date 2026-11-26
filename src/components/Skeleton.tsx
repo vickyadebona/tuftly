@@ -55,7 +55,6 @@ export function InterviewSkeleton() {
           <Skeleton key={i} className="h-24 w-full" />
         ))}
       </div>
-      <Skeleton className="h-12 w-40" />
     </Frame>
   );
 }
