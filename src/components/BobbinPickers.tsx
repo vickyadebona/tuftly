@@ -24,7 +24,7 @@ export function MoodPicker() {
       <p aria-live="polite" className="pixel-box flex min-h-20 w-full max-w-sm items-center justify-center bg-paper px-4 py-3 text-center font-pixel text-xl font-bold text-ink">
         {now.says}
       </p>
-      {/* The sipping drawing needs its cup and wings, as in the app's tea break. */}
+      {/* Tea time drinks the way the app's tea break does, cup and wings included. */}
       <div className="flex h-[220px] items-center justify-center">
         {now.mood === "sip" ? (
           <div className="scale-[1.29]">

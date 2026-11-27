@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { COMPANION } from "@/lib/config";
 import { chooseTea, useProgress } from "@/lib/store";
 import type { Season } from "@/lib/season";
@@ -86,33 +86,95 @@ function grasp(season: Season, tea: TeaId) {
 }
 
 /**
- * A still of Bobbin mid-sip, wings round a cup of the season's tea. The sipping drawing has no wings
- * of its own.
+ * Bobbin and a cup. `sipping` lifts the cup to the beak, and `holding` is true once it has arrived
+ * and the wings are round it. Drawn 192 by 176.
  */
-export function SippingBobbin() {
+function Drinker({ tea, level, sipping, holding, rest }: {
+  tea: TeaId;
+  level: number;
+  sipping: boolean;
+  holding: boolean;
+  /** Bobbin's face between sips. */
+  rest: "sparkle" | "happy";
+}) {
   const season = useSeason();
-  const tea = SEASON_TEA[season];
   const mouth = MOUTH[tea];
   const at = { x: mouth.x * PX, y: mouth.y * PX };
+  // Between sips the cup is set down in front of Bobbin; to sip, it lifts straight up until its
+  // mouth point meets the beak. Cups drunk from the rim tilt around that same point; a straw stays
+  // upright.
+  const held = {
+    left: BEAK[season].x - at.x,
+    top: sipping ? BEAK[season].y + mouth.drop - at.y : GROUND - teaRows(tea) * PX,
+    transform: `rotate(${sipping && mouth.y > 0 ? -7 : 0}deg)`,
+    transformOrigin: `${at.x}px ${at.y}px`,
+  };
   return (
-    <div className="relative shrink-0" style={{ width: BIRD, height: BIRD }}>
-      <span className="absolute left-0 top-0">
-        <PixelArtBobbin mood="sip" size={BIRD} />
-      </span>
+    <div className="relative h-[176px] w-[192px] shrink-0">
+      {/* Everything that is part of Bobbin floats as one, so held wings and cup stay put on the body. */}
+      <div className="bobbin-idle bobbin-still absolute inset-0">
+        {/* Both poses stay loaded so the swap doesn't flicker. The sipping one has no side wings. */}
+        <span className={`absolute left-0 top-0 ${holding ? "invisible" : ""}`}>
+          <PixelArtBobbin mood={rest} size={BIRD} />
+        </span>
+        <span className={`absolute left-0 top-0 ${holding ? "" : "invisible"}`}>
+          <PixelArtBobbin mood="sip" size={BIRD} priority />
+        </span>
+        {holding && (
+          <>
+            <span className="absolute" style={held}>
+              <TeaCup tea={tea} level={level} size={CUP} steam={false} />
+            </span>
+            <span className="absolute left-0 top-0">
+              <HoldingWings size={BIRD} block={BLOCK} shoulders={SHOULDERS[season]} cup={grasp(season, tea)} />
+            </span>
+          </>
+        )}
+      </div>
+      {/* The cup on its way up or down, or standing on the ground, where it doesn't float. */}
       <span
-        className="absolute"
-        style={{
-          left: BEAK[season].x - at.x,
-          top: BEAK[season].y + mouth.drop - at.y,
-          transform: `rotate(${mouth.y > 0 ? -7 : 0}deg)`,
-          transformOrigin: `${at.x}px ${at.y}px`,
-        }}
+        className={`absolute transition-[top,transform] duration-500 motion-reduce:transition-none ${holding ? "invisible" : ""}`}
+        style={held}
       >
-        <TeaCup tea={tea} level={1} size={CUP} steam={false} />
+        {/* No steam on the way to the beak, where it would cover Bobbin's face. */}
+        <TeaCup tea={tea} level={level} size={CUP} steam={!sipping} />
       </span>
-      <span className="absolute left-0 top-0">
-        <HoldingWings size={BIRD} block={BLOCK} shoulders={SHOULDERS[season]} cup={grasp(season, tea)} />
-      </span>
+    </div>
+  );
+}
+
+const STILL = "(prefers-reduced-motion: reduce)";
+const wantsStill = () => window.matchMedia(STILL).matches;
+function watchStill(onChange: () => void) {
+  const query = window.matchMedia(STILL);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
+/** How long the cup rests on the ground between the landing page's sips. */
+const PAUSE_MS = 1600;
+
+/**
+ * Bobbin sipping the season's tea over and over. With reduced motion, a still of the cup at the
+ * beak.
+ */
+export function SippingBobbin() {
+  const tea = SEASON_TEA[useSeason()];
+  const still = useSyncExternalStore(watchStill, wantsStill, () => false);
+  const [step, setStep] = useState<"down" | "lifting" | "holding">("down");
+
+  useEffect(() => {
+    if (still) return;
+    const next = step === "down" ? "lifting" : step === "lifting" ? "holding" : "down";
+    const wait = step === "down" ? PAUSE_MS : step === "lifting" ? LIFT_MS : SIP_MS - LIFT_MS;
+    const timer = window.setTimeout(() => setStep(next), wait);
+    return () => window.clearTimeout(timer);
+  }, [step, still]);
+
+  return (
+    // Bobbin sits left of the drawing's middle (170 of 192 wide), so nudge it back to center.
+    <div className="translate-x-[11px]">
+      <Drinker tea={tea} level={1} rest="sparkle" sipping={still || step !== "down"} holding={still || step === "holding"} />
     </div>
   );
 }
@@ -128,23 +190,11 @@ export function TeaBreak({ onReady }: { onReady: () => void }) {
   // True once the cup has arrived. Until then Bobbin keeps their wings at their sides.
   const [holding, setHolding] = useState(false);
   const timers = useRef<number[]>([]);
-  const season = useSeason();
   useEffect(() => () => timers.current.forEach(window.clearTimeout), []);
 
   const picked = TEA_MENU.find((t) => t.id === tea)!;
   const level = 1 - taken / SIPS;
   const finished = taken >= SIPS;
-  const mouth = MOUTH[tea];
-  const at = { x: mouth.x * PX, y: mouth.y * PX };
-  // Between sips the cup is set down in front of Bobbin; to sip, it lifts straight up until its
-  // mouth point meets the beak. Cups drunk from the rim tilt around that same point; a straw stays
-  // upright.
-  const held = {
-    left: BEAK[season].x - at.x,
-    top: sipping ? BEAK[season].y + mouth.drop - at.y : GROUND - teaRows(tea) * PX,
-    transform: `rotate(${sipping && mouth.y > 0 ? -7 : 0}deg)`,
-  };
-  const origin = `${at.x}px ${at.y}px`;
 
   function choose(id: TeaId) {
     setChosen(id);
@@ -199,41 +249,7 @@ export function TeaBreak({ onReady }: { onReady: () => void }) {
 
       {/* Bobbin picks the cup up for a sip and puts it down again, and yours tips alongside. */}
       <div className="flex items-end justify-center gap-2 sm:gap-6">
-        <div className="relative h-[176px] w-[192px] shrink-0">
-          {/* Everything that is part of Bobbin floats as one, so held wings and cup stay put on the body. */}
-          <div className="bobbin-idle bobbin-still absolute inset-0">
-            {/* Both poses stay loaded so the swap doesn't flicker. The sipping one has no side wings. */}
-            <span className={`absolute left-0 top-0 ${holding ? "invisible" : ""}`}>
-              <PixelArtBobbin mood={finished ? "happy" : "sparkle"} size={BIRD} />
-            </span>
-            <span className={`absolute left-0 top-0 ${holding ? "" : "invisible"}`}>
-              <PixelArtBobbin mood="sip" size={BIRD} priority />
-            </span>
-            {holding && (
-              <>
-                <span className="absolute" style={{ ...held, transformOrigin: origin }}>
-                  <TeaCup tea={tea} level={level} size={CUP} steam={false} />
-                </span>
-                <span className="absolute left-0 top-0">
-                  <HoldingWings
-                    size={BIRD}
-                    block={BLOCK}
-                    shoulders={SHOULDERS[season]}
-                    cup={grasp(season, tea)}
-                  />
-                </span>
-              </>
-            )}
-          </div>
-          {/* The cup on its way up or down, or standing on the ground, where it doesn't float. */}
-          <span
-            className={`absolute transition-[top,transform] duration-500 motion-reduce:transition-none ${holding ? "invisible" : ""}`}
-            style={{ ...held, transformOrigin: origin }}
-          >
-            {/* No steam on the way to the beak, where it would cover Bobbin's face. */}
-            <TeaCup tea={tea} level={level} size={CUP} steam={!sipping} />
-          </span>
-        </div>
+        <Drinker tea={tea} level={level} sipping={sipping} holding={holding} rest={finished ? "happy" : "sparkle"} />
         <div className="flex flex-col items-center gap-1 pb-2">
           <span className={`transition-transform duration-500 motion-reduce:transition-none ${sipping ? "-translate-y-6 -rotate-12" : ""}`}>
             <TeaCup tea={tea} level={level} size={66} />
