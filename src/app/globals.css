@@ -132,8 +132,16 @@ body {
   50%, 100% { opacity: 0; }
 }
 .bobbin-shut { opacity: 0; animation: bobbin-talk 0.4s steps(1) 8; }
+.bobbin-shut[data-talking="true"] { animation-iteration-count: infinite; }
+.bobbin-shut[data-talking="false"] { animation: none; }
 @media (prefers-reduced-motion: reduce) {
-  .bobbin-idle, .bobbin-sleep, .bobbin-cheer, .bobbin-shut { animation: none; }
+  .bobbin-idle, .bobbin-sleep, .bobbin-cheer, .bobbin-shut, .bobbin-shut[data-talking] { animation: none; }
+}
+
+/* Words Bobbin hasn't reached yet. People who prefer less movement see the whole line. */
+.spoken-later { visibility: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .spoken-later { visibility: visible; }
 }
 
 /* Pixel art stays crisp when scaled. */

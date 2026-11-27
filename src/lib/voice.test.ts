@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { existsSync, readFileSync } from "node:fs";
 import {
+  INTRO,
   interviewsLeft,
   lengthNote,
   reassurance,
+  spokenLength,
   STORY_QUESTIONS,
   summarize,
   transcriptText,
@@ -74,4 +77,28 @@ test("the download holds both sides of the conversation and how each answer was 
   assert.match(text, /Bobbin \(question\): Tell me about yourself\./);
   assert.match(text, /You \(Marked “I'm not sure”, then answered · 40 sec · Edited by you\): I build React apps\./);
   assert.match(text, /November 25, 2026/);
+});
+
+test("every line Bobbin says has an up-to-date recording", () => {
+  const folder = new URL("../../public/voice/", import.meta.url);
+  const recorded = JSON.parse(readFileSync(new URL("lines.json", folder), "utf8")).lines;
+  const spoken = [[INTRO.id, INTRO.text], ...STORY_QUESTIONS.map((q) => [q.id, q.prompt])];
+  // Changed a line? Record it again with scripts/add-voice.mjs.
+  assert.deepEqual(recorded, Object.fromEntries(spoken));
+  for (const [id] of spoken) assert.ok(existsSync(new URL(`${id}.m4a`, folder)), id);
+});
+
+test("spoken words appear one at a time, from the first to the whole line", () => {
+  const line = "Hi! Tell me about yourself.";
+  assert.equal(line.slice(0, spokenLength(line, 0)), "Hi! ");
+  assert.equal(spokenLength(line, 1), line.length);
+  // Still on "Hi!" during the pause after it.
+  assert.equal(line.slice(0, spokenLength(line, 0.2)), "Hi! ");
+  let last = 0;
+  for (let f = 0; f <= 1; f += 0.05) {
+    const shown = spokenLength(line, f);
+    assert.ok(shown >= last);
+    assert.ok(shown === line.length || line[shown - 1] === " ", "whole words only");
+    last = shown;
+  }
 });

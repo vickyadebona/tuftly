@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 // The browser's own speech tools. Support varies: Chrome, Edge and Safari can listen, Firefox
 // mostly can't, and some browsers send the audio to their maker's service to turn it into text.
@@ -168,16 +168,112 @@ export function useDictation() {
   return { heard: join(text, interim), error, waiting, start, stop };
 }
 
-/** Says a line out loud in the browser's voice, if it has one. */
-export function speak(line: string) {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(line);
+// Bobbin's lines are recorded ahead of time (scripts/add-voice.mjs), so they sound the same
+// everywhere. The browser's own voice is the backup if a recording can't play.
+let player: HTMLAudioElement | null = null;
+// Goes up on every new line and every hush, so a late failure of an old line stays quiet.
+let line = 0;
+let speaking = false;
+// The recording being read out, so its words can appear in time with it.
+let reading: string | null = null;
+const listeners = new Set<() => void>();
+
+function setSpeaking(next: boolean) {
+  if (speaking === next) return;
+  speaking = next;
+  listeners.forEach((l) => l());
+}
+
+function setReading(next: string | null) {
+  if (reading === next) return;
+  reading = next;
+  listeners.forEach((l) => l());
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  return () => void listeners.delete(listener);
+}
+
+/** True while Bobbin is talking. */
+export function useSpeaking() {
+  return useSyncExternalStore(
+    subscribe,
+    () => speaking,
+    () => false,
+  );
+}
+
+/**
+ * How far through the recording `id` Bobbin is, from 0 to 1. Null when he isn't reading it, which
+ * means: show all of it.
+ */
+export function useSpokenFraction(id: string): number | null {
+  const active = useSyncExternalStore(
+    subscribe,
+    () => reading === id,
+    () => false,
+  );
+  const [fraction, setFraction] = useState(0);
+  useEffect(() => {
+    if (!active) return;
+    let frame = 0;
+    const tick = () => {
+      const length = player?.duration ?? 0;
+      setFraction(player && length > 0 ? player.currentTime / length : 0);
+      frame = requestAnimationFrame(tick);
+    };
+    tick();
+    return () => cancelAnimationFrame(frame);
+  }, [active, id]);
+  return active ? fraction : null;
+}
+
+function sayInBrowserVoice(text: string) {
+  if (!("speechSynthesis" in window)) return;
+  const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "en-US";
   utterance.rate = 0.95;
+  utterance.onstart = () => setSpeaking(true);
+  utterance.onend = utterance.onerror = () => setSpeaking(false);
   window.speechSynthesis.speak(utterance);
 }
 
+/** Says a line out loud. `id` names its recording; `text` is the same words. */
+export function speak(id: string, text: string) {
+  if (typeof window === "undefined") return;
+  hush();
+  const mine = line;
+  // One player for every line: browsers that let it play once keep letting it.
+  player ??= new Audio();
+  const audio = player;
+  audio.src = `/voice/${id}.m4a`;
+  audio.onplaying = () => {
+    setReading(id);
+    setSpeaking(true);
+  };
+  audio.onpause = audio.onended = () => {
+    // A late event from the line before must not end this one.
+    if (!audio.paused) return;
+    setReading(null);
+    setSpeaking(false);
+  };
+  setReading(id);
+  // Never hold the words back for a slow download.
+  window.setTimeout(() => {
+    if (line === mine && audio.currentTime === 0) setReading(null);
+  }, 1500);
+  audio.play().catch(() => {
+    if (line !== mine) return;
+    setReading(null);
+    sayInBrowserVoice(text);
+  });
+}
+
 export function hush() {
+  line++;
+  player?.pause();
   if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+  setReading(null);
+  setSpeaking(false);
 }
