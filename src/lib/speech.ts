@@ -34,7 +34,7 @@ export type ListenError = "blocked" | "nomic" | "service" | "unsupported" | "fai
 /** What to tell someone for each way listening can fail. */
 export const LISTEN_PROBLEM: Record<ListenError, string> = {
   blocked: "Your microphone isn't allowed yet. Allow it from the icon by the address bar, then try again.",
-  nomic: "I couldn't find a microphone. Plug one in or check your settings, then try again.",
+  nomic: "I couldn't reach the microphone. Check that one is on and allowed, then try again.",
   service: "This browser couldn't turn speech into text. Chrome or Safari usually can.",
   unsupported: "This browser can't listen.",
   failed: "I couldn't use the microphone. Try again.",
@@ -102,47 +102,61 @@ export function useDictation() {
         setError("unsupported");
         return;
       }
-      const r = new Class();
-      r.lang = "en-US";
-      r.continuous = true;
-      r.interimResults = true;
-      r.onresult = (e) => {
-        let pending = "";
-        for (let i = e.resultIndex; i < e.results.length; i++) {
-          const result = e.results[i];
-          if (result.isFinal) finalText.current = join(finalText.current, result[0].transcript);
-          else pending = join(pending, result[0].transcript);
-        }
-        setText(finalText.current);
-        setInterim(pending);
-      };
-      r.onerror = (e) => {
-        // Silence and our own stops are normal. Anything else ends listening.
-        if (e.error === "no-speech" || e.error === "aborted") return;
-        if (e.error === "not-allowed" || e.error === "audio-capture") allowed = false;
-        setError(
-          e.error === "not-allowed"
-            ? "blocked"
-            : e.error === "audio-capture"
-              ? "nomic"
-              : e.error === "network" || e.error === "service-not-allowed"
-                ? "service"
-                : "failed",
-        );
-        active.current = null;
-      };
-      // Browsers stop on their own after a quiet spell, so start again while we still want to hear.
-      r.onend = () => {
-        if (active.current !== r) return;
-        try {
-          r.start();
-        } catch {
-          setError("failed");
-        }
-      };
-      active.current = r;
       const mine = attempt.current;
+      // Phones can say there's no microphone for a moment, just after Bobbin has been talking.
+      let retries = 0;
       const begin = () => {
+        const r = new Class();
+        r.lang = "en-US";
+        r.continuous = true;
+        r.interimResults = true;
+        r.onresult = (e) => {
+          retries = 0;
+          let pending = "";
+          for (let i = e.resultIndex; i < e.results.length; i++) {
+            const result = e.results[i];
+            if (result.isFinal) finalText.current = join(finalText.current, result[0].transcript);
+            else pending = join(pending, result[0].transcript);
+          }
+          setText(finalText.current);
+          setInterim(pending);
+        };
+        r.onerror = (e) => {
+          // Silence and our own stops are normal.
+          if (e.error === "no-speech" || e.error === "aborted") return;
+          active.current = null;
+          // Give the microphone a moment to come free, and try again with a fresh listener.
+          if (e.error === "audio-capture" && retries < 2) {
+            retries++;
+            r.onend = null;
+            r.abort();
+            window.setTimeout(() => {
+              if (attempt.current === mine) begin();
+            }, 600 * retries);
+            return;
+          }
+          // Anything else ends listening.
+          if (e.error === "not-allowed" || e.error === "audio-capture") allowed = false;
+          setError(
+            e.error === "not-allowed"
+              ? "blocked"
+              : e.error === "audio-capture"
+                ? "nomic"
+                : e.error === "network" || e.error === "service-not-allowed"
+                  ? "service"
+                  : "failed",
+          );
+        };
+        // Browsers stop on their own after a quiet spell, so start again while we still want to hear.
+        r.onend = () => {
+          if (active.current !== r) return;
+          try {
+            r.start();
+          } catch {
+            setError("failed");
+          }
+        };
+        active.current = r;
         try {
           r.start();
         } catch {
@@ -155,7 +169,6 @@ export function useDictation() {
         if (attempt.current !== mine) return;
         setWaiting(false);
         if (problem) {
-          active.current = null;
           setError(problem);
         } else begin();
       });
@@ -272,7 +285,12 @@ export function speak(id: string, text: string) {
 
 export function hush() {
   line++;
-  player?.pause();
+  if (player?.src) {
+    player.pause();
+    // Let go of the audio altogether: some phones won't listen while it's still held.
+    player.removeAttribute("src");
+    player.load();
+  }
   if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
   setReading(null);
   setSpeaking(false);
