@@ -7,6 +7,7 @@ import { todayStr } from "@/lib/dates";
 import { useHydrated, useProgress } from "@/lib/store";
 import { streakSummary } from "@/lib/streak";
 import { useSeason } from "@/lib/useSeason";
+import { HELLO, STREAK } from "@/lib/phrases";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { StreakWeek } from "./StreakDays";
 
@@ -80,6 +81,7 @@ function CelebrationDialog({
         <h2 id="streak-title" className="font-pixel text-3xl font-bold text-ink">
           {summary.current} day streak!
         </h2>
+        <p className="font-bold text-ink">{summary.current > 1 ? STREAK : HELLO}</p>
         <p className="text-ink">That&apos;s today counted. Anything more is a bonus.</p>
         <StreakWeek today={today} start={summary.weekStart} statusOf={summary.statusOf} />
         <button type="button" className="btn-primary w-full" onClick={onClose}>

@@ -9,6 +9,7 @@ import { recordPractice, useHydrated, useProgress } from "@/lib/store";
 import { interleave } from "@/lib/queue";
 import { lessonMix, minutesFor, SESSIONS, sessionQuestions, type RoundQuestion } from "@/lib/sessions";
 import { useSeason } from "@/lib/useSeason";
+import { BEFORE_INTERVIEW, INTERVIEW_DONE } from "@/lib/phrases";
 import { CodeBlock } from "./CodeBlock";
 import { LeaveDialog } from "./LeaveDialog";
 import { VoicePractice } from "./VoicePractice";
@@ -323,6 +324,7 @@ export function InterviewRound() {
         <h1 ref={paceHeading} tabIndex={-1} className="font-pixel text-3xl font-bold text-ink outline-none">
           How should it feel today?
         </h1>
+        <p className="font-bold text-ink">{BEFORE_INTERVIEW}</p>
         <p className="text-ink-soft">Pick a pace. You can change it next time.</p>
         <div role="radiogroup" aria-label="How it feels" className="grid w-full gap-5 md:grid-cols-3">
           {PRESSURE.map((p) => {
@@ -411,6 +413,7 @@ function Summary({
       <StreakCelebration />
       <PixelArtBobbin mood="cheering" outfit={season} size={150} />
       <h1 className="font-pixel text-3xl font-bold text-ink">That&apos;s a wrap!</h1>
+      <p className="font-bold text-ink">{INTERVIEW_DONE}</p>
       <p className="text-lg text-ink">You finished the round. Here is where each topic stands, plus a good next step.</p>
       <ol className="flex flex-wrap justify-center gap-3" aria-label="Your round">
         {results.map((r, i) => (

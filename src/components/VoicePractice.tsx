@@ -27,6 +27,7 @@ import {
   type VoiceQuestion,
 } from "@/lib/voice";
 import { countInterview, deleteInterview, saveInterview, usedToday, useVoiceData } from "@/lib/voiceStore";
+import { BEFORE_INTERVIEW, INTERVIEW_DONE, NOT_SURE } from "@/lib/phrases";
 import { LeaveDialog } from "./LeaveDialog";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelIcon } from "./PixelIcon";
@@ -432,6 +433,7 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
       {step === "ready" && (
         <section className={SCREEN}>
           {title("Before we start")}
+          {mode === "coach" && <p className="font-bold text-ink">{BEFORE_INTERVIEW}</p>}
           <Scale label="How ready do you feel?" value={ready} onPick={setReady} />
           <div aria-live="polite" className="w-full max-w-xl">
             {ready > 0 && (
@@ -661,6 +663,7 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
         <section className={SCREEN}>
           {bird("thinking", 150)}
           {title("That's okay. It happens in real interviews too.", "text-2xl")}
+          {mode === "coach" && <p className="font-bold text-ink">{NOT_SURE}</p>}
           <List title="A way to start" items={question.hints} tone="w-full max-w-xl flex-none bg-sky" />
           <div className="flex flex-wrap justify-center gap-3">
             <button type="button" className="btn-secondary" onClick={() => advance(record("", { skipped: true }))}>
@@ -698,6 +701,7 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
           <StreakCelebration />
           {bird("cheering", 120)}
           {title(interview.turns.length === questions.length ? "That's the whole interview!" : "That's a wrap!")}
+          {interview.mode === "coach" && <p className="font-bold text-ink">{INTERVIEW_DONE}</p>}
           <div className="flex w-full flex-col gap-4 sm:flex-row">
             <List title="What you covered" items={summarize(interview.turns).covered.length ? summarize(interview.turns).covered : ["You showed up and practiced"]} tone="bg-mint" />
             {summarize(interview.turns).next.length > 0 && <List title="To try next time" items={summarize(interview.turns).next} tone="bg-butter" />}

@@ -4,7 +4,8 @@ import { SEASONS, type Season } from "@/lib/season";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { RichText } from "./RichText";
 import { SeasonBadgeTea, SeasonHeadline } from "./SeasonHeadline";
-import { PixelCloud, PixelIcon, type PixelIconName } from "./PixelIcon";
+import { HeroScene, HeroSky } from "./HeroScene";
+import { PixelIcon, type PixelIconName } from "./PixelIcon";
 
 export const SECTION = "px-5 py-14 sm:px-6 sm:py-20";
 export const INNER = "mx-auto w-full max-w-6xl";
@@ -62,47 +63,12 @@ export function Nav({ current }: { current?: "about" }) {
   );
 }
 
-/** The hero scene. Laid out from the ground up so Bobbin always stands on the grass. */
-function Island() {
-  return (
-    <div
-      className="relative mx-auto flex h-[330px] w-full max-w-[520px] flex-col items-center justify-end sm:h-[540px]"
-      aria-hidden="true"
-    >
-      <div className="absolute left-0 top-3 sm:top-8">
-        <PixelCloud size={96} />
-      </div>
-      <div className="absolute right-0 top-14 sm:right-2 sm:top-28">
-        <PixelCloud size={64} />
-      </div>
-      <div className="absolute left-8 top-52 hidden sm:block"><PixelIcon name="star" size={36} color="#f2b93b" /></div>
-      <div className="absolute right-4 top-4 sm:right-6 sm:top-8"><PixelIcon name="star" size={30} color="#f2b93b" /></div>
-      <div className="absolute right-4 top-[190px] hidden sm:block"><PixelIcon name="gem" size={34} color="#9fd5ea" /></div>
-
-      {/* The image has a little empty space under the feet, so pull it down onto the grass. */}
-      <div className="relative z-10 -mb-[9%] [&_img]:h-[200px] [&_img]:w-[200px] sm:[&_img]:h-[300px] sm:[&_img]:w-[300px]">
-        <PixelArtBobbin mood="sparkle" size={300} priority />
-      </div>
-
-      <div className="relative w-[calc(100%-32px)] sm:w-[calc(100%-64px)]">
-        <div className="absolute bottom-full left-1 sm:left-8">
-          <div className="flex h-9 w-12 items-center justify-center border-[3px] border-line bg-paper sm:h-10 sm:w-14">
-            <PixelIcon name="arrow" size={22} color="#2f7f78" />
-          </div>
-          <div className="mx-auto h-12 w-2.5 bg-[#c99a6b] sm:h-16" />
-        </div>
-        <div className="h-10 border-[3px] border-line bg-grass sm:h-12" />
-      </div>
-      <div className="h-16 w-[calc(100%-120px)] border-[3px] border-t-0 border-line bg-[#c99a6b] sm:h-24 sm:w-[calc(100%-160px)]" />
-    </div>
-  );
-}
-
 function Hero() {
   return (
-    <section className="bg-sky px-5 py-10 sm:px-6 sm:py-16">
-      <div className={`${INNER} grid items-center gap-10 lg:grid-cols-2`}>
-        <div className="flex flex-col items-start gap-6">
+    <HeroSky>
+      {/* On a phone the picture sits under the headline. On a wide screen it takes the right-hand side. */}
+      <div className={`${INNER} grid gap-6 lg:grid-cols-2 lg:gap-x-10`}>
+        <div className="flex flex-col items-start gap-6 lg:self-end">
           <span className="pixel-chip">
             Free practice, with tea breaks
             <SeasonBadgeTea />
@@ -110,6 +76,11 @@ function Hero() {
           <h1 className="font-pixel text-4xl font-bold leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
             <SeasonHeadline />
           </h1>
+        </div>
+        <div className="self-center lg:col-start-2 lg:row-span-2 lg:row-start-1">
+          <HeroScene />
+        </div>
+        <div className="flex flex-col items-start gap-6 lg:self-start">
           <p className="max-w-xl text-lg text-ink-soft sm:text-xl">
             {APP_NAME} helps you get ready for web developer{" "}
             <strong className="font-extrabold">
@@ -132,9 +103,8 @@ function Hero() {
             <span className="pixel-chip bg-mint"><PixelIcon name="check" size={16} color="#2f7f78" /> No leaderboards</span>
           </div>
         </div>
-        <Island />
       </div>
-    </section>
+    </HeroSky>
   );
 }
 

@@ -5,6 +5,7 @@ import { COMPANION } from "@/lib/config";
 import { chooseTea, useProgress } from "@/lib/store";
 import type { Season } from "@/lib/season";
 import { useSeason } from "@/lib/useSeason";
+import { TEA_TIME } from "@/lib/phrases";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { HoldingWings, TeaCup, teaRows, type TeaId } from "./PixelIcon";
 
@@ -129,7 +130,7 @@ export function TeaBreak({ onReady }: { onReady: () => void }) {
 
   return (
     <section className="pixel-box flex w-full max-w-lg flex-col items-center gap-4 bg-teal-wash p-5 text-center sm:p-8">
-      <h2 className="font-pixel text-2xl font-bold text-ink">Tea time</h2>
+      <h2 className="font-pixel text-2xl font-bold text-ink">{TEA_TIME}</h2>
       <p className="text-ink">Pick a tea and drink it with {COMPANION.name}. The clock is paused.</p>
 
       <div role="radiogroup" aria-label="Choose a tea" className="grid w-full grid-cols-2 gap-3 sm:grid-cols-4">

@@ -19,7 +19,7 @@ interface Step {
 
 const STEPS: Step[] = [
   {
-    title: "Hi, I'm Bobbin!",
+    title: "Peep peep! I'm Bobbin.",
     text: "We start with short lessons that take a few minutes each. There's no timer on them.",
     mood: "sparkle",
     target: "welcome",

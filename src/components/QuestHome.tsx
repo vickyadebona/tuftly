@@ -10,6 +10,7 @@ import { useHydrated, useProgress } from "@/lib/store";
 import { streakSummary, weekStartOf } from "@/lib/streak";
 import type { Track } from "@/lib/types";
 import { useSeason } from "@/lib/useSeason";
+import { HELLO, WELCOME_BACK } from "@/lib/phrases";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelIcon } from "./PixelIcon";
 import { QuestSkeleton } from "./Skeleton";
@@ -59,7 +60,7 @@ export function QuestHome() {
   const progress = useProgress();
   const season = useSeason();
   const account = useAccount();
-  const hello = account && !account.guest ? `Hi ${account.name}, I'm ${COMPANION.name}!` : `Hi, I'm ${COMPANION.name}!`;
+  const hello = account && !account.guest ? `${HELLO} Hi ${account.name}, I'm ${COMPANION.name}.` : `${HELLO} I'm ${COMPANION.name}.`;
   const lessons = getLessons();
 
   const today = hydrated ? todayStr() : "";
@@ -95,12 +96,12 @@ export function QuestHome() {
       : covered
         ? `${COMPANION.name} covered ${WEEKDAYS[weekday(covered)]}. Your ${streak!.current} day streak is safe.`
         : startingOver
-          ? "Good to see you! One practice starts a new streak."
+          ? `${WELCOME_BACK} One practice starts a new streak.`
           : doneCount === 0
             ? `${hello} Want to start with a quick lesson?`
         : waiting > 0
-          ? `${waiting} short practice${waiting === 1 ? "" : "s"} ready when you are.`
-          : "You're all caught up for today.";
+          ? `${HELLO} ${waiting} short practice${waiting === 1 ? "" : "s"} ready when you are.`
+          : `${HELLO} Good to see you. You're all caught up for today.`;
 
   const quests: { label: string; done: boolean; note: string; href?: string }[] = [
     { label: "Practice today", done: activeToday, note: activeToday ? "Done" : "Not yet" },
