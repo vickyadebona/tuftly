@@ -138,3 +138,18 @@ body {
 
 /* Pixel art stays crisp when scaled. */
 img[src^="/bobbin/"] { image-rendering: pixelated; }
+
+/* Bobbin hopping from one stop of the landing page's quest path to the next. */
+.quest-hop {
+  animation: quest-hop 0.5s ease-out;
+}
+@keyframes quest-hop {
+  50% {
+    transform: translateY(-20px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quest-hop {
+    animation: none;
+  }
+}

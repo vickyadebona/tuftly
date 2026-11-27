@@ -11,6 +11,7 @@ import { streakSummary, weekStartOf } from "@/lib/streak";
 import type { Track } from "@/lib/types";
 import { useSeason } from "@/lib/useSeason";
 import { HELLO, WELCOME_BACK } from "@/lib/phrases";
+import { PathNode, type NodeState } from "./PathNode";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelIcon } from "./PixelIcon";
 import { QuestSkeleton } from "./Skeleton";
@@ -19,7 +20,6 @@ import { StreakWeek, WEEKDAYS } from "./StreakDays";
 
 const COMING_SOON = ["Async basics", "Closures"];
 
-type NodeState = "done" | "current" | "locked";
 
 const UNITS: {
   track: Track;
@@ -33,27 +33,6 @@ const UNITS: {
   { track: "typescript", title: "TypeScript, precisely", bg: "bg-lilac-deep" },
   { track: "engineering", title: "Explaining how you build", bg: "bg-teal" },
 ];
-
-function PathNode({ state }: { state: NodeState }) {
-  const base = "flex h-14 w-14 shrink-0 items-center justify-center border-[3px] border-line sm:h-[68px] sm:w-[68px]";
-  if (state === "done")
-    return (
-      <span className={`${base} bg-teal`}>
-        <PixelIcon name="check" size={32} color="#4a3326" />
-      </span>
-    );
-  if (state === "current")
-    return (
-      <span className={`${base} bg-butter`}>
-        <PixelIcon name="star" size={32} color="#f2b93b" />
-      </span>
-    );
-  return (
-    <span className={`${base} bg-paper`}>
-      <PixelIcon name="lock" size={28} color="#7a6253" />
-    </span>
-  );
-}
 
 export function QuestHome() {
   const hydrated = useHydrated();

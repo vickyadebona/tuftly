@@ -43,6 +43,13 @@ export const SHOW_UNREVIEWED = process.env.NODE_ENV !== "production";
 export const PRESSURE_LEVELS = ["relaxed", "standard", "zara-like"] as const;
 export type PressureLevel = (typeof PRESSURE_LEVELS)[number];
 
+/** What each pace changes. The interview rounds and the landing page both read this. */
+export const PRESSURE: { id: PressureLevel; label: string; seconds: number | null; hints: boolean; note: string }[] = [
+  { id: "relaxed", label: "Relaxed", seconds: null, hints: true, note: "Hints on · No timer" },
+  { id: "standard", label: "Standard", seconds: 300, hints: true, note: "Hints on · Gentle timer" },
+  { id: "zara-like", label: "Interview day", seconds: 180, hints: false, note: "Hints off · Strict timer" },
+];
+
 /**
  * Offer "Share this to help improve lessons" after "Almost". Off until the privacy page is live
  * and describes it. To turn on: also move supabase/pending/0003_lesson_feedback.sql into

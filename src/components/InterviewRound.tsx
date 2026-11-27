@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getDrills, getLessons } from "@/content";
-import { COMPANION, type PressureLevel } from "@/lib/config";
+import { COMPANION, PRESSURE, type PressureLevel } from "@/lib/config";
 import { NAV_AGAIN } from "@/lib/events";
 import { recordPractice, useHydrated, useProgress } from "@/lib/store";
 import { interleave } from "@/lib/queue";
@@ -24,12 +24,6 @@ import { RichText } from "./RichText";
 // A practice round with the content we already have: a named session, or a mix from finished
 // lessons. You check your own answer against key points. The AI interviewer (follow-ups,
 // scoring) comes later. Voice practice is in VoicePractice.tsx.
-
-const PRESSURE: { id: PressureLevel; label: string; seconds: number | null; hints: boolean; note: string }[] = [
-  { id: "relaxed", label: "Relaxed", seconds: null, hints: true, note: "Hints on · No timer" },
-  { id: "standard", label: "Standard", seconds: 300, hints: true, note: "Hints on · Gentle timer" },
-  { id: "zara-like", label: "Interview day", seconds: 180, hints: false, note: "Hints off · Strict timer" },
-];
 
 /** Each pace keeps its color from the picker into the round. */
 const LEVEL_BG = { relaxed: "bg-mint", standard: "bg-peach", "zara-like": "bg-lilac" } as const;
