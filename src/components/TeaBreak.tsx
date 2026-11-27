@@ -153,6 +153,8 @@ function watchStill(onChange: () => void) {
 
 /** How long the cup rests on the ground between the landing page's sips. */
 const PAUSE_MS = 1600;
+/** On the landing page Bobbin lingers over the sip a second longer than in the tea break. */
+const LINGER_MS = SIP_MS - LIFT_MS + 1000;
 
 /**
  * Bobbin sipping the season's tea over and over. With reduced motion, a still of the cup at the
@@ -166,7 +168,7 @@ export function SippingBobbin() {
   useEffect(() => {
     if (still) return;
     const next = step === "down" ? "lifting" : step === "lifting" ? "holding" : "down";
-    const wait = step === "down" ? PAUSE_MS : step === "lifting" ? LIFT_MS : SIP_MS - LIFT_MS;
+    const wait = step === "down" ? PAUSE_MS : step === "lifting" ? LIFT_MS : LINGER_MS;
     const timer = window.setTimeout(() => setStep(next), wait);
     return () => window.clearTimeout(timer);
   }, [step, still]);
