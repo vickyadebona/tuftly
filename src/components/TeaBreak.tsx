@@ -7,6 +7,7 @@ import type { Season } from "@/lib/season";
 import { useSeason } from "@/lib/useSeason";
 import { TEA_TIME } from "@/lib/phrases";
 import { PixelArtBobbin } from "./PixelArtBobbin";
+import { SEASON_TEA } from "./SeasonHeadline";
 import { HoldingWings, TeaCup, teaRows, type TeaId } from "./PixelIcon";
 
 export const TEA_MENU: { id: TeaId; name: string; note: string }[] = [
@@ -69,6 +70,53 @@ const BREATHS = [
   "Breathe out for 4 seconds and let your shoulders drop.",
 ];
 
+/** Where Bobbin's wings take hold of a cup that has been lifted to the beak. */
+function grasp(season: Season, tea: TeaId) {
+  const mouth = MOUTH[tea];
+  const at = { x: mouth.x * PX, y: mouth.y * PX };
+  const grip = GRIP[tea];
+  const mouthAt = { x: BEAK[season].x, y: BEAK[season].y + mouth.drop };
+  // Winter sips sit higher, where cups drunk from the rim taper, so the hands reach further round.
+  const wrap = season === "winter" && mouth.y > 0 ? 2 : 0;
+  return {
+    left: mouthAt.x - at.x + grip.left * PX + HOLD + wrap,
+    right: mouthAt.x - at.x + grip.right * PX - HOLD - wrap,
+    y: mouthAt.y - at.y + grip.y * PX,
+  };
+}
+
+/**
+ * A still of Bobbin mid-sip, wings round a cup of the season's tea. The sipping drawing has no wings
+ * of its own.
+ */
+export function SippingBobbin() {
+  const season = useSeason();
+  const tea = SEASON_TEA[season];
+  const mouth = MOUTH[tea];
+  const at = { x: mouth.x * PX, y: mouth.y * PX };
+  return (
+    <div className="relative shrink-0" style={{ width: BIRD, height: BIRD }}>
+      <span className="absolute left-0 top-0">
+        <PixelArtBobbin mood="sip" size={BIRD} />
+      </span>
+      <span
+        className="absolute"
+        style={{
+          left: BEAK[season].x - at.x,
+          top: BEAK[season].y + mouth.drop - at.y,
+          transform: `rotate(${mouth.y > 0 ? -7 : 0}deg)`,
+          transformOrigin: `${at.x}px ${at.y}px`,
+        }}
+      >
+        <TeaCup tea={tea} level={1} size={CUP} steam={false} />
+      </span>
+      <span className="absolute left-0 top-0">
+        <HoldingWings size={BIRD} block={BLOCK} shoulders={SHOULDERS[season]} cup={grasp(season, tea)} />
+      </span>
+    </div>
+  );
+}
+
 /** A pause in the middle of a round: pick a tea and drink it with Bobbin. The clock is stopped. */
 export function TeaBreak({ onReady }: { onReady: () => void }) {
   // The last tea chosen is saved with the account. `chosen` keeps today's pick even if storage is blocked.
@@ -88,7 +136,6 @@ export function TeaBreak({ onReady }: { onReady: () => void }) {
   const finished = taken >= SIPS;
   const mouth = MOUTH[tea];
   const at = { x: mouth.x * PX, y: mouth.y * PX };
-  const grip = GRIP[tea];
   // Between sips the cup is set down in front of Bobbin; to sip, it lifts straight up until its
   // mouth point meets the beak. Cups drunk from the rim tilt around that same point; a straw stays
   // upright.
@@ -97,10 +144,7 @@ export function TeaBreak({ onReady }: { onReady: () => void }) {
     top: sipping ? BEAK[season].y + mouth.drop - at.y : GROUND - teaRows(tea) * PX,
     transform: `rotate(${sipping && mouth.y > 0 ? -7 : 0}deg)`,
   };
-  const mouthAt = { x: BEAK[season].x, y: BEAK[season].y + mouth.drop };
   const origin = `${at.x}px ${at.y}px`;
-  // Winter sips sit higher, where cups drunk from the rim taper, so the hands reach further round.
-  const wrap = season === "winter" && mouth.y > 0 ? 2 : 0;
 
   function choose(id: TeaId) {
     setChosen(id);
@@ -175,11 +219,7 @@ export function TeaBreak({ onReady }: { onReady: () => void }) {
                     size={BIRD}
                     block={BLOCK}
                     shoulders={SHOULDERS[season]}
-                    cup={{
-                      left: mouthAt.x - at.x + grip.left * PX + HOLD + wrap,
-                      right: mouthAt.x - at.x + grip.right * PX - HOLD - wrap,
-                      y: mouthAt.y - at.y + grip.y * PX,
-                    }}
+                    cup={grasp(season, tea)}
                   />
                 </span>
               </>
