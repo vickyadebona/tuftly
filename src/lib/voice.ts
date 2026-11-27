@@ -116,14 +116,19 @@ export function interviewsLeft(usedToday: number, cap: number): number {
   return Math.max(0, cap - usedToday);
 }
 
-export function reassurance(ready: number): { text: string; offerTea: boolean } {
+/** Once there's been a tea break, tea isn't offered or mentioned again. */
+export function reassurance(ready: number, hadTea = false): { text: string; offerTea: boolean } {
   if (ready <= 2) {
+    if (hadTea) return { text: "That's completely normal. We'll start when you're ready.", offerTea: false };
     return {
       text: "That's completely normal. How about a cup of tea first? Take a few quiet minutes, and we'll start when you're ready.",
       offerTea: true,
     };
   }
-  if (ready === 3) return { text: "A good place to start. A cup of tea first could help you settle in.", offerTea: true };
+  if (ready === 3) {
+    if (hadTea) return { text: "A good place to start.", offerTea: false };
+    return { text: "A good place to start. A cup of tea first could help you settle in.", offerTea: true };
+  }
   return { text: "Love that. Let's put it to the test and see what you can sharpen.", offerTea: false };
 }
 

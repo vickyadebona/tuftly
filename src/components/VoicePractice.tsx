@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { COMPANION, DAILY_INTERVIEW_CAP } from "@/lib/config";
 import { todayStr } from "@/lib/dates";
@@ -9,6 +10,7 @@ import { canListen, hush, LISTEN_PROBLEM, speak, useDictation, useSpeaking } fro
 import { recordPractice, useHydrated } from "@/lib/store";
 import { supabaseConfigured } from "@/lib/supabase/config";
 import { useAuthUser } from "@/lib/useAuthUser";
+import { useLeaveGuard } from "@/lib/useLeaveGuard";
 import { useSeason } from "@/lib/useSeason";
 import {
   answerNotes,
@@ -127,7 +129,11 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
   const [left, setLeft] = useState(VOICE_SECONDS);
   const [spent, setSpent] = useState(0);
   const [onBreak, setOnBreak] = useState(false);
+  const [hadTea, setHadTea] = useState(false);
   const [leaving, setLeaving] = useState(false);
+  // Where a link was headed when it was stopped to ask about leaving.
+  const [goingTo, setGoingTo] = useState<string | null>(null);
+  const router = useRouter();
   const [confirm, setConfirm] = useState<"redo" | "delete" | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
   const counted = useRef(false);
@@ -173,18 +179,31 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
     return () => window.clearInterval(id);
   }, [clockOn]);
 
+  /** One step back before the interview starts, so you can pick the other type. */
+  function stepBack() {
+    hush();
+    stopListening();
+    setTesting(false);
+    setStep(step === "explain" ? "ready" : "choose");
+  }
+
   const exit = useCallback(() => {
     hush();
     stopListening();
     onExit();
   }, [onExit, stopListening]);
 
-  // Leaving ends the interview and throws it away. Ask first only if there is something to lose.
-  const hasWork = !!interview && (interview.turns.length > 0 || draft.trim() !== "" || heard.trim() !== "");
+  // Leaving ends the interview and throws it away, so always ask first once it has started.
   const leave = useCallback(() => {
-    if (inRound && hasWork) setLeaving(true);
+    if (inRound) setLeaving(true);
     else exit();
-  }, [inRound, hasWork, exit]);
+  }, [inRound, exit]);
+
+  const askToGo = useCallback((href: string) => {
+    setGoingTo(href);
+    setLeaving(true);
+  }, []);
+  useLeaveGuard(inRound, askToGo);
 
   useEffect(() => {
     window.addEventListener(NAV_AGAIN, leave);
@@ -219,15 +238,22 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
     saveInterview(next);
   }
 
-  function say(i: number) {
-    speak(questions[i].id, questions[i].prompt);
+  function say(i: number, after: Promise<void> | null = null) {
+    speak(questions[i].id, questions[i].prompt, after);
   }
 
-  function introduce() {
-    speak(INTRO.id, INTRO.text);
+  function introduce(after: Promise<void> | null = null) {
+    speak(INTRO.id, INTRO.text, after);
   }
 
-  function ask(i: number) {
+  /** Ends the microphone test, remembering whether it heard anything. */
+  function endTest() {
+    if (micHeard) setMicWorked(true);
+    setTesting(false);
+    return stopListening();
+  }
+
+  function ask(i: number, after: Promise<void> | null = null) {
     setIndex(i);
     setDraft("");
     setTyping(false);
@@ -235,16 +261,15 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
     setNotSure(false);
     setSpent(0);
     setStep("ask");
-    say(i);
+    say(i, after);
   }
 
   function begin() {
-    stopListening();
-    setTesting(false);
+    const released = endTest();
     counted.current = false;
     setLeft(VOICE_SECONDS);
     setInterview({ id: String(Date.now()), owner, at: Date.now(), mode, turns: [], readyBefore: ready });
-    ask(0);
+    ask(0, released);
   }
 
   function answer(keep = "", byTyping = typing) {
@@ -325,6 +350,7 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
 
   function endBreak() {
     setOnBreak(false);
+    setHadTea(true);
     if (step === "answer" && supported && !typing) listen(draft);
   }
 
@@ -345,10 +371,25 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
 
   const bird = (mood: "happy" | "thinking" | "cheering", size = 130) => <PixelArtBobbin mood={mood} outfit={season} size={size} />;
 
+  const leaveDialog = leaving && (
+    <LeaveDialog
+      onStay={() => {
+        setLeaving(false);
+        setGoingTo(null);
+      }}
+      onLeave={() => {
+        if (interview) deleteInterview(interview.id);
+        if (goingTo) router.push(goingTo);
+        exit();
+      }}
+    />
+  );
+
   if (onBreak) {
     return (
       <div className="flex flex-1 items-center justify-center">
         <TeaBreak onReady={endBreak} />
+        {leaveDialog}
       </div>
     );
   }
@@ -359,10 +400,16 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
   return (
     <div className="flex flex-1 flex-col gap-6">
       <div className="flex items-center justify-between gap-2">
-        <button type="button" className="btn-secondary gap-2 whitespace-nowrap max-sm:px-2 max-sm:text-[13px]" onClick={leave}>
-          <PixelIcon name="exit" size={18} color="#4a3326" />
-          {inRound ? "Leave interview" : "Back to interviews"}
-        </button>
+        {step === "ready" || step === "explain" ? (
+          <button type="button" className="btn-secondary whitespace-nowrap max-sm:px-2 max-sm:text-[13px]" onClick={stepBack}>
+            Back
+          </button>
+        ) : (
+          <button type="button" className="btn-secondary gap-2 whitespace-nowrap max-sm:px-2 max-sm:text-[13px]" onClick={leave}>
+            <PixelIcon name="exit" size={18} color="#4a3326" />
+            {inRound ? "Leave interview" : "Back to interviews"}
+          </button>
+        )}
         {inRound && <TeaButton onClick={takeBreak} />}
       </div>
 
@@ -455,8 +502,8 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
               <div className="pixel-box flex items-center gap-4 bg-mint p-5 text-left">
                 <span className="shrink-0 max-sm:hidden">{bird("happy", 88)}</span>
                 <div className="flex flex-col items-start gap-3">
-                  <p className="text-ink">{reassurance(ready).text}</p>
-                  {reassurance(ready).offerTea && <TeaButton onClick={takeBreak} />}
+                  <p className="text-ink">{reassurance(ready, hadTea).text}</p>
+                  {reassurance(ready, hadTea).offerTea && <TeaButton onClick={takeBreak} />}
                 </div>
               </div>
             )}
@@ -507,7 +554,7 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
             </p>
           )}
           <div className="flex flex-wrap justify-center gap-3">
-            <button type="button" className="btn-secondary" onClick={introduce}>
+            <button type="button" className="btn-secondary" onClick={() => introduce(endTest())}>
               Hear it again
             </button>
             {supported && (
@@ -516,11 +563,8 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
                 className="btn-secondary"
                 onClick={() => {
                   // After a problem the same button tries again.
-                  if (testing && !error) {
-                    if (micHeard) setMicWorked(true);
-                    stopListening();
-                    setTesting(false);
-                  } else {
+                  if (testing && !error) endTest();
+                  else {
                     // So the microphone doesn't pick Bobbin up.
                     hush();
                     listen();
@@ -811,15 +855,7 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
         </section>
       )}
 
-      {leaving && (
-        <LeaveDialog
-          onStay={() => setLeaving(false)}
-          onLeave={() => {
-            if (interview) deleteInterview(interview.id);
-            exit();
-          }}
-        />
-      )}
+      {leaveDialog}
 
       {confirm && (
         <LeaveDialog

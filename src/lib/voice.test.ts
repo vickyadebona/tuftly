@@ -50,6 +50,13 @@ test("tea is offered for readiness 1 to 3 only", () => {
   assert.deepEqual([1, 2, 3, 4, 5].map((n) => reassurance(n).offerTea), [true, true, true, false, false]);
 });
 
+test("after a tea break, tea isn't offered or mentioned again", () => {
+  for (const n of [1, 2, 3, 4, 5]) {
+    assert.equal(reassurance(n, true).offerTea, false);
+    assert.doesNotMatch(reassurance(n, true).text, /\btea\b/i);
+  }
+});
+
 test("length notes follow the kind of question, and typed answers get none", () => {
   assert.match(lengthNote(turn({ seconds: 12 }))!, /Aim for about 30 to 60/);
   assert.match(lengthNote(turn({ seconds: 45 }))!, /good length/);

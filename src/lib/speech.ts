@@ -76,18 +76,23 @@ export function useDictation() {
   const attempt = useRef(0);
   const finalText = useRef("");
 
-  const stop = useCallback(() => {
+  /** Stops listening. If it was on, returns a promise for when the microphone has been let go. */
+  const stop = useCallback((): Promise<void> | null => {
     attempt.current++;
     setWaiting(false);
     const r = active.current;
     active.current = null;
-    if (r) {
-      r.onend = null;
-      r.onresult = null;
-      r.onerror = null;
-      r.abort();
-    }
     setInterim("");
+    if (!r) return null;
+    r.onresult = null;
+    r.onerror = null;
+    // Phones take a moment. Don't wait for ever if the browser never says it's done.
+    const released = new Promise<void>((done) => {
+      r.onend = () => done();
+      window.setTimeout(done, 1000);
+    });
+    r.abort();
+    return released;
   }, []);
 
   /** `keep` is text already heard, to carry on from (after a tea break, say). */
@@ -176,7 +181,7 @@ export function useDictation() {
     [stop],
   );
 
-  useEffect(() => stop, [stop]);
+  useEffect(() => () => void stop(), [stop]);
 
   return { heard: join(text, interim), error, waiting, start, stop };
 }
@@ -252,8 +257,11 @@ function sayInBrowserVoice(text: string) {
   window.speechSynthesis.speak(utterance);
 }
 
-/** Says a line out loud. `id` names its recording; `text` is the same words. */
-export function speak(id: string, text: string) {
+/**
+ * Says a line out loud. `id` names its recording; `text` is the same words. `after` holds him back
+ * until the microphone is free, because a phone cuts him off if he starts while it's still on.
+ */
+export function speak(id: string, text: string, after: Promise<void> | null = null) {
   if (typeof window === "undefined") return;
   hush();
   const mine = line;
@@ -272,15 +280,20 @@ export function speak(id: string, text: string) {
     setSpeaking(false);
   };
   setReading(id);
-  // Never hold the words back for a slow download.
-  window.setTimeout(() => {
-    if (line === mine && audio.currentTime === 0) setReading(null);
-  }, 1500);
-  audio.play().catch(() => {
+  const play = () => {
     if (line !== mine) return;
-    setReading(null);
-    sayInBrowserVoice(text);
-  });
+    // Never hold the words back for a slow download.
+    window.setTimeout(() => {
+      if (line === mine && audio.currentTime === 0) setReading(null);
+    }, 1500);
+    audio.play().catch(() => {
+      if (line !== mine) return;
+      setReading(null);
+      sayInBrowserVoice(text);
+    });
+  };
+  if (after) after.then(play);
+  else play();
 }
 
 export function hush() {
