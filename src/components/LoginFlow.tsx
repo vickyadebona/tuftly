@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { continueAsGuest, createAccount, forgetProfile, restoreProfile, signOut, useAccount, useRememberedProfile } from "@/lib/account";
-import { forgetPitch } from "@/lib/pitch";
-import { resetProgress, useHydrated } from "@/lib/store";
+import { clearDevice, releaseDevice } from "@/lib/device";
+import { useHydrated } from "@/lib/store";
 import { useSeason } from "@/lib/useSeason";
 import { getSupabase } from "@/lib/supabase/client";
 import { useAuthUser } from "@/lib/useAuthUser";
@@ -177,8 +177,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
   function switchProfile() {
     if (!window.confirm("This clears the progress saved on this device, so the next person starts fresh. Continue?")) return;
     forgetProfile();
-    resetProgress();
-    forgetPitch();
+    clearDevice();
     setMode("new");
   }
 
@@ -244,6 +243,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
       return;
     }
     setLeaving(true);
+    if (!auth.user) releaseDevice();
     createAccount(name, email);
     router.push("/home");
   }
@@ -314,6 +314,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
         type="button"
         onClick={() => {
           setLeaving(true);
+          if (!auth.user) releaseDevice();
           continueAsGuest();
           router.push("/home");
         }}

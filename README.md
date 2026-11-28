@@ -54,7 +54,7 @@ A reference for the colors, type, pixel-art pieces and screens. Run it with `npm
 - Tailwind runs through Turbopack in the app, so Storybook uses the Vite plugin (`@tailwindcss/vite`) against the same `src/app/globals.css`.
 
 ## Accounts and saved progress (Supabase, optional)
-Everything works on this device without it. With Supabase set up, people can sign in with an emailed link (no passwords) and their progress follows them across devices. The app stays local-first: it reads and writes this device, then merges with the saved copy and syncs a moment later (`src/lib/merge.ts` has the rules and tests).
+Everything works on this device without it. With Supabase set up, people can sign in with an emailed link (no passwords) and their progress follows them across devices. The app stays local-first: it reads and writes this device, then merges with the saved copy and syncs a moment later (`src/lib/merge.ts` has the rules and tests). What one account leaves on a shared device is never merged into another (`src/lib/owner.ts`).
 1. Create a project at supabase.com.
 2. SQL editor: run the files in `supabase/migrations/` in order (one table, row level security so people only see their own row).
 3. Authentication > URL Configuration: set the Site URL to `https://tuftly.vercel.app` and add redirect URLs `http://localhost:3000/**`, `https://tuftly.vercel.app/auth/callback` and, so preview links can sign in, `https://tuftly-*-terra-scape.vercel.app/**`.
