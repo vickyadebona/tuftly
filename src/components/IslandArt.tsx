@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { FEET, LEAF, LEAVES, scene, SCENE_H, SCENE_W, type Layer } from "@/lib/island";
+import { FEET, LEAF, LEAVES, scene, SCENE_H, SCENE_W } from "@/lib/island";
 import type { Season } from "@/lib/season";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 
@@ -9,26 +9,19 @@ import { PixelArtBobbin } from "./PixelArtBobbin";
 const BIRD = 36;
 const SPRITE_FEET = 0.905;
 
-function Layers({ layers }: { layers: Layer[] }) {
-  return layers.map((layer, i) => <path key={i} d={layer.d} fill={layer.color} />);
-}
-
-const PICTURE = { viewBox: `0 0 ${SCENE_W} ${SCENE_H}`, shapeRendering: "crispEdges", "aria-hidden": true } as const;
-
 /**
- * Bobbin on a floating island dressed for `season`. Fills the width it's given. The island, what's
- * on it and Bobbin bob together under a still sky. `delay` (seconds) keeps neighbors out of step.
+ * Bobbin on a floating island dressed for `season`. Fills the width it's given. The whole picture
+ * bobs as one, sky and all. `delay` (seconds) keeps neighbors out of step.
  */
 export function IslandArt({ season, priority = false, delay = 0 }: { season: Season; priority?: boolean; delay?: number }) {
-  const { sky, land } = useMemo(() => scene(season), [season]);
+  const layers = useMemo(() => scene(season), [season]);
   return (
-    <div className="relative w-full">
-      <svg {...PICTURE} className="block w-full">
-        <Layers layers={sky} />
-      </svg>
-      <div className="bobbin-idle bobbin-still absolute inset-0" style={{ animationDelay: `${-delay}s` }}>
-        <svg {...PICTURE} className="block w-full">
-          <Layers layers={land} />
+    <div className="w-full">
+      <div className="bobbin-idle bobbin-still relative" style={{ animationDelay: `${-delay}s` }}>
+        <svg viewBox={`0 0 ${SCENE_W} ${SCENE_H}`} className="block w-full" shapeRendering="crispEdges" aria-hidden="true">
+          {layers.map((layer, i) => (
+            <path key={i} d={layer.d} fill={layer.color} />
+          ))}
           {season === "autumn" &&
             LEAVES.map(({ x, y, flip }) => (
               <image
