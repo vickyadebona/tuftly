@@ -189,9 +189,9 @@ function Seasons() {
           sub="Open the app and see what Bobbin is wearing today."
         />
         <ul className="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4">
-          {SEASONS.map((s) => (
+          {SEASONS.map((s, i) => (
             <li key={s} className="flex min-w-0 flex-col items-center gap-3">
-              <IslandArt season={s} />
+              <IslandArt season={s} delay={i * 0.75} />
               <span className="pixel-chip justify-center text-center">{OUTFIT_LABEL[s]}</span>
             </li>
           ))}

@@ -146,29 +146,33 @@ export const LEAVES: { x: number; y: number; flip?: boolean }[] = [
   { x: 62, y: FEET - 3 },
 ];
 
-/** Everything behind Bobbin for one season, apart from autumn's leaves. */
-export function scene(season: Season): Layer[] {
+/**
+ * Everything behind Bobbin for one season, apart from autumn's leaves. `sky` stays put, while
+ * `land` (the island and what's on it) floats with Bobbin.
+ */
+export function scene(season: Season): { sky: Layer[]; land: Layer[] } {
+  const sky = canvas();
   const c = canvas();
-  const { rect, shape, stamp } = c;
+  const { rect, shape } = c;
   const grass = GRASS[season];
   const ground = FEET - 1;
-  cloud(c, 2, 14, 14);
-  cloud(c, 68, 24, 14);
+  cloud(sky, 2, 14, 14);
+  cloud(sky, 68, 24, 14);
 
   if (season === "summer") {
-    stamp(5, 0, SUN, "#ffd966");
+    sky.stamp(5, 0, SUN, "#ffd966");
   }
   if (season === "winter") {
     const random = seeded(7);
     for (let i = 0; i < 18; i++) {
       const [x, y] = [3 + random(78), 3 + random(26)];
-      rect(x, y - 1, 1, 3, PAPER);
-      rect(x - 1, y, 3, 1, PAPER);
+      sky.rect(x, y - 1, 1, 3, PAPER);
+      sky.rect(x - 1, y, 3, 1, PAPER);
     }
   }
   if (season === "spring") {
     const random = seeded(5);
-    for (let i = 0; i < 18; i++) rect(3 + random(78), 3 + random(26), 2, 1, "#ffb3c6");
+    for (let i = 0; i < 18; i++) sky.rect(3 + random(78), 3 + random(26), 2, 1, "#ffb3c6");
   }
   island(c, season);
 
@@ -210,5 +214,5 @@ export function scene(season: Season): Layer[] {
 
   // Bobbin's shadow.
   rect(31, FEET - 1, 22, 1, grass.dark);
-  return c.layers;
+  return { sky: sky.layers, land: c.layers };
 }
