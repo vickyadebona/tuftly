@@ -11,13 +11,13 @@ const SPRITE_FEET = 0.905;
 
 /**
  * Bobbin on a floating island dressed for `season`. Fills the width it's given. The whole picture
- * bobs as one, sky and all. `delay` (seconds) keeps neighbors out of step.
+ * bobs as one, sky and all, and every island keeps the same beat.
  */
-export function IslandArt({ season, priority = false, delay = 0 }: { season: Season; priority?: boolean; delay?: number }) {
+export function IslandArt({ season, priority = false }: { season: Season; priority?: boolean }) {
   const layers = useMemo(() => scene(season), [season]);
   return (
     <div className="w-full">
-      <div className="bobbin-idle bobbin-still relative" style={{ animationDelay: `${-delay}s` }}>
+      <div className="bobbin-idle bobbin-still relative">
         <svg viewBox={`0 0 ${SCENE_W} ${SCENE_H}`} className="block w-full" shapeRendering="crispEdges" aria-hidden="true">
           {layers.map((layer, i) => (
             <path key={i} d={layer.d} fill={layer.color} />

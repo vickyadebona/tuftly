@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { correctLine, wrongLine } from "@/lib/phrases";
 import type { DayStatus } from "@/lib/streak";
 import { ChoiceList } from "./ChoiceList";
@@ -90,10 +90,32 @@ function PracticePreview() {
   );
 }
 
-/** A still picture of the answering screen in voice practice. */
+/** Counts the seconds from 0 to 60 and starts over, from when `ref` comes onto the screen. */
+function useTicking(ref: RefObject<HTMLElement | null>) {
+  const [seconds, setSeconds] = useState(0);
+  useEffect(() => {
+    let timer = 0;
+    const watch = new IntersectionObserver(([entry]) => {
+      window.clearInterval(timer);
+      if (!entry.isIntersecting) return setSeconds(0);
+      timer = window.setInterval(() => setSeconds((n) => (n >= 60 ? 0 : n + 1)), 1000);
+    });
+    watch.observe(ref.current!);
+    return () => {
+      watch.disconnect();
+      window.clearInterval(timer);
+    };
+  }, [ref]);
+  return seconds;
+}
+
+/** The answering screen in voice practice, with its clock running. Nothing on it can be pressed. */
 function VoicePreview() {
+  const screen = useRef<HTMLDivElement>(null);
+  const seconds = useTicking(screen);
   return (
     <div
+      ref={screen}
       role="img"
       aria-label="The voice practice screen: Bobbin asks “Tell me about yourself” and your words appear as you speak."
       className="flex flex-col items-center gap-3 border-[3px] border-line bg-cream p-4 text-center"
@@ -101,7 +123,10 @@ function VoicePreview() {
       <PixelArtBobbin mood="talk" size={110} />
       <p className="font-pixel text-xl font-bold text-ink">Tell me about yourself.</p>
       <p className="pixel-chip bg-peach">
-        ● Listening… <span className="font-sans">0:32</span>
+        ● Listening…{" "}
+        <span className="font-sans tabular-nums">
+          {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, "0")}
+        </span>
       </p>
       <p className="pixel-box w-full bg-paper p-3 text-left text-ink">I&apos;m a front-end developer, and lately I&apos;ve been working on…</p>
       <div className="flex flex-wrap justify-center gap-3">
