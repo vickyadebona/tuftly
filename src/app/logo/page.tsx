@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Fredoka, Pixelify_Sans } from "next/font/google";
 import Link from "next/link";
 import { PixelArtBobbin } from "@/components/PixelArtBobbin";
@@ -41,6 +42,8 @@ function AppIcon({ size }: { size: number }) {
 }
 
 /** Logo exploration with the pixel-art Bobbin. Concepts only; not trademark-cleared. */
+export const metadata: Metadata = { title: "Logo exploration", robots: { index: false } };
+
 export default function LogoPage() {
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-10">

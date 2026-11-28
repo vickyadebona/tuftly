@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import type { BobbinMood } from "@/components/Bobbin";
 import { PixelArtBobbin } from "@/components/PixelArtBobbin";
@@ -23,6 +24,8 @@ const MOODS: BobbinMood[] = [
 ];
 
 /** Bobbin gallery: every season and expression. Not linked from the app. */
+export const metadata: Metadata = { title: "Seasonal outfits", robots: { index: false } };
+
 export default function SeasonsPage() {
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-10 px-6 py-10">

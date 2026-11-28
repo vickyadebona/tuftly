@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { LessonFlow } from "@/components/LessonFlow";
@@ -6,6 +7,11 @@ import { getAllLessonIds, getLesson } from "@/content";
 
 export function generateStaticParams() {
   return getAllLessonIds().map((id) => ({ id }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  return { title: getLesson(id)?.title ?? "Lesson" };
 }
 
 async function LessonContent({ params }: { params: Promise<{ id: string }> }) {
