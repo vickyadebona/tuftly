@@ -184,16 +184,3 @@ export function clearPitch() {
 export function forgetPitch() {
   write(null);
 }
-
-const OWNER_KEY = "tuftly-pitch-owner-v1";
-
-/** Call on sign-in: a pitch left here by a different account is never copied into this one. */
-export function claimPitch(userId: string) {
-  try {
-    const owner = window.localStorage.getItem(OWNER_KEY);
-    if (owner && owner !== userId) forgetPitch();
-    window.localStorage.setItem(OWNER_KEY, userId);
-  } catch {
-    // Storage blocked: there is nothing kept here to leak.
-  }
-}

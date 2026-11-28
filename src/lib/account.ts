@@ -104,6 +104,11 @@ export function adoptAccount(name: string, email: string | null, tourDone: boole
   else write({ name, email, guest: false, tourDone: done });
 }
 
+/** Take the profile off this device without remembering it (it was someone else's). */
+export function dropAccount() {
+  write(null);
+}
+
 export function createAccount(name: string, email: string) {
   write({ name: name.trim(), email: email.trim() || null, guest: false, tourDone: tourAlreadySeen() });
 }

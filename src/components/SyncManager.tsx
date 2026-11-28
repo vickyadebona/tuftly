@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { adoptAccount, getAccount, subscribeAccount } from "@/lib/account";
+import { adoptAccount, dropAccount, getAccount, subscribeAccount } from "@/lib/account";
+import { claimDevice } from "@/lib/device";
 import { mergeProgress } from "@/lib/merge";
-import { claimPitch, getPitch, newerPitch, replacePitch, subscribePitch, type PitchData } from "@/lib/pitch";
+import { getPitch, newerPitch, replacePitch, subscribePitch, type PitchData } from "@/lib/pitch";
 import { getProgress, replaceProgress, subscribeProgress, type Progress } from "@/lib/store";
 import { getSupabase } from "@/lib/supabase/client";
 import { startSync } from "@/lib/sync";
@@ -64,6 +65,10 @@ export function SyncManager() {
       if (sendPitch) savedPitch = pitchJson;
     }
 
+    // First, even if loading fails: what another account left on this device is never shown to or
+    // merged into this one, their name included.
+    if (claimDevice(userId)) dropAccount();
+
     return startSync<Remote>({
       load: async () =>
         supabase.from("user_data").select("name, tour_done, progress, pitch").eq("user_id", userId).maybeSingle<Remote>(),
@@ -71,7 +76,6 @@ export function SyncManager() {
         // Same person on a new device: set up the profile from what is saved online.
         adoptAccount(data?.name || metaName || (email ? email.split("@")[0] : "Friend"), email, data?.tour_done ?? false);
         if (data?.progress) replaceProgress(mergeProgress(getProgress(), data.progress));
-        claimPitch(userId);
         if (data?.pitch) {
           savedPitch = JSON.stringify(data.pitch);
           replacePitch(newerPitch(getPitch(), data.pitch));
