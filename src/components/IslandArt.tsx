@@ -9,36 +9,41 @@ import { PixelArtBobbin } from "./PixelArtBobbin";
 const BIRD = 36;
 const SPRITE_FEET = 0.905;
 
-/** Bobbin on a floating island dressed for `season`. Fills the width it's given. */
+/**
+ * Bobbin on a floating island dressed for `season`. Fills the width it's given. The whole picture
+ * bobs as one, sky and all, and every island keeps the same beat.
+ */
 export function IslandArt({ season, priority = false }: { season: Season; priority?: boolean }) {
   const layers = useMemo(() => scene(season), [season]);
   return (
-    <div className="relative w-full">
-      <svg viewBox={`0 0 ${SCENE_W} ${SCENE_H}`} className="block w-full" shapeRendering="crispEdges" aria-hidden="true">
-        {layers.map((layer, i) => (
-          <path key={i} d={layer.d} fill={layer.color} />
-        ))}
-        {season === "autumn" &&
-          LEAVES.map(({ x, y, flip }) => (
-            <image
-              key={`${x}-${y}`}
-              href={LEAF.src}
-              width={LEAF.width}
-              height={LEAF.height}
-              transform={flip ? `translate(${x + LEAF.width} ${y}) scale(-1 1)` : `translate(${x} ${y})`}
-              style={{ imageRendering: "pixelated" }}
-            />
+    <div className="w-full">
+      <div className="bobbin-idle bobbin-still relative">
+        <svg viewBox={`0 0 ${SCENE_W} ${SCENE_H}`} className="block w-full" shapeRendering="crispEdges" aria-hidden="true">
+          {layers.map((layer, i) => (
+            <path key={i} d={layer.d} fill={layer.color} />
           ))}
-      </svg>
-      <div
-        className="absolute aspect-square [&_img]:h-full [&_img]:w-full"
-        style={{
-          width: `${(BIRD / SCENE_W) * 100}%`,
-          left: `${((SCENE_W - BIRD) / 2 / SCENE_W) * 100}%`,
-          top: `${((FEET - BIRD * SPRITE_FEET) / SCENE_H) * 100}%`,
-        }}
-      >
-        <PixelArtBobbin mood="sparkle" outfit={season} size={300} priority={priority} />
+          {season === "autumn" &&
+            LEAVES.map(({ x, y, flip }) => (
+              <image
+                key={`${x}-${y}`}
+                href={LEAF.src}
+                width={LEAF.width}
+                height={LEAF.height}
+                transform={flip ? `translate(${x + LEAF.width} ${y}) scale(-1 1)` : `translate(${x} ${y})`}
+                style={{ imageRendering: "pixelated" }}
+              />
+            ))}
+        </svg>
+        <div
+          className="absolute aspect-square [&_img]:h-full [&_img]:w-full"
+          style={{
+            width: `${(BIRD / SCENE_W) * 100}%`,
+            left: `${((SCENE_W - BIRD) / 2 / SCENE_W) * 100}%`,
+            top: `${((FEET - BIRD * SPRITE_FEET) / SCENE_H) * 100}%`,
+          }}
+        >
+          <PixelArtBobbin mood="sparkle" outfit={season} size={300} priority={priority} />
+        </div>
       </div>
     </div>
   );

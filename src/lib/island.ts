@@ -168,7 +168,8 @@ export function scene(season: Season): Layer[] {
   }
   if (season === "spring") {
     const random = seeded(5);
-    for (let i = 0; i < 18; i++) rect(3 + random(78), 3 + random(26), 2, 1, "#ffb3c6");
+    // Just a few petals; more than this looked busy.
+    for (let i = 0; i < 6; i++) rect(3 + random(78), 3 + random(26), 2, 1, "#ffb3c6");
   }
   island(c, season);
 
