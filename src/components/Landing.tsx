@@ -216,7 +216,7 @@ function FinalCall() {
               Start your quest
             </Link>
             <a href="#how" className="btn-accent">
-              Take the tour
+              See how it works
             </a>
           </div>
         </div>

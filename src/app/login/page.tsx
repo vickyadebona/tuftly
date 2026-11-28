@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { LoginFlow } from "@/components/LoginFlow";
 import { Skeleton } from "@/components/Skeleton";
 
-export const metadata: Metadata = { title: "Join tuftly" };
+export const metadata: Metadata = { title: "Join" };
 
 async function LoginContent({ searchParams }: { searchParams: Promise<{ error?: string; mode?: string }> }) {
   const { error, mode } = await searchParams;

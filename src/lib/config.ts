@@ -22,6 +22,9 @@ export const COMPANION = {
 /** Seasonal outfits follow the device date. Flip for the southern hemisphere. */
 export const HEMISPHERE: "north" | "south" = "north";
 
+/** Where the site lives, for link previews, the sitemap and robots.txt. */
+export const SITE_URL = "https://tuftly.vercel.app";
+
 /** Force one season for testing or screenshots. `null` means follow the date. */
 export const SEASON_OVERRIDE: Season | null = null;
 

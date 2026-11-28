@@ -77,7 +77,7 @@ export function QuestHome() {
         : startingOver
           ? `${WELCOME_BACK} One practice starts a new streak.`
           : doneCount === 0
-            ? `${hello} Want to start with a quick lesson?`
+            ? `${hello} ${inProgress ? "Want to pick up your lesson where you left off?" : "Want to start with a quick lesson?"}`
         : waiting > 0
           ? `${HELLO} ${waiting} short practice${waiting === 1 ? "" : "s"} ready when you are.`
           : `${HELLO} Good to see you. You're all caught up for today.`;

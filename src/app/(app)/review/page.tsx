@@ -1,4 +1,7 @@
+import type { Metadata } from "next";
 import { ReviewSession } from "@/components/ReviewSession";
+
+export const metadata: Metadata = { title: "Practice" };
 
 export default function ReviewPage() {
   return (

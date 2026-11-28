@@ -1,4 +1,7 @@
+import type { Metadata } from "next";
 import { PitchBuilder } from "@/components/PitchBuilder";
+
+export const metadata: Metadata = { title: "Your pitch" };
 
 export default function PitchPage() {
   return (
