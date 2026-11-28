@@ -3,8 +3,14 @@ import { APP_NAME, FIRST_LESSON_MINUTES } from "@/lib/config";
 import { SEASONS, type Season } from "@/lib/season";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { RichText } from "./RichText";
+import { MoodPicker, PaceSlider } from "./BobbinPickers";
+import { FeaturePreviews } from "./FeaturePreviews";
+import { IslandArt } from "./IslandArt";
+import { QuestPath } from "./QuestPath";
 import { SeasonBadgeTea, SeasonHeadline } from "./SeasonHeadline";
-import { PixelCloud, PixelIcon, type PixelIconName } from "./PixelIcon";
+import { READY } from "@/lib/phrases";
+import { HeroScene, HeroSky } from "./HeroScene";
+import { PixelIcon } from "./PixelIcon";
 
 export const SECTION = "px-5 py-14 sm:px-6 sm:py-20";
 export const INNER = "mx-auto w-full max-w-6xl";
@@ -62,47 +68,12 @@ export function Nav({ current }: { current?: "about" }) {
   );
 }
 
-/** The hero scene. Laid out from the ground up so Bobbin always stands on the grass. */
-function Island() {
-  return (
-    <div
-      className="relative mx-auto flex h-[330px] w-full max-w-[520px] flex-col items-center justify-end sm:h-[540px]"
-      aria-hidden="true"
-    >
-      <div className="absolute left-0 top-3 sm:top-8">
-        <PixelCloud size={96} />
-      </div>
-      <div className="absolute right-0 top-14 sm:right-2 sm:top-28">
-        <PixelCloud size={64} />
-      </div>
-      <div className="absolute left-8 top-52 hidden sm:block"><PixelIcon name="star" size={36} color="#f2b93b" /></div>
-      <div className="absolute right-4 top-4 sm:right-6 sm:top-8"><PixelIcon name="star" size={30} color="#f2b93b" /></div>
-      <div className="absolute right-4 top-[190px] hidden sm:block"><PixelIcon name="gem" size={34} color="#9fd5ea" /></div>
-
-      {/* The image has a little empty space under the feet, so pull it down onto the grass. */}
-      <div className="relative z-10 -mb-[9%] [&_img]:h-[200px] [&_img]:w-[200px] sm:[&_img]:h-[300px] sm:[&_img]:w-[300px]">
-        <PixelArtBobbin mood="sparkle" size={300} priority />
-      </div>
-
-      <div className="relative w-[calc(100%-32px)] sm:w-[calc(100%-64px)]">
-        <div className="absolute bottom-full left-1 sm:left-8">
-          <div className="flex h-9 w-12 items-center justify-center border-[3px] border-line bg-paper sm:h-10 sm:w-14">
-            <PixelIcon name="arrow" size={22} color="#2f7f78" />
-          </div>
-          <div className="mx-auto h-12 w-2.5 bg-[#c99a6b] sm:h-16" />
-        </div>
-        <div className="h-10 border-[3px] border-line bg-grass sm:h-12" />
-      </div>
-      <div className="h-16 w-[calc(100%-120px)] border-[3px] border-t-0 border-line bg-[#c99a6b] sm:h-24 sm:w-[calc(100%-160px)]" />
-    </div>
-  );
-}
-
 function Hero() {
   return (
-    <section className="bg-sky px-5 py-10 sm:px-6 sm:py-16">
-      <div className={`${INNER} grid items-center gap-10 lg:grid-cols-2`}>
-        <div className="flex flex-col items-start gap-6">
+    <HeroSky>
+      {/* On a phone the picture sits under the headline. On a wide screen it takes the right-hand side. */}
+      <div className={`${INNER} grid gap-6 lg:grid-cols-2 lg:gap-x-10`}>
+        <div className="flex flex-col items-start gap-6 lg:self-end">
           <span className="pixel-chip">
             Free practice, with tea breaks
             <SeasonBadgeTea />
@@ -110,6 +81,11 @@ function Hero() {
           <h1 className="font-pixel text-4xl font-bold leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
             <SeasonHeadline />
           </h1>
+        </div>
+        <div className="self-center lg:col-start-2 lg:row-span-2 lg:row-start-1">
+          <HeroScene />
+        </div>
+        <div className="flex flex-col items-start gap-6 lg:self-start">
           <p className="max-w-xl text-lg text-ink-soft sm:text-xl">
             {APP_NAME} helps you get ready for web developer{" "}
             <strong className="font-extrabold">
@@ -132,35 +108,10 @@ function Hero() {
             <span className="pixel-chip bg-mint"><PixelIcon name="check" size={16} color="#2f7f78" /> No leaderboards</span>
           </div>
         </div>
-        <Island />
       </div>
-    </section>
+    </HeroSky>
   );
 }
-
-const STEPS: { icon: PixelIconName; bg: string; fg: string; title: string; text: string }[] = [
-  {
-    icon: "check",
-    bg: "bg-teal",
-    fg: "#4a3326",
-    title: "Learn a little",
-    text: "Open a lesson, make a guess, study an example and try one yourself.",
-  },
-  {
-    icon: "star",
-    bg: "bg-butter",
-    fg: "#f2b93b",
-    title: "Practice often",
-    text: "Quick drills bring each idea back right when you are about to forget it.",
-  },
-  {
-    icon: "speech",
-    bg: "bg-lilac-deep",
-    fg: "#fffdf4",
-    title: "Rehearse with Bobbin",
-    text: "Answer the kind of questions **an AI interviewer** asks, then check yourself against the key points.",
-  },
-];
 
 function HowItWorks() {
   return (
@@ -171,33 +122,11 @@ function HowItWorks() {
           title="Three steps to AI interview ready"
           sub="Short sessions that fit between everything else."
         />
-        <ol className="grid gap-10 md:grid-cols-3">
-          {STEPS.map((s, i) => (
-            <li key={s.title} className="flex flex-col items-center gap-5">
-              <span className={`flex h-[76px] w-[76px] items-center justify-center border-[3px] border-line ${s.bg}`}>
-                <PixelIcon name={s.icon} size={36} color={s.fg} />
-              </span>
-              <div className="pixel-box flex w-full flex-1 flex-col items-center gap-2 p-6 text-center">
-                <span className="text-sm font-bold text-teal-deep">Step {i + 1}</span>
-                <h3 className="font-pixel text-xl font-bold text-ink">{s.title}</h3>
-                <p className="text-ink-soft"><RichText text={s.text} /></p>
-              </div>
-            </li>
-          ))}
-        </ol>
+        <QuestPath />
       </div>
     </section>
   );
 }
-
-const FEATURES: { icon: PixelIconName; color: string; title: string; text: string }[] = [
-  { icon: "star", color: "#f2b93b", title: "Bite-size lessons", text: "A few minutes each. Guess first, study a worked example, then try it yourself." },
-  { icon: "gem", color: "#9fd5ea", title: "Practice that sticks", text: "Questions come back on a schedule and mix across topics, so what you learn stays with you." },
-  { icon: "heart", color: "#ff9e80", title: "Practice rounds with Bobbin", text: "Try **voice practice**, where Bobbin asks out loud, or type your answers. You check off the key points you covered." },
-  { icon: "flame", color: "#f08a24", title: "Pick your pressure", text: "Start relaxed, then work up to a strict, timed round that feels like interview day." },
-  { icon: "check", color: "#2f7f78", title: "Gentle streaks", text: "Rest days and a weekly grace day keep your streak safe. There are no leaderboards." },
-  { icon: "coin", color: "#f2b93b", title: "Seasonal outfits", text: "A scarf in winter, a flower crown in spring, a sun hat in summer and a beret in autumn." },
-];
 
 function Features() {
   return (
@@ -208,28 +137,11 @@ function Features() {
           title="Everything you need to feel ready"
           sub={`Small wins every day add up. Here is how ${APP_NAME} gets you ready for **an AI interview**.`}
         />
-        <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f) => (
-            <li key={f.title} className="pixel-box flex flex-col gap-3 p-7">
-              <span className="flex h-16 w-16 items-center justify-center border-[3px] border-line bg-paper">
-                <PixelIcon name={f.icon} size={32} color={f.color} />
-              </span>
-              <h3 className="font-pixel text-xl font-bold text-ink">{f.title}</h3>
-              <p className="text-ink-soft"><RichText text={f.text} /></p>
-            </li>
-          ))}
-        </ul>
+        <FeaturePreviews />
       </div>
     </section>
   );
 }
-
-const MOODS = [
-  { mood: "sparkle", label: "Ready" },
-  { mood: "thinking", label: "Thinking" },
-  { mood: "cheering", label: "Cheering" },
-  { mood: "sleepy", label: "Resting" },
-] as const;
 
 function MeetBobbin() {
   return (
@@ -240,42 +152,21 @@ function MeetBobbin() {
           <Title>A pixel bird who practices with you</Title>
           <p className="max-w-lg text-lg text-ink">
             Bobbin cheers when you get it, thinks along when it is tricky and keeps you company on
-            rest days. Eight expressions follow how your practice is going.
+            rest days. Pick a mood and see.
           </p>
         </div>
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {MOODS.map((m) => (
-            <li key={m.mood} className="pixel-box flex flex-col items-center gap-1 p-3">
-              <PixelArtBobbin mood={m.mood} size={104} />
-              <span className="font-pixel text-sm font-semibold text-ink">{m.label}</span>
-            </li>
-          ))}
-        </ul>
+        <MoodPicker />
       </div>
     </section>
   );
 }
-
-const LEVELS = [
-  { mood: "happy", bg: "bg-mint", name: "Relaxed", text: "Hints are on and there is no timer. Take all the time you need." },
-  { mood: "sparkle", bg: "bg-peach", name: "Standard", text: "Hints are on, with a gentle timer for each question." },
-  { mood: "determined", bg: "bg-lilac", name: "Interview day", text: "No hints and a shorter timer, so a **timed AI interview** feels familiar." },
-] as const;
 
 function Pressure() {
   return (
     <section className={`${SECTION} bg-cream`}>
       <div className={`${INNER} flex flex-col gap-12`}>
         <SectionHead eyebrow="Your pace" title="Pick how it feels" sub="Turn the pressure up when you are ready." />
-        <ul className="grid gap-6 md:grid-cols-3">
-          {LEVELS.map((l) => (
-            <li key={l.name} className={`pixel-box flex flex-col items-center gap-3 p-8 text-center ${l.bg}`}>
-              <PixelArtBobbin mood={l.mood} size={140} />
-              <h3 className="font-pixel text-xl font-bold text-ink">{l.name}</h3>
-              <p className="text-ink-soft"><RichText text={l.text} /></p>
-            </li>
-          ))}
-        </ul>
+        <PaceSlider />
       </div>
     </section>
   );
@@ -297,11 +188,11 @@ function Seasons() {
           title="Bobbin dresses for the season"
           sub="Open the app and see what Bobbin is wearing today."
         />
-        <ul className="mx-auto grid grid-cols-2 gap-5 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4">
           {SEASONS.map((s) => (
-            <li key={s} className="pixel-box flex flex-col items-center gap-2 p-4">
-              <PixelArtBobbin mood="sparkle" outfit={s} size={150} />
-              <span className="font-pixel text-sm font-semibold text-ink">{OUTFIT_LABEL[s]}</span>
+            <li key={s} className="flex min-w-0 flex-col items-center gap-3">
+              <IslandArt season={s} />
+              <span className="pixel-chip justify-center text-center">{OUTFIT_LABEL[s]}</span>
             </li>
           ))}
         </ul>
@@ -316,7 +207,7 @@ function FinalCall() {
       <div className={`${INNER} flex flex-col items-center gap-8 sm:flex-row sm:justify-center`}>
         <PixelArtBobbin mood="cheering" size={180} />
         <div className="flex max-w-xl flex-col items-start gap-4">
-          <Title>Ready when you are</Title>
+          <Title>{READY}</Title>
           <p className="text-lg text-ink-soft">
             Start free today. Your first lesson takes about {FIRST_LESSON_MINUTES} minutes.
           </p>

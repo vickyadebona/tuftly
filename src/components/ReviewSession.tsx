@@ -12,6 +12,7 @@ import type { Grade } from "@/lib/scheduler";
 import { recordReview, useHydrated, useProgress } from "@/lib/store";
 import { SUPABASE_KEY, SUPABASE_URL, supabaseConfigured } from "@/lib/supabase/config";
 import type { Drill, LessonIdea } from "@/lib/types";
+import { correctLine, READY, wrongLine } from "@/lib/phrases";
 import { ChoiceList } from "./ChoiceList";
 import { CodeBlock } from "./CodeBlock";
 import { LessonDiagram } from "./LessonDiagram";
@@ -43,10 +44,13 @@ const NO_EXTRA: Extra = { seen: [], gap: "", asking: null, refresh: false, pictu
 
 function DrillCard({
   drill,
+  answered,
   onGrade,
   onMoveOn,
 }: {
   drill: PracticeCard;
+  /** How many questions came before this one, so Bobbin's lines take turns. */
+  answered: number;
   onGrade: (g: Grade, missed: string[]) => void;
   /** Set during extra practice, so a learner can leave an idea without saying they've got it. */
   onMoveOn?: () => void;
@@ -109,9 +113,7 @@ function DrillCard({
       {checked && (
         <>
           <p className="text-ink">
-            {correct
-              ? "That's right."
-              : "Not quite. It's an easy one to mix up, so here's the idea:"}
+            {correct ? correctLine(answered) : `Not quite. ${wrongLine(answered)} Here's the idea:`}
           </p>
           <div className="pixel-box bg-sky p-4 text-ink">
             <p className="font-pixel mb-1 text-sm font-bold">{drill.sayIt ? "One way to say it" : "Why"}</p>
@@ -331,7 +333,7 @@ export function ReviewSession() {
     }
     return (
       <div className="flex flex-col gap-4">
-        <Bobbin say="A few questions, with topics mixed together." />
+        <Bobbin say={`${READY} A few questions, with topics mixed together.`} />
         <p className="text-ink">
           {due.length} to review · {fresh.length} new
         </p>
@@ -409,6 +411,7 @@ export function ReviewSession() {
         <>
           {extra.refresh && idea && <Refresher reteach={idea.reteach} />}
           <DrillCard
+            answered={index + turn}
             key={`${drill.id}-${index}-${turn}`}
             drill={card}
             onGrade={handleGrade}

@@ -148,7 +148,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
       <section className="pixel-box flex w-full max-w-md flex-col items-center gap-4 bg-paper p-8 text-center">
         <PixelArtBobbin mood="happy" outfit={season} size={140} />
         <h1 className="font-pixel text-3xl font-bold text-ink">
-          Welcome back{account.guest ? "" : `, ${account.name}`}!
+          Welcome back to the nest{account.guest ? "" : `, ${account.name}`}!
         </h1>
         <p className="text-lg text-ink-soft">Your progress is right where you left it.</p>
         <Link href="/home" className="btn-primary">
@@ -189,7 +189,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
         {remembered ? (
           <>
             <h1 className="font-pixel text-3xl font-bold text-ink">
-              Welcome back{remembered.guest ? "" : `, ${remembered.name}`}!
+              Welcome back to the nest{remembered.guest ? "" : `, ${remembered.name}`}!
             </h1>
             <p className="text-lg text-ink-soft">Pick up where you left off.</p>
             <button
@@ -252,7 +252,7 @@ export function LoginFlow({ linkError = false, startNew = false }: { linkError?:
     <section className="pixel-box flex w-full max-w-md flex-col gap-5 bg-paper p-8">
       <div className="flex flex-col items-center gap-2 text-center">
         <PixelArtBobbin mood="sparkle" outfit={season} size={120} />
-        <h1 className="font-pixel text-3xl font-bold text-ink">Hi, I&apos;m Bobbin!</h1>
+        <h1 className="font-pixel text-3xl font-bold text-ink">Peep peep! I&apos;m Bobbin.</h1>
         <p className="text-lg text-ink-soft">Let&apos;s set you up. It takes about ten seconds.</p>
       </div>
 

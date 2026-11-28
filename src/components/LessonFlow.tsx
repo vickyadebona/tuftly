@@ -19,6 +19,7 @@ import { getLessons } from "@/content";
 import { getUnit, getUnitNumber } from "@/content/units";
 import { clearLessonPosition, completeLesson, markUnitSeen, saveLessonPosition, useHydrated, useProgress } from "@/lib/store";
 import type { Lesson, LessonIdea, UnitInfo } from "@/lib/types";
+import { correctLine, LESSON_DONE, wrongLine } from "@/lib/phrases";
 import { Bobbin } from "./Bobbin";
 import { ChoiceList } from "./ChoiceList";
 import { CodeBlock } from "./CodeBlock";
@@ -158,7 +159,7 @@ function LessonRun({
           {picked !== null && (
             <>
               <p className="pixel-box bg-mint p-4 text-ink">
-                {picked === idea.guess.answerIndex ? "That's right. " : "Not quite, and it's a common one. "}
+                {picked === idea.guess.answerIndex ? `${correctLine(pos.idea * 2)} ` : `Not quite, and it's a common one. ${wrongLine(pos.idea)} `}
                 <RichText text={idea.guess.reveal} />
               </p>
               <button onClick={() => go(afterGuess(pos))} className="btn-primary">
@@ -231,7 +232,7 @@ function LessonRun({
             {picked !== null && (
               <>
                 <p className="pixel-box bg-mint p-4 text-ink">
-                  {right ? "That's it. " : "Not quite. This one is easy to mix up. "}
+                  {right ? `${correctLine(pos.idea * 2 + 1)} ` : `Not quite. ${wrongLine(pos.idea + pos.attempt + 1, more)} `}
                   <RichText text={q.explanation} />
                   {!right && !more && " We'll bring this one back in practice."}
                 </p>
@@ -266,7 +267,7 @@ function LessonRun({
 
       {recap && (
         <section className="flex flex-col gap-4">
-          <Bobbin mood="cheering" say="That's the lesson. Here's what to remember." />
+          <Bobbin mood="cheering" say={`${LESSON_DONE} Here's what to remember.`} />
           <ul className="list-disc space-y-2 pl-5 text-ink">
             {lesson.ideas.map((it) => (
               <li key={it.id}>

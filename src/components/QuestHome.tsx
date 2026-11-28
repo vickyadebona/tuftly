@@ -10,6 +10,8 @@ import { useHydrated, useProgress } from "@/lib/store";
 import { streakSummary, weekStartOf } from "@/lib/streak";
 import type { Track } from "@/lib/types";
 import { useSeason } from "@/lib/useSeason";
+import { HELLO, WELCOME_BACK } from "@/lib/phrases";
+import { PathNode, type NodeState } from "./PathNode";
 import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelIcon } from "./PixelIcon";
 import { QuestSkeleton } from "./Skeleton";
@@ -18,7 +20,6 @@ import { StreakWeek, WEEKDAYS } from "./StreakDays";
 
 const COMING_SOON = ["Async basics", "Closures"];
 
-type NodeState = "done" | "current" | "locked";
 
 const UNITS: {
   track: Track;
@@ -33,33 +34,12 @@ const UNITS: {
   { track: "engineering", title: "Explaining how you build", bg: "bg-teal" },
 ];
 
-function PathNode({ state }: { state: NodeState }) {
-  const base = "flex h-14 w-14 shrink-0 items-center justify-center border-[3px] border-line sm:h-[68px] sm:w-[68px]";
-  if (state === "done")
-    return (
-      <span className={`${base} bg-teal`}>
-        <PixelIcon name="check" size={32} color="#4a3326" />
-      </span>
-    );
-  if (state === "current")
-    return (
-      <span className={`${base} bg-butter`}>
-        <PixelIcon name="star" size={32} color="#f2b93b" />
-      </span>
-    );
-  return (
-    <span className={`${base} bg-paper`}>
-      <PixelIcon name="lock" size={28} color="#7a6253" />
-    </span>
-  );
-}
-
 export function QuestHome() {
   const hydrated = useHydrated();
   const progress = useProgress();
   const season = useSeason();
   const account = useAccount();
-  const hello = account && !account.guest ? `Hi ${account.name}, I'm ${COMPANION.name}!` : `Hi, I'm ${COMPANION.name}!`;
+  const hello = account && !account.guest ? `${HELLO} Hi ${account.name}, I'm ${COMPANION.name}.` : `${HELLO} I'm ${COMPANION.name}.`;
   const lessons = getLessons();
 
   const today = hydrated ? todayStr() : "";
@@ -95,12 +75,12 @@ export function QuestHome() {
       : covered
         ? `${COMPANION.name} covered ${WEEKDAYS[weekday(covered)]}. Your ${streak!.current} day streak is safe.`
         : startingOver
-          ? "Good to see you! One practice starts a new streak."
+          ? `${WELCOME_BACK} One practice starts a new streak.`
           : doneCount === 0
             ? `${hello} Want to start with a quick lesson?`
         : waiting > 0
-          ? `${waiting} short practice${waiting === 1 ? "" : "s"} ready when you are.`
-          : "You're all caught up for today.";
+          ? `${HELLO} ${waiting} short practice${waiting === 1 ? "" : "s"} ready when you are.`
+          : `${HELLO} Good to see you. You're all caught up for today.`;
 
   const quests: { label: string; done: boolean; note: string; href?: string }[] = [
     { label: "Practice today", done: activeToday, note: activeToday ? "Done" : "Not yet" },

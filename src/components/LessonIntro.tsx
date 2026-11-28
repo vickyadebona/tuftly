@@ -2,6 +2,7 @@
 
 import type { Lesson, UnitInfo } from "@/lib/types";
 import { lessonSummary } from "@/lib/units";
+import { READY } from "@/lib/phrases";
 import { Bobbin } from "./Bobbin";
 import { PixelIcon } from "./PixelIcon";
 import { RichText } from "./RichText";
@@ -81,6 +82,7 @@ export function UnitIntro({
         </div>
       )}
 
+      <p className="font-pixel text-lg font-bold text-ink">{READY}</p>
       <button type="button" onClick={onStart} className="btn-primary self-start">
         Start with lesson 1
       </button>
@@ -128,6 +130,7 @@ export function LessonIntro({ lesson, onBegin }: { lesson: Lesson; onBegin: () =
         </p>
       </div>
 
+      <p className="font-pixel text-lg font-bold text-ink">{READY}</p>
       <button type="button" onClick={onBegin} className="btn-primary self-start">
         Begin lesson
       </button>
