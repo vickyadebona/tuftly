@@ -140,15 +140,15 @@ export function QuestHome() {
           const unitDone = unitLessons.filter((l) => done.has(l.id)).length;
           return (
             <section key={unit.track} aria-labelledby={`unit-${unit.track}`} className="flex min-w-0 flex-col gap-6">
-              <div className={`flex flex-wrap items-end justify-between gap-4 border-[3px] border-line px-6 py-5 text-ink shadow-[4px_4px_0_rgb(91_58_41/0.28)] ${unit.bg}`}>
+              <div className={`flex flex-col items-start gap-4 lg:flex-row lg:items-end lg:justify-between border-[3px] border-line px-6 py-5 text-ink shadow-[4px_4px_0_rgb(91_58_41/0.28)] ${unit.bg}`}>
                 <div>
                   <p className="font-pixel text-sm font-semibold uppercase tracking-wide">Unit {unitIndex + 1}</p>
                   <h2 id={`unit-${unit.track}`} className="font-pixel text-2xl font-bold sm:text-3xl">
                     {unit.title}
                   </h2>
                 </div>
-                <div className="flex flex-col items-end gap-1.5">
-                  <div className="flex gap-1" aria-hidden="true">
+                <div className="flex shrink-0 flex-col items-start gap-1.5 lg:items-end">
+                  <div className="flex flex-wrap gap-1" aria-hidden="true">
                     {unitLessons.map((l) => (
                       <span
                         key={l.id}
