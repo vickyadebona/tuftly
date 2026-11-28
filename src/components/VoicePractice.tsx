@@ -1,18 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { COMPANION, DAILY_INTERVIEW_CAP } from "@/lib/config";
 import { todayStr } from "@/lib/dates";
 import { NAV_AGAIN } from "@/lib/events";
-import { canListen, hush, LISTEN_PROBLEM, speak, useDictation } from "@/lib/speech";
+import { canListen, hush, LISTEN_PROBLEM, speak, useDictation, useSpeaking } from "@/lib/speech";
 import { recordPractice, useHydrated } from "@/lib/store";
 import { supabaseConfigured } from "@/lib/supabase/config";
 import { useAuthUser } from "@/lib/useAuthUser";
+import { useLeaveGuard } from "@/lib/useLeaveGuard";
 import { useSeason } from "@/lib/useSeason";
 import {
   answerNotes,
   fmtClock,
+  INTRO,
   interviewsLeft,
   lengthNote,
   MODE_LABEL,
@@ -32,6 +35,7 @@ import { PixelArtBobbin } from "./PixelArtBobbin";
 import { PixelIcon } from "./PixelIcon";
 import { SeasonBadgeTea } from "./SeasonHeadline";
 import { InterviewSkeleton } from "./Skeleton";
+import { SpokenText } from "./SpokenText";
 import { StreakCelebration } from "./StreakCelebration";
 import { TalkingBobbin } from "./TalkingBobbin";
 import { TeaBreak } from "./TeaBreak";
@@ -115,6 +119,7 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
   const [ready, setReady] = useState(0);
   const [adult, setAdult] = useState(false);
   const [testing, setTesting] = useState(false);
+  const [micWorked, setMicWorked] = useState(false);
   const [interview, setInterview] = useState<Interview | null>(null);
   const [index, setIndex] = useState(0);
   const [draft, setDraft] = useState("");
@@ -124,19 +129,29 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
   const [left, setLeft] = useState(VOICE_SECONDS);
   const [spent, setSpent] = useState(0);
   const [onBreak, setOnBreak] = useState(false);
+  const [hadTea, setHadTea] = useState(false);
   const [leaving, setLeaving] = useState(false);
+  // Where a link was headed when it was stopped to ask about leaving.
+  const [goingTo, setGoingTo] = useState<string | null>(null);
+  const router = useRouter();
   const [confirm, setConfirm] = useState<"redo" | "delete" | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
   const counted = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
 
   const { heard, error, waiting, start: listen, stop: stopListening } = useDictation();
+  const talking = useSpeaking();
   const question = questions[index];
   const inRound = IN_ROUND.includes(step);
   const timeUp = left === 0;
   const supported = hydrated && canListen();
-  // Speech that can't be heard falls back to typing, keeping whatever was already heard.
-  const mustType = typing || !supported || error !== null;
+  // Full interview is spoken only, like real AI interviews. It starts once the microphone has heard you.
+  const spokenOnly = mode === "full";
+  const micHeard = testing && !error && heard.trim() !== "";
+  const micReady = micWorked || micHeard;
+  const stuck = spokenOnly && error !== null;
+  // In Coach Me, speech that can't be heard falls back to typing, keeping whatever was already heard.
+  const mustType = !spokenOnly && (typing || !supported || error !== null);
   // If listening fails partway, what was heard moves into the text box.
   const typed = draft || (error ? heard : "");
   const spoken = mustType ? typed : heard;
@@ -154,7 +169,7 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
   }, [timeUp, stopListening]);
 
   // The seven minutes only run while you are answering.
-  const clockOn = step === "answer" && !onBreak && !leaving && !waiting && left > 0;
+  const clockOn = step === "answer" && !onBreak && !leaving && !waiting && !stuck && left > 0;
   useEffect(() => {
     if (!clockOn) return;
     const id = window.setInterval(() => {
@@ -164,18 +179,31 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
     return () => window.clearInterval(id);
   }, [clockOn]);
 
+  /** One step back before the interview starts, so you can pick the other type. */
+  function stepBack() {
+    hush();
+    stopListening();
+    setTesting(false);
+    setStep(step === "explain" ? "ready" : "choose");
+  }
+
   const exit = useCallback(() => {
     hush();
     stopListening();
     onExit();
   }, [onExit, stopListening]);
 
-  // Leaving ends the interview and throws it away. Ask first only if there is something to lose.
-  const hasWork = !!interview && (interview.turns.length > 0 || draft.trim() !== "" || heard.trim() !== "");
+  // Leaving ends the interview and throws it away, so always ask first once it has started.
   const leave = useCallback(() => {
-    if (inRound && hasWork) setLeaving(true);
+    if (inRound) setLeaving(true);
     else exit();
-  }, [inRound, hasWork, exit]);
+  }, [inRound, exit]);
+
+  const askToGo = useCallback((href: string) => {
+    setGoingTo(href);
+    setLeaving(true);
+  }, []);
+  useLeaveGuard(inRound, askToGo);
 
   useEffect(() => {
     window.addEventListener(NAV_AGAIN, leave);
@@ -210,11 +238,22 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
     saveInterview(next);
   }
 
-  function say(i: number) {
-    speak(questions[i].prompt);
+  function say(i: number, after: Promise<void> | null = null) {
+    speak(questions[i].id, questions[i].prompt, after);
   }
 
-  function ask(i: number) {
+  function introduce(after: Promise<void> | null = null) {
+    speak(INTRO.id, INTRO.text, after);
+  }
+
+  /** Ends the microphone test, remembering whether it heard anything. */
+  function endTest() {
+    if (micHeard) setMicWorked(true);
+    setTesting(false);
+    return stopListening();
+  }
+
+  function ask(i: number, after: Promise<void> | null = null) {
     setIndex(i);
     setDraft("");
     setTyping(false);
@@ -222,16 +261,15 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
     setNotSure(false);
     setSpent(0);
     setStep("ask");
-    say(i);
+    say(i, after);
   }
 
   function begin() {
-    stopListening();
-    setTesting(false);
+    const released = endTest();
     counted.current = false;
     setLeft(VOICE_SECONDS);
     setInterview({ id: String(Date.now()), owner, at: Date.now(), mode, turns: [], readyBefore: ready });
-    ask(0);
+    ask(0, released);
   }
 
   function answer(keep = "", byTyping = typing) {
@@ -312,6 +350,7 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
 
   function endBreak() {
     setOnBreak(false);
+    setHadTea(true);
     if (step === "answer" && supported && !typing) listen(draft);
   }
 
@@ -324,7 +363,7 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
     URL.revokeObjectURL(url);
   }
 
-  const title = (text: string, className = "text-3xl") => (
+  const title = (text: ReactNode, className = "text-3xl") => (
     <h1 ref={heading} tabIndex={-1} className={`font-pixel font-bold text-ink outline-none ${className}`}>
       {text}
     </h1>
@@ -332,10 +371,25 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
 
   const bird = (mood: "happy" | "thinking" | "cheering", size = 130) => <PixelArtBobbin mood={mood} outfit={season} size={size} />;
 
+  const leaveDialog = leaving && (
+    <LeaveDialog
+      onStay={() => {
+        setLeaving(false);
+        setGoingTo(null);
+      }}
+      onLeave={() => {
+        if (interview) deleteInterview(interview.id);
+        if (goingTo) router.push(goingTo);
+        exit();
+      }}
+    />
+  );
+
   if (onBreak) {
     return (
       <div className="flex flex-1 items-center justify-center">
         <TeaBreak onReady={endBreak} />
+        {leaveDialog}
       </div>
     );
   }
@@ -346,10 +400,16 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
   return (
     <div className="flex flex-1 flex-col gap-6">
       <div className="flex items-center justify-between gap-2">
-        <button type="button" className="btn-secondary gap-2 whitespace-nowrap max-sm:px-2 max-sm:text-[13px]" onClick={leave}>
-          <PixelIcon name="exit" size={18} color="#4a3326" />
-          {inRound ? "Leave interview" : "Back to interviews"}
-        </button>
+        {step === "ready" || step === "explain" ? (
+          <button type="button" className="btn-secondary whitespace-nowrap max-sm:px-2 max-sm:text-[13px]" onClick={stepBack}>
+            Back
+          </button>
+        ) : (
+          <button type="button" className="btn-secondary gap-2 whitespace-nowrap max-sm:px-2 max-sm:text-[13px]" onClick={leave}>
+            <PixelIcon name="exit" size={18} color="#4a3326" />
+            {inRound ? "Leave interview" : "Back to interviews"}
+          </button>
+        )}
         {inRound && <TeaButton onClick={takeBreak} />}
       </div>
 
@@ -377,7 +437,7 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
             {(
               [
                 ["coach", "bg-mint", "Check in after each question, and try again if you like.", "Gentle · good for learning"],
-                ["full", "bg-lilac", "Go through it all like the real thing. Look back at the end.", "Realistic · good for rehearsal"],
+                ["full", "bg-lilac", "Answer out loud only, with no typing. Look back at the end.", "Realistic · good for rehearsal"],
               ] as const
             ).map(([id, tone, about, note]) => (
               <button
@@ -385,8 +445,9 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
                 type="button"
                 role="radio"
                 aria-checked={mode === id}
+                disabled={id === "full" && !supported}
                 onClick={() => setMode(id)}
-                className={`pixel-box flex flex-col gap-2 p-5 text-left ${tone} ${mode === id ? "outline outline-4 outline-offset-2 outline-teal-deep" : ""}`}
+                className={`pixel-box flex flex-col gap-2 p-5 text-left disabled:opacity-60 ${tone} ${mode === id ? "outline outline-4 outline-offset-2 outline-teal-deep" : ""}`}
               >
                 <span className="font-pixel text-xl font-bold text-ink">{MODE_LABEL[id]}</span>
                 <span className="text-ink">{about}</span>
@@ -394,6 +455,9 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
               </button>
             ))}
           </div>
+          {!supported && (
+            <p className="text-ink">This browser can&apos;t listen, so Full interview is off. Try Chrome or Safari for that one.</p>
+          )}
           <p className="text-xl font-bold text-ink">
             Up to 7 minutes of answering ·{" "}
             <span className="text-orange-deep">
@@ -438,13 +502,18 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
               <div className="pixel-box flex items-center gap-4 bg-mint p-5 text-left">
                 <span className="shrink-0 max-sm:hidden">{bird("happy", 88)}</span>
                 <div className="flex flex-col items-start gap-3">
-                  <p className="text-ink">{reassurance(ready).text}</p>
-                  {reassurance(ready).offerTea && <TeaButton onClick={takeBreak} />}
+                  <p className="text-ink">{reassurance(ready, hadTea).text}</p>
+                  {reassurance(ready, hadTea).offerTea && <TeaButton onClick={takeBreak} />}
                 </div>
               </div>
             )}
           </div>
-          <button type="button" className="btn-primary" disabled={ready === 0} onClick={() => setStep("explain")}>
+          <button type="button" className="btn-primary" disabled={ready === 0}
+            onClick={() => {
+              setStep("explain");
+              introduce();
+            }}
+          >
             Next
           </button>
         </section>
@@ -452,12 +521,10 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
 
       {step === "explain" && (
         <section className={SCREEN}>
-          <TalkingBobbin size={150} />
+          <TalkingBobbin size={150} talking={talking} />
           {title("How this works", "text-2xl")}
           <p className="pixel-box max-w-xl p-4 text-ink">
-            Hi! This is practice for an AI-powered voice interview, not one with a real person. I&apos;ll ask a question out loud.
-            Answer when you&apos;re ready, then press “Done answering”. Each question has a follow-up. Saying “I&apos;m not sure” is
-            allowed. I don&apos;t judge your answers: you check them against key points.
+            <SpokenText id={INTRO.id} text={INTRO.text} />
           </p>
           <div className="pixel-box flex max-w-xl flex-col gap-3 bg-sky p-4 text-left text-ink">
             <label className="flex cursor-pointer items-start gap-3 font-bold">
@@ -470,28 +537,36 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
             </p>
           </div>
           {!supported && <p className="text-ink">This browser can&apos;t listen, so you&apos;ll type your answers. Say them out loud first.</p>}
+          {spokenOnly && !testing && (
+            <p className="text-ink" aria-live="polite">
+              {micReady ? "Your microphone works." : "Full interview is spoken only. Test your microphone to start."}
+            </p>
+          )}
           {testing && (
             <p className="text-ink" aria-live="polite">
               {waiting
                 ? "Waiting for you to allow the microphone. Take your time."
                 : error
-                  ? `${LISTEN_PROBLEM[error]} You can also type your answers.`
+                  ? `${LISTEN_PROBLEM[error]} ${spokenOnly ? "Full interview needs it. Coach Me also lets you type." : "You can also type your answers."}`
                   : heard
                     ? `I heard: “${heard}”`
                     : "Say a few words…"}
             </p>
           )}
           <div className="flex flex-wrap justify-center gap-3">
+            <button type="button" className="btn-secondary" onClick={() => introduce(endTest())}>
+              Hear it again
+            </button>
             {supported && (
               <button
                 type="button"
                 className="btn-secondary"
                 onClick={() => {
                   // After a problem the same button tries again.
-                  if (testing && !error) {
-                    stopListening();
-                    setTesting(false);
-                  } else {
+                  if (testing && !error) endTest();
+                  else {
+                    // So the microphone doesn't pick Bobbin up.
+                    hush();
                     listen();
                     setTesting(true);
                   }
@@ -500,7 +575,19 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
                 {testing ? (error ? "Try the microphone again" : "Stop the test") : "Test my microphone"}
               </button>
             )}
-            <button type="button" className="btn-primary" disabled={!adult} onClick={begin}>
+            {stuck && (
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => {
+                  setTesting(false);
+                  setMode("coach");
+                }}
+              >
+                Switch to Coach Me
+              </button>
+            )}
+            <button type="button" className="btn-primary" disabled={!adult || (spokenOnly && (!micReady || stuck))} onClick={begin}>
               Start
             </button>
           </div>
@@ -509,9 +596,9 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
 
       {step === "ask" && (
         <section className={SCREEN}>
-          <TalkingBobbin key={index} size={170} />
+          <TalkingBobbin key={index} size={170} talking={talking} />
           {question.kind === "followup" && <span className="pixel-chip bg-peach">Follow-up</span>}
-          <div className="pixel-box w-full max-w-xl p-6">{title(question.prompt, "text-2xl")}</div>
+          <div className="pixel-box w-full max-w-xl p-6">{title(<SpokenText id={question.id} text={question.prompt} />, "text-2xl")}</div>
           <div className="flex flex-wrap justify-center gap-3">
             <button type="button" className="btn-secondary" onClick={() => say(index)}>
               Hear it again
@@ -527,11 +614,11 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
         <section className={SCREEN}>
           {title(question.prompt, "text-2xl")}
           <p className="pixel-chip bg-peach" role="status">
-            {timeUp ? "That's all 7 minutes" : waiting ? "Waiting for the microphone" : mustType ? "Typing" : "● Listening…"} <span className="font-sans">{fmtClock(spent)}</span>
+            {timeUp ? "That's all 7 minutes" : waiting ? "Waiting for the microphone" : stuck ? "Not listening" : mustType ? "Typing" : "● Listening…"} <span className="font-sans">{fmtClock(spent)}</span>
           </p>
           {error && (
             <p className="text-ink" role="alert">
-              {LISTEN_PROBLEM[error]} Or type your answer here.
+              {LISTEN_PROBLEM[error]} {spokenOnly ? "The clock is paused." : "Or type your answer here."}
             </p>
           )}
           {mustType ? (
@@ -548,7 +635,11 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
             <p className="pixel-box min-h-32 w-full bg-paper p-4 text-left text-lg text-ink" aria-label="What Bobbin hears">
               {heard || (
                 <span className="text-ink-soft">
-                  {waiting ? "Allow the microphone in your browser. Take your time; the clock is waiting too." : "Start speaking. Your words show up here."}
+                  {waiting
+                    ? "Allow the microphone in your browser. Take your time; the clock is waiting too."
+                    : stuck
+                      ? "Nothing heard yet."
+                      : "Start speaking. Your words show up here."}
                 </span>
               )}
             </p>
@@ -580,7 +671,12 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
                 {error ? "Try the microphone again" : "Use the microphone"}
               </button>
             )}
-            {!mustType && (
+            {stuck && !timeUp && (
+              <button type="button" className="btn-secondary" onClick={() => listen(heard)}>
+                Try the microphone again
+              </button>
+            )}
+            {!spokenOnly && !mustType && (
               <button
                 type="button"
                 className="btn-secondary"
@@ -759,15 +855,7 @@ export function VoicePractice({ onExit }: { onExit: () => void }) {
         </section>
       )}
 
-      {leaving && (
-        <LeaveDialog
-          onStay={() => setLeaving(false)}
-          onLeave={() => {
-            if (interview) deleteInterview(interview.id);
-            exit();
-          }}
-        />
-      )}
+      {leaveDialog}
 
       {confirm && (
         <LeaveDialog
