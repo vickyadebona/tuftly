@@ -19,7 +19,7 @@ Built from the Figma file "tuftly: layout explorations" (layout A). Pixel look: 
 - `/home` quest map: lessons as a path, today's quests, week strip (`QuestHome.tsx`)
 - `/streak` calendar with current and longest streak, rest days and whether the week starts Sunday or Monday (`StreakCalendar.tsx`)
 - `/review` practice, `/lessons/[id]` lesson flow (restyled)
-- `/interview` practice round: questions come from the drill bank and you check off key points yourself. Includes a tea break, pressure levels, a round map and a way to leave, which ends the round. Voice practice ("Your story", `VoicePractice.tsx`): Bobbin asks out loud with the browser's voice and the browser turns answers into text; follow-ups are fixed, you check key points yourself, and transcripts stay on the device (2 a day, 7 minutes of answering). The AI interviewer and real scoring are not built yet.
+- `/interview` practice round: questions come from the drill bank and you check off key points yourself. Includes a tea break, pressure levels, a round map and a way to leave, which ends the round. Voice practice ("Your story", `VoicePractice.tsx`): Bobbin reads the instructions and questions out loud (Amazon Polly's "Justin", recorded ahead of time and added with `scripts/add-voice.mjs`; the browser's voice is the backup) and the browser turns answers into text; Coach Me also allows typing, Full interview is spoken only; follow-ups are fixed, you check key points yourself, and transcripts stay on the device (2 a day, 7 minutes of answering). The AI interviewer and real scoring are not built yet.
 - Not built from the design: XP, levels, gems and the closet (the data model has none of them), and mobile-specific layouts beyond basic stacking.
 
 ## How learning is designed to stick

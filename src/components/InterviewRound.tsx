@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getDrills, getLessons } from "@/content";
@@ -11,6 +12,7 @@ import { lessonMix, minutesFor, SESSIONS, sessionQuestions, type RoundQuestion }
 import { useSeason } from "@/lib/useSeason";
 import { BEFORE_INTERVIEW, INTERVIEW_DONE } from "@/lib/phrases";
 import { CodeBlock } from "./CodeBlock";
+import { useLeaveGuard } from "@/lib/useLeaveGuard";
 import { LeaveDialog } from "./LeaveDialog";
 import { VoicePractice } from "./VoicePractice";
 import { PixelArtBobbin } from "./PixelArtBobbin";
@@ -47,17 +49,24 @@ function Round({ pressure, title, questions, onLeave }: { pressure: PressureLeve
   const [onBreak, setOnBreak] = useState(false);
   const [left, setLeft] = useState<number | null>(level.seconds);
   const [leaving, setLeaving] = useState(false);
+  // Where a link was headed when it was stopped to ask about leaving.
+  const [goingTo, setGoingTo] = useState<string | null>(null);
+  const router = useRouter();
 
   const finished = index >= questions.length;
   const q = questions[index];
 
-  // Leaving ends the round (a tea break is the way to pause). Ask first only if there is
-  // something to lose.
-  const started = index > 0 || phase === "checking" || answer.trim() !== "";
+  // Leaving ends the round (a tea break is the way to pause), so ask first until it's finished.
   const leave = useCallback(() => {
-    if (started && !finished) setLeaving(true);
+    if (!finished) setLeaving(true);
     else onLeave();
-  }, [started, finished, onLeave]);
+  }, [finished, onLeave]);
+
+  const askToGo = useCallback((href: string) => {
+    setGoingTo(href);
+    setLeaving(true);
+  }, []);
+  useLeaveGuard(!finished, askToGo);
 
   // Tapping "Interviews" in the menu during a round means leaving it too.
   useEffect(() => {
@@ -234,7 +243,18 @@ function Round({ pressure, title, questions, onLeave }: { pressure: PressureLeve
         </div>
       )}
 
-      {leaving && <LeaveDialog onStay={() => setLeaving(false)} onLeave={onLeave} />}
+      {leaving && (
+        <LeaveDialog
+          onStay={() => {
+            setLeaving(false);
+            setGoingTo(null);
+          }}
+          onLeave={() => {
+            if (goingTo) router.push(goingTo);
+            onLeave();
+          }}
+        />
+      )}
     </div>
   );
 }

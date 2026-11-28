@@ -7,7 +7,7 @@ import { restartTour, signOut, useAccount } from "@/lib/account";
 import { getSupabase } from "@/lib/supabase/client";
 import { useAuthUser } from "@/lib/useAuthUser";
 import { todayStr } from "@/lib/dates";
-import { NAV_AGAIN } from "@/lib/events";
+import { leaveGuard, NAV_AGAIN } from "@/lib/events";
 import { useHydrated, useProgress } from "@/lib/store";
 import { streakSummary } from "@/lib/streak";
 import { PixelArtBobbin } from "./PixelArtBobbin";
@@ -23,6 +23,13 @@ const NAV: { href: string; label: string; icon: PixelIconName; color: string; ma
   { href: "/interview", label: "Interviews", icon: "heart", color: "#ff9e80", match: ["/interview"], tour: "nav-interview" },
   { href: "/pitch", label: "Pitch", icon: "speech", color: "#8f73d0", match: ["/pitch"], tour: "nav-pitch" },
 ];
+
+/** Links check first when leaving would end an interview. The current page is NAV_AGAIN's job. */
+const guard = (href: string) => (e: { preventDefault: () => void }) => {
+  if (!leaveGuard.ask || window.location.pathname === href) return;
+  e.preventDefault();
+  leaveGuard.ask(href);
+};
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -45,7 +52,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <SyncManager />
       {hydrated && account && !account.tourDone && <Tour />}
       <header className="flex items-center justify-between gap-2 border-b-[3px] border-line bg-paper px-3 py-2.5 sm:gap-4 sm:px-7 sm:py-3">
-        <Link href="/" className="flex items-center gap-2" aria-label="tuftly landing page">
+        <Link href="/" onNavigate={guard("/")} className="flex items-center gap-2" aria-label="tuftly landing page">
           <PixelArtBobbin mood="sparkle" outfit={season} size={36} />
           <span className="font-pixel text-2xl font-bold text-ink sm:text-3xl">
             tuft<span className="text-teal">ly</span>
@@ -78,6 +85,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {hydrated ? (
             <Link
               href="/streak"
+              onNavigate={guard("/streak")}
               data-tour="streak"
               className="pixel-chip whitespace-nowrap bg-peach hover:bg-butter"
               aria-label={`${streak} day streak. Open your calendar`}
@@ -107,6 +115,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 href={item.href}
                 data-tour={item.tour}
                 aria-current={active ? "page" : undefined}
+                onNavigate={guard(item.href)}
                 onClick={() => {
                   if (pathname === item.href) window.dispatchEvent(new Event(NAV_AGAIN));
                 }}

@@ -20,6 +20,12 @@ export interface VoiceQuestion {
   hints: string[];
 }
 
+/** What Bobbin says before an interview starts. Shown on screen and read aloud. */
+export const INTRO = {
+  id: "story/intro",
+  text: "Hi! This is practice for an AI-powered voice interview, not one with a real person. I'll ask a question out loud. Answer when you're ready, then press “Done answering”. Each question has a follow-up. Saying “I'm not sure” is allowed. I don't judge your answers: you check them against key points.",
+};
+
 const HONEST = "Say it honestly: “I haven't thought about that yet, but here's how I would.”";
 
 /** "Your story": three questions, each with one follow-up. The follow-ups are fixed for now. */
@@ -110,15 +116,41 @@ export function interviewsLeft(usedToday: number, cap: number): number {
   return Math.max(0, cap - usedToday);
 }
 
-export function reassurance(ready: number): { text: string; offerTea: boolean } {
+/** Once there's been a tea break, tea isn't offered or mentioned again. */
+export function reassurance(ready: number, hadTea = false): { text: string; offerTea: boolean } {
   if (ready <= 2) {
+    if (hadTea) return { text: "That's completely normal. We'll start when you're ready.", offerTea: false };
     return {
       text: "That's completely normal. How about a cup of tea first? Take a few quiet minutes, and we'll start when you're ready.",
       offerTea: true,
     };
   }
-  if (ready === 3) return { text: "A good place to start. A cup of tea first could help you settle in.", offerTea: true };
+  if (ready === 3) {
+    if (hadTea) return { text: "A good place to start.", offerTea: false };
+    return { text: "A good place to start. A cup of tea first could help you settle in.", offerTea: true };
+  }
   return { text: "Love that. Let's put it to the test and see what you can sharpen.", offerTea: false };
+}
+
+/**
+ * How many characters of a spoken line to show when its recording is `fraction` of the way through.
+ * Whole words only, each as it begins. Punctuation counts extra, because the voice pauses there.
+ */
+export function spokenLength(text: string, fraction: number): number {
+  const words = [...text.matchAll(/\S+\s*/g)].map((m) => {
+    const word = m[0].trimEnd();
+    const pause = /[.?!]["”]?$/.test(word) ? 8 : /[,:]$/.test(word) ? 3 : 0;
+    return { end: m.index + m[0].length, weight: m[0].length + pause };
+  });
+  const reached = fraction * words.reduce((sum, w) => sum + w.weight, 0);
+  let before = 0;
+  let shown = 0;
+  for (const word of words) {
+    if (before > reached) break;
+    shown = word.end;
+    before += word.weight;
+  }
+  return shown;
 }
 
 export function fmtClock(total: number): string {

@@ -1,0 +1,12 @@
+{
+  "voice": "Amazon Polly Justin (standard)",
+  "lines": {
+    "story/intro": "Hi! This is practice for an AI-powered voice interview, not one with a real person. I'll ask a question out loud. Answer when you're ready, then press “Done answering”. Each question has a follow-up. Saying “I'm not sure” is allowed. I don't judge your answers: you check them against key points.",
+    "story/about": "Tell me about yourself.",
+    "story/about-own-part": "In the work you just described, what did you do yourself?",
+    "story/fit": "Why do you think you're a good fit for this role?",
+    "story/fit-gap": "Which part of the role is newest to you, and how would you learn it?",
+    "story/proof": "Tell me about something you did that made a difference.",
+    "story/proof-how": "How did you know it worked?"
+  }
+}
